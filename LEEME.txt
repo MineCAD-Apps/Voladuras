@@ -1,20 +1,24 @@
-ELIMINACIÓN DE BARRENOS REGISTRADOS
-Base: main d213138 de MineCAD-Apps/Voladuras.
+MINECAD — NIVELES OPCIONALES
+26/11/2026. Base: main f6bba61 de MineCAD-Apps/Voladuras.
 
-Copiar los archivos del ZIP sobre la raíz del repositorio conservando docs/.
+INSTALACIÓN
+Copiar el contenido del ZIP sobre la raíz de la aplicación web conservando la carpeta docs/.
 Modificados: registro-app.js, registro-3d.js y registro.css.
 Actualizado: docs/MANIFIESTO.json.
-No hay archivos exclusivos de la función que deban borrarse por separado.
+No requiere borrar archivos ni modificar las bibliotecas.
 
-ELIMINADO
-Panel de barrenos registrados, contador superior, selector de capa, entrada de archivos CSV, descarga de cabecera, lector CSV, manejadores de importación y borrado, datos iniciales y validaciones del levantamiento, dibujos correspondientes en sección, planta y 3D, aviso de coordenadas y estilos sin uso.
-La planta conserva los collares de los anillos; las funciones de anillos existentes se conservan.
+FUNCIONAMIENTO
+Cada obra tiene su propia casilla «Existe este nivel» dentro de Bloque y niveles.
+Al desmarcarla se desactivan sus controles de dimensiones y se retira su perfil y sus etiquetas de sección 2D y modelo 3D. Las medidas se conservan para restaurar la obra y como referencias geométricas del bloque.
+Si no existen ambos niveles, el alto se describe como referencia del bloque en vez de distancia piso a piso.
+Un nivel inexistente queda desactivado como nueva elección de origen. Si ya era el origen capturado, se conserva ese dato y se muestra un aviso; la planta no dibuja una galería inexistente.
+Las banderas lower.exists y upper.exists se guardan con el proyecto. Los JSON anteriores que no las incluyen se abren con ambas en true.
 
-COMPATIBILIDAD
-Queda una única referencia activa al campo antiguo: delete i.holes.
-Descarta el campo retirado al cargar o validar un proyecto anterior; impide que vuelva a exportarse o guardarse con el proyecto. No conserva interfaz, funciones ni visualización del levantamiento. Los archivos JSON originales del usuario en disco no se modifican.
+ALCANCE
+Esta actualización cambia la existencia y representación de las obras. Conserva las funciones actuales de geometría y las cotas de referencia: no redefine automáticamente extremos de barrenos ni referencias de los efectos decorativos.
+No se añadió la barrera solicitada ligada a la primera línea sin detonar ni se modificaron la animación de fragmentos, tiempos o secuencias.
 
-COMPROBADO
-Inicio en navegador, tres métricas, ausencia de controles retirados, selección de líneas, visor 2D/3D y apariencias; apertura de un JSON anterior con campo legado; exportación y guardado local sin ese campo; ausencia de errores JavaScript. Sintaxis, rutas e integridad verificadas.
+VERIFICACIÓN
+Pruebas en navegador de las cuatro combinaciones de existencia, perfiles y etiquetas 2D/3D, campos desactivados, opciones de origen, aviso de planta, restauración, exportación de banderas y apertura de proyectos anteriores. Sin errores JS. Sintaxis, rutas e integridad verificadas.
 
-No publicado desde esta sesión.
+Son cambios locales: no publicados desde esta sesión.

@@ -49,7 +49,7 @@ window.MineCADCreateViewer3D = function (dependencies) {
         } }
         update(e, t) { this.clear(); this.ringMeshes = new Map; let n = xs(e), s = e.block.length, r = (h, u) => [...n.map(d => [d[h], d.z]), ...n.slice().reverse().map(d => [d[u], d.z])]; if (t.elos && this.solid(r("elosLeft", "elosRight"), s, 13658989, .045), t.mining && this.solid(r("mineLeft", "mineRight"), s, 6079226, .035), t.vein && this.solid(r("left", "right"), s, 0xadb97b, .17), t.works)
             for (let h of ["lower", "upper"])
-                this.solid(zn(e, h).points, s, h === "lower" ? 5877747 : 6608314, .16); if (t.rings) {
+                if (e[h].exists !== false) this.solid(zn(e, h).points, s, h === "lower" ? 5877747 : 6608314, .16); if (t.rings) {
             const all = br(e), asSegments = rows => rows.map(h => [h.collar, h.toe].map(([x, y, z]) => [x, z, y])), radius = Math.max(.025, Math.min(.25, Math.max(e.block.height, e.block.length) * .0035));
             const byRing = new Map();
             for (const h of all) {
@@ -94,11 +94,12 @@ window.MineCADCreateViewer3D = function (dependencies) {
             this.visualLabels = [];
             const add = (text, position, color) => { const node = document.createElement('div'); node.className = 'scene-object-label'; node.textContent = text; node.style.color = color; this.labelLayer.append(node); this.visualLabels.push({ node, point: new L(...position) }); };
             for (const side of ['lower', 'upper']) {
+                if (project[side].exists === false) continue;
                 const info = project[side], g = zn(project, side);
                 add((side === 'lower' ? 'NIVEL INFERIOR' : 'NIVEL SUPERIOR') + ' · ' + info.width.toFixed(1) + ' × ' + info.height.toFixed(1) + ' m', [g.centre + info.width * .7, g.floor + info.height * .8, project.block.length * .65], side === 'lower' ? '#91cafa' : '#8bddcf');
             }
             const top = Bn(project, project.block.height);
-            add('VETA · ' + project.vein.middle.thickness.toFixed(2) + ' m · ' + project.vein.middle.dip.toFixed(1) + '°', [top.centre, project.block.height + project.upper.height * .9, project.block.length * .2], '#c9dc91');
+            add('VETA · ' + project.vein.middle.thickness.toFixed(2) + ' m · ' + project.vein.middle.dip.toFixed(1) + '°', [top.centre, project.block.height + (project.upper.exists === false ? 0 : project.upper.height * .9), project.block.length * .2], '#c9dc91');
             this.positionLabels();
         }
         positionLabels() {
