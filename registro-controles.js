@@ -13,6 +13,7 @@
 #visual-playback output{min-width:32px;text-align:right;font-variant-numeric:tabular-nums;color:#c7e8fb}
 #visual-playback .vp-note{width:100%;color:#93acc0;font-size:.9em;line-height:1.2;min-height:1.2em}
 #visual-playback .vp-legend{width:100%;display:flex;flex-wrap:wrap;gap:2px 14px;color:#b9d3e4;font-size:.88em;line-height:1.25}#visual-playback .vp-legend[hidden]{display:none}#visual-playback .vp-legend b{font-weight:600;color:#e3f3fc}#visual-playback .vp-legend i{display:inline-block;width:.8em;height:.8em;border-radius:2px;margin-right:5px;vertical-align:-1px;border:1px solid #ffffff55}#visual-playback .vp-scale{display:inline-flex;align-items:center;gap:6px}#visual-playback .vp-legend i.vp-ramp{width:120px;height:.7em;margin:0;border-radius:3px;vertical-align:middle}#visual-playback .vp-data{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}#visual-playback .vp-data[hidden]{display:none}#visual-playback .vp-readout{color:#ffda8a;font-variant-numeric:tabular-nums;white-space:nowrap}
+#visual-playback .vp-speed{display:flex;align-items:center;gap:4px;color:#93acc0;white-space:nowrap}#visual-playback .vp-speed select{width:auto;padding:2px 4px}
 #visual-playback .vp-play{min-width:86px;border-color:#5081a3}#visual-playback [hidden]{display:none!important}
 #visual-playback button:focus-visible,#visual-playback input:focus-visible{outline:2px solid #88dcff;outline-offset:2px}
 @media(max-width:650px){#visual-playback{gap:4px;padding:3px 5px}#visual-playback .vp-clock{min-width:180px}}
@@ -21,9 +22,9 @@
     const bar = document.createElement('section');
     bar.id = 'visual-playback';
     bar.setAttribute('aria-label', 'Apariencia y animación ilustrativa');
-    bar.innerHTML = `<div class="vp-modes" role="group" aria-label="Colorear visualización por">${['Tipo', 'Tiempo', 'Carga', 'Daño', 'Frag.'].map((x, i) => `<button type="button" data-vp-mode="${i}" aria-pressed="${i === 0}">${x}</button>`).join('')}</div><div class="vp-clock"><button type="button" class="vp-play" aria-label="Simular animación ilustrativa">▶ Simular</button><button type="button" class="vp-reset" aria-label="Reiniciar vista previa" title="Reiniciar">↺</button><input type="range" min="0" max="100" step="1" value="0" aria-label="Avance de la vista previa"><output>0 %</output><span class="vp-readout" hidden></span></div><div class="vp-note" role="status" aria-live="polite">Tipo · colores actuales del visor. Simular: animación ilustrativa.</div><div class="vp-legend" hidden></div><div class="vp-data" hidden><button type="button" class="vp-load">Cargar resultados (JSON)…</button><button type="button" class="vp-tpl">Plantilla</button><button type="button" class="vp-clear" hidden>Quitar resultados</button><input type="file" accept=".json,application/json" hidden aria-label="Archivo de resultados externos"></div>`;
+    bar.innerHTML = `<div class="vp-modes" role="group" aria-label="Colorear visualización por">${['Tipo', 'Tiempo', 'Carga', 'Daño', 'Frag.'].map((x, i) => `<button type="button" data-vp-mode="${i}" aria-pressed="${i === 0}">${x}</button>`).join('')}</div><div class="vp-clock"><button type="button" class="vp-play" aria-label="Simular animación ilustrativa">▶ Simular</button><button type="button" class="vp-reset" aria-label="Reiniciar vista previa" title="Reiniciar">↺</button><input type="range" min="0" max="100" step="0.1" value="0" aria-label="Avance de la vista previa"><output>0 %</output><span class="vp-readout" hidden></span><label class="vp-speed" hidden>Velocidad <select aria-label="Velocidad de reproducción"><option value="auto">Auto</option><option value="1">1× real</option><option value="0.5">0.5×</option><option value="0.25">0.25×</option><option value="0.1">0.1×</option><option value="0.05">0.05×</option><option value="0.01">0.01×</option></select></label></div><div class="vp-note" role="status" aria-live="polite">Tipo · colores actuales del visor. Simular: animación ilustrativa.</div><div class="vp-legend" hidden></div><div class="vp-data" hidden><button type="button" class="vp-load">Cargar resultados (JSON)…</button><button type="button" class="vp-tpl">Plantilla</button><button type="button" class="vp-clear" hidden>Quitar resultados</button><input type="file" accept=".json,application/json" hidden aria-label="Archivo de resultados externos"></div>`;
     workspace.insertBefore(bar, scene);
-    const play = bar.querySelector('.vp-play'), range = bar.querySelector('input'), output = bar.querySelector('output'), note = bar.querySelector('.vp-note'), readout = bar.querySelector('.vp-readout'), legend = bar.querySelector('.vp-legend'), dataRow = bar.querySelector('.vp-data'), fileInput = dataRow.querySelector('input[type=file]'), clearBtn = dataRow.querySelector('.vp-clear');
+    const play = bar.querySelector('.vp-play'), range = bar.querySelector('input'), output = bar.querySelector('output'), note = bar.querySelector('.vp-note'), readout = bar.querySelector('.vp-readout'), legend = bar.querySelector('.vp-legend'), dataRow = bar.querySelector('.vp-data'), fileInput = dataRow.querySelector('input[type=file]'), speedBox = bar.querySelector('.vp-speed'), speedSelect = speedBox.querySelector('select'), clearBtn = dataRow.querySelector('.vp-clear');
     const keys = ['tipo', 'tiempo', 'carga', 'dano', 'frag'];
     const baseNotes = ['Tipo · colores actuales del visor.', 'Tiempo · sin datos de visualización temporal vinculados.', 'Carga · sin datos de coloración por carga vinculados.', 'Daño · sin capa de daño disponible.', 'Frag. · sin capa de fragmentación disponible.'];
     const notes = baseNotes.slice();
@@ -49,6 +50,7 @@
         if (d.state === 'disponible') return { ...d, kind: k === 'tiempo' ? 'tiempo' : 'agente' };
         return d;
     }
+    const clockNow = () => window.MineCADAnimation?.timeline?.(progress) ?? null;
     // Sin animación en curso (0 %) se ve el mapa completo; al avanzar, lo alcanzado se enciende y lo demás se atenúa.
     const reveal = (base, p, tn) => p <= 0 ? base : p + 1e-9 < tn ? { color: base.color, opacity: .3 } : p - tn < .06 ? { color: FLASH, opacity: 1 } : base;
     function layer() {
@@ -57,9 +59,13 @@
         const p = progress / 100, byRing = new Map();
         if (d.kind === 'agente') return { mode: 'carga', state: 'disponible', all: { color: d.color, opacity: .95 }, byRing: null, caption: 'Carga capturada · ' + d.legend[0][1] };
         if (d.kind === 'tiempo') {
-            for (const r of d.rings) { const tn = d.maxMs > 0 ? r.startMs / d.maxMs : 0; byRing.set(r.index, reveal({ color: ramp(tn), opacity: 1 }, p, tn)); }
-            const tMs = p * d.maxMs;
-            return { mode: 'tiempo', state: 'disponible', all: null, byRing, caption: 'Tiempo capturado · ' + Math.round(progress > 0 ? tMs : 0) + ' ms', tMs, maxMs: d.maxMs };
+            const tl = clockNow();
+            for (const r of d.rings) {
+                const base = { color: ramp(d.maxMs > 0 ? r.startMs / d.maxMs : 0), opacity: 1 }, age = tl ? tl.age(r.startMs) : 0;
+                byRing.set(r.index, progress <= 0 ? base : age < 0 ? { color: base.color, opacity: .3 } : age < .35 ? { color: FLASH, opacity: 1 } : base);
+            }
+            const tMs = tl ? tl.ms : 0;
+            return { mode: 'tiempo', state: 'disponible', all: null, byRing, caption: 'Tiempo capturado · ' + Math.round(tMs) + ' ms', tMs, maxMs: d.maxMs };
         }
         // Valores externos: el orden de aparición usa el inicio capturado si existe; si no, el orden numérico de las secciones (solo ilustrativo).
         const tm = window.MineCADLayerData.get('tiempo'), start = new Map();
@@ -72,19 +78,22 @@
     }
     function refreshData() {
         if (mode >= 2) {
-            notes[2] = 'Carga · transición ilustrativa global de rojo a amarillo pastel; sin tiempos ni secuencia.';
-            notes[3] = 'Daño · halo decorativo rojo, sin escala física ni radio de daño.';
-            notes[4] = 'Frag. · veta dividida visualmente en prismas rectangulares; sin tamaño de fragmentación calculado.';
+            const seq = window.MineCADLayerData?.sequence?.(), radius = window.MineCADLayerData?.influenceRadius?.() ?? null;
+            const timed = !!seq?.available, why = seq?.message ?? 'sin secuencia';
+            const scope = timed ? seq.rings.length + (seq.rings.length === 1 ? ' línea' : ' líneas') + ' · ' + seq.holeCount + ' barrenos' + (seq.holeMissing ? ' · sin retardo entre taladros: cada anillo inicia a la vez' : '') : '';
+            notes[2] = timed ? 'Carga · cada barreno pasa de rojo a amarillo en su tiempo nominal (' + scope + ').' : 'Carga · transición global de rojo a amarillo; para usar la secuencia, ' + why + '.';
+            notes[3] = radius ? 'Daño · zona cilíndrica con el radio de influencia capturado (' + radius + ' m); no es un resultado calculado.' : 'Daño · captura el «Radio de influencia» en «Explosivo y carga» para dibujar las zonas.';
+            notes[4] = timed ? 'Frag. · prismas y fragmentos ilustrativos que aparecen según el barreno de origen; sin tamaño de fragmentación calculado.' : 'Frag. · prismas decorativos; para usar la secuencia, ' + why + '.';
             note.textContent = notes[mode];
             dataRow.hidden = true; clearBtn.hidden = true; legend.hidden = false;
-            legend.innerHTML = mode === 2 ? '<span><i style="background:#e14242"></i>Inicio</span><span><i style="background:#ffeaa6"></i>Final ilustrativo</span>' : mode === 3 ? '<span><i style="background:linear-gradient(90deg,#ff4545,transparent)"></i>Halo decorativo · sin escala</span>' : '<span><i style="background:#d6b779"></i>Prismas decorativos de la veta</span>';
+            legend.innerHTML = mode === 2 ? '<span><i style="background:#e03131"></i>Sin iniciar</span><span><i style="background:#ffee00;box-shadow:0 0 7px 2px #fff36b"></i>Iniciando</span><span><i style="background:#ffee00"></i>Iniciado</span>' : mode === 3 ? '<span><i style="background:#ff303088"></i>' + (radius ? 'Radio de influencia ' + esc(radius) + ' m' : 'Sin radio capturado') + '</span>' : '<span><i style="background:#d6b779"></i>Prismas decorativos de la veta</span>';
             bar.querySelectorAll('[data-vp-mode]').forEach(b => b.title = notes[Number(b.dataset.vpMode)]);
             return;
         }
         const d = data(), k = keys[mode];
         notes[1] = baseNotes[1]; notes[2] = baseNotes[2]; notes[3] = baseNotes[3]; notes[4] = baseNotes[4];
         if (d && (d.state === 'sin_datos' || d.state === 'error')) notes[mode] = d.message + (mode >= 2 ? ' Puedes cargar resultados externos (JSON): esta herramienta no los calcula.' : '');
-        if (d && d.state === 'disponible') notes[mode] = d.kind === 'tiempo' ? 'Tiempo · color por inicio nominal capturado (retardo entre anillos); al avanzar se encienden los anillos alcanzados. No valida una secuencia de iniciación.' : d.kind === 'agente' ? 'Carga · color por agente de columna capturado; son datos del diseño completo, no valores por barreno.' : d.label + ' · valores de un archivo externo, dibujados tal cual (' + (d.missing ? d.missing + (d.missing === 1 ? ' anillo sin dato, en gris)' : ' anillos sin dato, en gris)') : 'sin cálculo ni validación)') + '.';
+        if (d && d.state === 'disponible') notes[mode] = d.kind === 'tiempo' ? 'Tiempo · color por inicio nominal de los anillos visibles; al avanzar se encienden los anillos alcanzados. No valida una secuencia de iniciación.' : d.kind === 'agente' ? 'Carga · color por agente de columna capturado; son datos del diseño completo, no valores por barreno.' : d.label + ' · valores de un archivo externo, dibujados tal cual (' + (d.missing ? d.missing + (d.missing === 1 ? ' anillo sin dato, en gris)' : ' anillos sin dato, en gris)') : 'sin cálculo ni validación)') + '.';
         bar.querySelectorAll('[data-vp-mode]').forEach(b => { b.title = notes[Number(b.dataset.vpMode)]; });
         dataRow.hidden = mode < 2;
         clearBtn.hidden = !external[k];
@@ -131,11 +140,12 @@
     });
     note.id = 'visual-playback-note';
     let frame = 0, progress = 0, last = 0, running = false, mode = 0;
-    function show() { const l = mode >= 2 ? null : layer(); window.MineCADAnimation?.setLayer?.(l); window.MineCADAnimation?.setProgress(progress); window.MineCADAppearance?.setState(keys[mode],progress); if (l && l.mode === 'tiempo') { readout.hidden = false; readout.textContent = Math.round(progress > 0 ? l.tMs : 0) + ' / ' + Math.round(l.maxMs) + ' ms'; } else readout.hidden = true; range.value = String(Math.floor(progress)); output.value = Math.floor(progress) + ' %'; range.setAttribute('aria-valuetext', Math.floor(progress) + ' por ciento, animación ilustrativa'); }
+    function show() { const l = mode >= 2 ? null : layer(); window.MineCADAnimation?.setLayer?.(l); window.MineCADAnimation?.setProgress(progress); window.MineCADAppearance?.setState(keys[mode],progress); const tl = clockNow(); speedBox.hidden = !tl; readout.hidden = !tl; if (tl) { readout.textContent = Math.round(tl.ms) + ' / ' + Math.round(tl.seq.totalMs) + ' ms'; readout.title = 'Reproducción a ' + Number(tl.rate.toPrecision(2)) + '× del tiempo nominal'; } range.value = progress.toFixed(1); output.value = Math.floor(progress) + ' %'; range.setAttribute('aria-valuetext', Math.floor(progress) + ' por ciento, animación ilustrativa'); }
     function stop() { running = false; cancelAnimationFrame(frame); play.textContent = progress >= 100 ? '↻ Repetir' : progress > 0 ? '▶ Reanudar' : '▶ Simular'; play.setAttribute('aria-label', progress >= 100 ? 'Repetir animación ilustrativa' : progress > 0 ? 'Reanudar animación ilustrativa' : 'Simular animación ilustrativa'); }
     function tick(now) { if (!running)
         return; if (last)
-        progress = Math.min(100, progress + (now - last) / 80); last = now; show(); if (progress >= 100) {
+        // Con secuencia la duración depende de las líneas visibles; sin ella, 8 s como antes.
+        progress = Math.min(100, progress + (now - last) * (100 / ((clockNow()?.durationS ?? 8) * 1000))); last = now; show(); if (progress >= 100) {
         stop();
         note.textContent = notes[mode] + (mode < 2 && layer() ? ' Recorrido finalizado.' : ' Vista previa finalizada; no representa una secuencia física.');
     }
@@ -148,11 +158,14 @@
         note.textContent = 'Movimiento reducido activo. Usa la barra de avance para revisar la ilustración sin reproducción automática.';
         return;
     } if (progress >= 100)
-        progress = 0; show(); running = true; last = 0; play.textContent = 'Ⅱ Pausar'; play.setAttribute('aria-label', 'Pausar animación ilustrativa'); note.textContent = notes[mode] + (mode < 2 && layer() ? ' La barra recorre los datos capturados; no es una predicción.' : ' Animación visual de sección y fragmentos; sin predicción física.'); frame = requestAnimationFrame(tick); });
+        progress = 0; show(); running = true; last = 0; play.textContent = 'Ⅱ Pausar'; play.setAttribute('aria-label', 'Pausar animación ilustrativa'); note.textContent = notes[mode] + (clockNow() ? ' La barra recorre la secuencia capturada de las líneas visibles; no es una predicción.' : ' Animación visual de sección y fragmentos; sin predicción física.'); frame = requestAnimationFrame(tick); });
     bar.querySelector('.vp-reset').addEventListener('click', () => { progress = 0; stop(); show(); note.textContent = notes[mode] + ' Vista previa restablecida.'; });
     range.addEventListener('input', () => { progress = Number(range.value); last = 0; show(); if (!running)
         stop(); });
     bar.querySelectorAll('[data-vp-mode]').forEach(button => button.addEventListener('click', () => { mode = Number(button.dataset.vpMode); bar.querySelectorAll('[data-vp-mode]').forEach(b => b.setAttribute('aria-pressed', String(b === button))); refreshData(); show(); const d = mode === 1 ? data() : null; if (mode === 1 && !(d && d.state === 'disponible')) note.textContent = notes[mode] + ' Selección de interfaz; el dibujo conserva sus colores.'; }));
+    speedSelect.addEventListener('change', () => { window.MineCADAnimation?.setSpeed(speedSelect.value); show(); });
+    // Al cambiar las líneas visibles cambia la duración: la animación vuelve al inicio.
+    document.addEventListener('minecad:seleccion', () => { progress = 0; stop(); refreshData(); show(); });
     // Los módulos de captura avisan cuando cambian los datos; no hay observadores sobre la propia animación.
     document.addEventListener('minecad:datos', () => { refreshData(); show(); });
     document.addEventListener('click', e => { const tab = e.target.closest?.('[data-view]'); if (tab) {

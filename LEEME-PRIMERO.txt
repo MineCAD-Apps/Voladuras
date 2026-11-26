@@ -1,0 +1,35 @@
+PROYECTO WEB MINECAD — ENTREGA COMPLETA
+25/11/2026
+
+Esta carpeta es una aplicación web completa, no un parche.
+Base: main d213138 de MineCAD-Apps/Voladuras, con la eliminación local posterior de Barrenos registrados.
+Incluye los ajustes visuales, selección de varias líneas y corrección del filtro de visibilidad que ya estaban en esa base.
+No incluye historial Git, archivos de pruebas temporales ni descargas sueltas del repositorio.
+
+ARCHIVOS PRINCIPALES
+index.html: entrada y orden de scripts.
+registro-app.js: aplicación y formularios.
+registro-3d.js: visor Three.js.
+registro-controles.js: barra de presentación.
+registro-aspecto.js: apariencias ilustrativas.
+animacion-visual.js: material decorativo, 96 piezas por línea.
+registro.css: estilos.
+vendor/: Three.js r181 y licencia, separados del código de aplicación.
+integraciones/: contenedor externo y tema de navegador existentes; el index principal no depende del contenedor.
+
+USO
+Servir la carpeta mediante HTTP para trabajar localmente, o mantener esta estructura en GitHub Pages.
+Verificación disponible: node tools/verify.mjs
+No requiere un proceso de compilación.
+
+ESTADO
+Barrenos registrados fue retirado del modelo inicial, formulario, lector CSV, validaciones, contador, dibujos y estilos. El cargador descarta el antiguo campo holes para poder abrir y volver a guardar proyectos previos sin conservarlo. No se modifican los JSON originales que estén en disco.
+Los anillos generados y su planta permanecen.
+La duración de la animación corresponde a las líneas visibles (ver ANIMACION.md).
+Las vistas Carga/Daño/Frag. son ilustrativas; la zona de Daño usa el radio de influencia que escribe el usuario. La retícula de prismas no es un resultado calculado de fragmentación.
+
+VERIFICACIÓN REALIZADA
+Inicio y visores 2D/3D en Chrome; selección de 5 líneas y reducción a una; colores, halos y prismas; ausencia de controles retirados; apertura/exportación de proyecto anterior y guardado local sin campo retirado; ausencia de errores JS. Sintaxis, rutas e integridad verificadas.
+No se publica automáticamente al entregar este ZIP.
+
+Antes de aplicar nuevos cambios, comparar con el remoto si recibió modificaciones después de d213138. Conservar respaldos del proyecto del usuario.

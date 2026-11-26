@@ -1,5 +1,13 @@
 # Cambios
 
+## Secuencia por barreno (25 nov 2026)
+
+- La duración de la animación corresponde solo a las líneas visibles, con tiempo cero en la primera.
+- Carga: cada barreno pasa de rojo a amarillo en su tiempo nominal, con resplandor inicial.
+- Daño: zona cilíndrica con el «Radio de influencia» capturado en «Explosivo y carga» (charge.influenceM, 0.05–30 m).
+- Fragmentos y prismas aparecen según el barreno de origen.
+- Selector de velocidad (Auto o fija).
+
 ## 26 de noviembre de 2026
 
 - Los modos Tiempo y Carga del visor muestran los datos capturados en «Tiempos y secuencia» y «Explosivo y carga» (3D con todos los anillos), con leyenda y procedencia. Sin datos: se conserva el dibujo y el aviso.

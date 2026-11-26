@@ -203,7 +203,7 @@ try {
                 let H = ae.drilling.origin === "superior" ? 1 : 0, V = t[H], originZ = V.floor + (H === 0 ? ae.lower.height : 0);
                 w += `<circle cx="${V.centre}" cy="${-originZ}" r="${b * .45}" fill="#f09bcb"/>` + O(V.centre - b, originZ - b * 1.4, ["ORIGEN REGISTRADO"], "#f09bcb", "end");
             }
-        } i.innerHTML = `<g stroke="#20364a" stroke-width=".6">${P}</g>${At.elos ? `<polygon points="${I("elosLeft", "elosRight")}" fill="#d76d722b" stroke="#e27f83" stroke-dasharray="5 4"><title>ELOS supuesto \xB7 no predicci\xF3n de rotura</title></polygon>` : ""}${At.mining ? `<polygon points="${I("mineLeft", "mineRight")}" fill="#5cc2fa0c" stroke="#5cc2fa" stroke-dasharray="5 3"/>` : ""}${At.vein ? `<polygon data-visual-vein points="${I("left", "right")}" fill="#e5b66b65" stroke="#e5b66b"/>` : ""}<polyline points="${M(e.map(E => [E.centre, E.z]))}" stroke="#f3ce9377" fill="none" stroke-dasharray="3 4"/>${At.works ? t.map((E, F) => `<polygon points="${M(E.points)}" fill="${F ? "#65d6b955" : "#59aff355"}" stroke="${F ? "#65d6b9" : "#59aff3"}"/>`).join("") : ""}${At.rings ? __sectionHoles(ae).map(E => `<line data-visual-hole x1="${E.collar[0]}" y1="${-E.collar[2]}" x2="${E.toe[0]}" y2="${-E.toe[2]}" stroke="${ri[E.template]}" stroke-width="1.8"><title>${bt(E.id)} \xB7 plantilla de anillo \xB7 proyecci\xF3n X/Z</title></line><circle cx="${E.collar[0]}" cy="${-E.collar[2]}" r="${b * .3}" fill="${ri[E.template]}"/>`).join("") : ""}${w}`, i.querySelectorAll("polygon,polyline,line,circle").forEach(E => { E.setAttribute("vector-effect", "non-scaling-stroke"), E.hasAttribute("stroke-width") || E.setAttribute("stroke-width", "1.2"); }); let v = Ve("#section-meta"); v || (v = document.createElement("div"), v.id = "section-meta", v.className = "section-meta", Ve(".cross-section").append(v)), v.textContent = Tc(ae) + " \xB7 rumbo " + Je(ae.block.length, 1) + " m" + (Mr(ae) ? " \xB7 " + Mr(ae) : ""); }
+        } i.innerHTML = `<g stroke="#20364a" stroke-width=".6">${P}</g>${At.elos ? `<polygon points="${I("elosLeft", "elosRight")}" fill="#d76d722b" stroke="#e27f83" stroke-dasharray="5 4"><title>ELOS supuesto \xB7 no predicci\xF3n de rotura</title></polygon>` : ""}${At.mining ? `<polygon points="${I("mineLeft", "mineRight")}" fill="#5cc2fa0c" stroke="#5cc2fa" stroke-dasharray="5 3"/>` : ""}${At.vein ? `<polygon data-visual-vein points="${I("left", "right")}" fill="#e5b66b65" stroke="#e5b66b"/>` : ""}<polyline points="${M(e.map(E => [E.centre, E.z]))}" stroke="#f3ce9377" fill="none" stroke-dasharray="3 4"/>${At.works ? t.map((E, F) => `<polygon points="${M(E.points)}" fill="${F ? "#65d6b955" : "#59aff355"}" stroke="${F ? "#65d6b9" : "#59aff3"}"/>`).join("") : ""}${At.rings ? __sectionHoles(ae).map(E => `<line data-visual-hole data-hole-id="${bt(E.id)}" x1="${E.collar[0]}" y1="${-E.collar[2]}" x2="${E.toe[0]}" y2="${-E.toe[2]}" stroke="${ri[E.template]}" stroke-width="1.8"><title>${bt(E.id)} \xB7 plantilla de anillo \xB7 proyecci\xF3n X/Z</title></line><circle cx="${E.collar[0]}" cy="${-E.collar[2]}" r="${b * .3}" fill="${ri[E.template]}"/>`).join("") : ""}${w}`, i.querySelectorAll("polygon,polyline,line,circle").forEach(E => { E.setAttribute("vector-effect", "non-scaling-stroke"), E.hasAttribute("stroke-width") || E.setAttribute("stroke-width", "1.2"); }); let v = Ve("#section-meta"); v || (v = document.createElement("div"), v.id = "section-meta", v.className = "section-meta", Ve(".cross-section").append(v)), v.textContent = Tc(ae) + " \xB7 rumbo " + Je(ae.block.length, 1) + " m" + (Mr(ae) ? " \xB7 " + Mr(ae) : ""); }
         function uc(i = !0) { let e = Ve("#stability-view"), t = No(ae); if (!i && e.querySelector("[data-face-values]")) {
             for (let r of t)
                 e.querySelector("[data-face-values=" + r.id + "]").innerHTML = Uu(r, ae.stability.faces[r.id]);
@@ -245,7 +245,9 @@ try {
             return index >= __minecadSection && index < __minecadSection + __minecadCount;
         }
         function __sectionHoles(project) { return __minecadSection === null ? vr(project) : br(project).filter(__sectionActive); }
+        var __selectionKey = '';
         function __renderSectionButtons() {
+            queueMicrotask(() => { const key = __minecadSection + '|' + __minecadCount; if (key === __selectionKey) return; __selectionKey = key; document.dispatchEvent(new CustomEvent('minecad:seleccion')); });
             const root = Ve('#section-selector');
             if (!root)
                 return;
@@ -286,10 +288,11 @@ try {
         {
             /* ===== Módulos Explosivo y carga · Tiempos y secuencia (captura documental) ===== */
             const CAT = [['sin_capturar', 'Pendiente de captura'], ['anfo', 'ANFO'], ['emulsion_granel', 'Emulsión a granel'], ['emulsion_cartucho', 'Emulsión encartuchada'], ['hidrogel', 'Hidrogel / slurry'], ['mezcla', 'Mezcla emulsión / ANFO'], ['otro', 'Otro (catálogo propio)']], TOE = [CAT[0], ['ninguno', 'Sin carga de fondo'], ...CAT.slice(1)], SYS = [['sin_capturar', 'Pendiente de captura'], ['electronico', 'Electrónico'], ['no_electrico', 'No eléctrico (tubo de choque)'], ['electrico', 'Eléctrico'], ['cordon', 'Cordón detonante']], lab = (o, v) => (o.find(x => x[0] === v) || [0, '—'])[1];
-            const mkC = () => ({ column: 'sin_capturar', density: null, coupling: null, toe: 'sin_capturar', wedgeShare: !0, wedge: 'sin_capturar', wedgeLoads: null }), mkT = () => ({ system: 'sin_capturar', ringMs: null, holeMs: null });
+            const mkC = () => ({ column: 'sin_capturar', density: null, coupling: null, toe: 'sin_capturar', wedgeShare: !0, wedge: 'sin_capturar', wedgeLoads: null, influenceM: null }), mkT = () => ({ system: 'sin_capturar', ringMs: null, holeMs: null });
             function ens(p) { if (p && typeof p === 'object') {
                 p.charge ??= mkC();
                 p.timing ??= mkT();
+                if (p.charge.influenceM === undefined) p.charge.influenceM = null;
             } return p; }
             function vmods(p) {
                 const c = p.charge, t = p.timing;
@@ -300,6 +303,7 @@ try {
                 He(c.coupling === null || yt(c.coupling, 0, 100), 'Acoplamiento fuera de rango (0–100 %).');
                 He(c.wedgeLoads === null || (Number.isInteger(c.wedgeLoads) && yt(c.wedgeLoads, 1, 20)), 'Cargas por barreno de la cuña: entero de 1 a 20.');
                 He(typeof c.wedgeShare === 'boolean', 'Marca de cuña inválida.');
+                He(c.influenceM === null || yt(c.influenceM, .05, 30), 'Radio de influencia fuera de rango (0.05–30 m).');
                 He(typeof t.system === 'string' && t.system.length < 60, 'Sistema de iniciación inválido.');
                 He(t.ringMs === null || yt(t.ringMs, 0, 5e3), 'Retardo entre anillos fuera de rango (0–5000 ms).');
                 He(t.holeMs === null || yt(t.holeMs, 0, 1e3), 'Retardo entre taladros fuera de rango (0–1000 ms).');
@@ -322,13 +326,14 @@ try {
             H('mtoe', 'Carga en el toe', 'Selección independiente para el fondo del barreno; puede indicarse que no lleva carga de fondo.');
             H('mcun', 'Explosivo de la cuña', 'Selección independiente para la cuña, o la misma de los anillos si se activa la casilla.');
             H('mncar', 'Cargas por barreno de la cuña', 'Número de cargas registradas por barreno de la cuña.');
+            H('mrad', 'Radio de influencia', 'Radio, en metros, de la zona cilíndrica roja que se dibuja alrededor de cada barreno en la vista Daño. Lo define el usuario.');
             H('msis', 'Sistema de iniciación', 'Sistema registrado para el diseño. Solo documental.');
             H('mret', 'Retardo entre anillos', 'Tiempo nominal capturado entre anillos consecutivos, en ms.');
             H('mtal', 'Retardo entre taladros', 'Tiempo nominal capturado entre taladros de un mismo anillo, en ms.');
             const sl = (l, p, mn, mx, st, u, h) => `<div class="slider-field"><label for="n-${p}">${Nu(l, h)} <small>${u}</small></label><input id="n-${p}" type="number" data-path="${p}" value="${ti(p) ?? ''}" min="${mn}" max="${mx}" step="any" aria-label="${l}"><input type="range" data-path="${p}" value="${ti(p) ?? mn}" min="${mn}" max="${mx}" step="${st}" aria-label="Ajustar ${l}"></div>`, se = (l, p, o, h, d) => `<label class="field"><span>${Nu(l, h)}</span><select data-path="${p}" aria-label="${l}"${d ? ' disabled' : ''}>${o.map(([v, t]) => `<option value="${v}"${ti(p) === v ? ' selected' : ''}>${t}</option>`).join('')}</select></label>`, hint = t => `<p class="hint">${t}</p>`;
             function modsHtml() {
                 const c = ae.charge;
-                return Ft('Explosivo y carga', se('Agente de columna', 'charge.column', CAT, 'mcol') + sl('Densidad', 'charge.density', .3, 2.5, .01, 'g/cc', 'mden') + sl('Acoplamiento', 'charge.coupling', 0, 100, 1, '%', 'macop') + se('Carga en el toe', 'charge.toe', TOE, 'mtoe') + `<label class="field mod-chk"><input type="checkbox" data-path="charge.wedgeShare"${c.wedgeShare ? ' checked' : ''}><span>Cuña con el mismo explosivo de los anillos</span></label>` + se('Explosivo de la cuña', 'charge.wedge', CAT, 'mcun', c.wedgeShare) + sl('Cargas por barreno de la cuña', 'charge.wedgeLoads', 1, 20, 1, '', 'mncar') + hint('Datos de captura del diseño. No se calcula carga, energía ni fragmentación.'))
+                return Ft('Explosivo y carga', se('Agente de columna', 'charge.column', CAT, 'mcol') + sl('Densidad', 'charge.density', .3, 2.5, .01, 'g/cc', 'mden') + sl('Acoplamiento', 'charge.coupling', 0, 100, 1, '%', 'macop') + se('Carga en el toe', 'charge.toe', TOE, 'mtoe') + `<label class="field mod-chk"><input type="checkbox" data-path="charge.wedgeShare"${c.wedgeShare ? ' checked' : ''}><span>Cuña con el mismo explosivo de los anillos</span></label>` + se('Explosivo de la cuña', 'charge.wedge', CAT, 'mcun', c.wedgeShare) + sl('Cargas por barreno de la cuña', 'charge.wedgeLoads', 1, 20, 1, '', 'mncar') + sl('Radio de influencia', 'charge.influenceM', .05, 30, .05, 'm', 'mrad') + hint('Datos de captura del diseño. No se calcula carga, energía ni fragmentación. El radio de influencia solo define el dibujo de la vista Daño.'))
                     + Ft('Tiempos y secuencia', se('Sistema de iniciación', 'timing.system', SYS, 'msis') + sl('Retardo entre anillos', 'timing.ringMs', 0, 5e3, 1, 'ms', 'mret') + sl('Retardo entre taladros', 'timing.holeMs', 0, 1e3, 1, 'ms', 'mtal') + hint('Tiempos nominales capturados; no validan una secuencia de iniciación.') + '<div id="mod-seq"></div>');
             }
             function mountMods() {
@@ -392,7 +397,38 @@ try {
                 const SRC = 'Ingresado por el usuario (sin cálculo ni validación)';
                 const CARGA_COLOR = { anfo: 0xe8a33d, emulsion_granel: 0x4cc9f0, emulsion_cartucho: 0x4895ef, hidrogel: 0x7bd88f, mezcla: 0xc792ff, otro: 0xb0b8c0 };
                 const nodata = (message) => ({ state: 'sin_datos', source: SRC, message });
-                function layerData(mode) {
+                // Secuencia nominal de los anillos visibles, con el tiempo cero en el primero de ellos.
+            // Barreno = (anillo - primer anillo visible) × retardo entre anillos + (n.º de barreno - 1) × retardo entre taladros.
+            let seqKey = '', seqValue = null;
+            function buildSequence() {
+                const t = ae.timing, all = Do(ae);
+                const visible = __minecadSection === null ? all : all.filter(s => s.index >= __minecadSection && s.index < __minecadSection + __minecadCount);
+                if (!t || !visible.length) return { available: false, message: 'sin anillos: captura bordo y perforación' };
+                if (t.ringMs === null && (visible.length > 1 || t.holeMs === null)) return { available: false, message: 'captura el retardo entre anillos en «Tiempos y secuencia»' };
+                const ring = t.ringMs ?? 0, hole = t.holeMs ?? 0, first = visible[0].index, counts = ae.rings.group.map(g => yr(ae, g).length);
+                const times = new Map(), add = (key, value) => { times.has(key) || times.set(key, []); times.get(key).push(value); };
+                let totalMs = 0, holeCount = 0;
+                for (const s of visible)
+                    for (let m = 0; m < counts[s.template]; m++) {
+                        const value = (s.index - first) * ring + m * hole;
+                        add('R' + (s.index + 1) + '-' + (m + 1), value); // 3D y secciones elegidas
+                        add(ms[s.template] + '\u00b7' + (m + 1), value); // proyección 2D «Todas»
+                        totalMs = Math.max(totalMs, value); holeCount++;
+                    }
+                if (!holeCount) return { available: false, message: 'sin barrenos en los anillos visibles' };
+                // Duración del diseño completo: solo fija la velocidad automática, igual para cualquier selección.
+                const fullMs = t.ringMs === null ? totalMs : Math.max(...all.map(s => s.index * ring + Math.max(0, counts[s.template] - 1) * hole));
+                return { available: true, times, totalMs, fullMs, holeCount, holeMissing: t.holeMs === null, rings: visible.map(s => ({ index: s.index, startMs: (s.index - first) * ring })) };
+            }
+            function sequence() {
+                try {
+                    const key = JSON.stringify([ae.block, ae.lower, ae.upper, ae.vein, ae.drilling, ae.rings, ae.timing, __minecadSection, __minecadCount]);
+                    if (key !== seqKey) { seqValue = buildSequence(); seqKey = key; }
+                    return seqValue;
+                }
+                catch (error) { return { available: false, message: error.message }; }
+            }
+            function layerData(mode) {
                     try {
                         const c = ae.charge, t = ae.timing;
                         if (mode === 'carga') {
@@ -409,16 +445,18 @@ try {
                             if (!t || t.ringMs === null) return nodata('Tiempo · sin retardo entre anillos capturado en «Tiempos y secuencia».');
                             const secs = Do(ae);
                             if (!secs.length) return nodata('Tiempo · sin anillos: captura bordo y perforación.');
-                            // Mismo valor nominal que la columna «Inicio ms» de la tabla de anillos.
-                            const rings = secs.map(s => ({ index: s.index, startMs: s.index * t.ringMs }));
-                            const legend = [['Sistema', lab(SYS, t.system)], ['Entre anillos', Je(t.ringMs, 0) + ' ms'], ['Entre taladros', t.holeMs === null ? 'sin datos' : Je(t.holeMs, 0) + ' ms (solo informativo; no se dibuja por barreno)']];
-                            return { state: 'disponible', source: SRC, unit: 'ms', rings, maxMs: Math.max(...rings.map(r => r.startMs)), legend };
+                            // Solo los anillos visibles; el tiempo cero es el inicio del primero.
+                            const seq = sequence();
+                            if (!seq.available) return nodata('Tiempo · ' + seq.message + '.');
+                            const rings = seq.rings;
+                            const legend = [['Sistema', lab(SYS, t.system)], ['Entre anillos', Je(t.ringMs, 0) + ' ms'], ['Entre taladros', t.holeMs === null ? 'sin datos' : Je(t.holeMs, 0) + ' ms']];
+                            return { state: 'disponible', source: SRC, unit: 'ms', rings, maxMs: seq.totalMs, legend };
                         }
                         return nodata(mode === 'dano' ? 'Daño · sin capa de daño disponible.' : 'Frag. · sin capa de fragmentación disponible.');
                     }
                     catch (error) { return { state: 'error', source: SRC, message: 'No se pudieron leer los datos capturados: ' + error.message }; }
                 }
-                window.MineCADLayerData = Object.freeze({ get: layerData, rings() { try { return Do(ae).map(x => x.index); } catch { return []; } } });
+                window.MineCADLayerData = Object.freeze({ get: layerData, sequence, influenceRadius: () => ae.charge?.influenceM ?? null, rings() { try { return Do(ae).map(x => x.index); } catch { return []; } } });
                 const _rm = refreshMods;
                 refreshMods = function () { _rm.apply(this, arguments); document.dispatchEvent(new CustomEvent('minecad:datos')); };
             }

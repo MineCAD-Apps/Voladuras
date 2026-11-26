@@ -10,8 +10,8 @@ window.MineCADCreateViewer3D = function (dependencies) {
             for (let t of Array.isArray(e.material) ? e.material : [e.material])
                 t.dispose(); }), this.model.clear(); }
         line(e, t, n = 1) { let s = new Vt().setFromPoints(e.map(a => new L(...a))), r = new ns(s, new _i({ color: t, transparent: !0, opacity: n })); this.model.add(r); }
-        tubes(segments, color, opacity, radius) {
-            const positions = [], indices = [], sides = 8;
+        tubes(segments, color, opacity, radius, sides = 8) {
+            const positions = [], indices = [];
             for (const [start, end] of segments) {
                 const a = new L(...start), b = new L(...end), direction = b.clone().sub(a);
                 if (direction.lengthSq() < 1e-12)
@@ -61,13 +61,13 @@ window.MineCADCreateViewer3D = function (dependencies) {
                 const mesh = this.tubes(asSegments(rows),active ? ri[rows[0].template] : 0x95a8b8,active ? .8 : .16,active ? radius : radius*.45);
                 if(mesh && typeof key === 'number') {mesh.userData.visualSelected=active;this.ringMeshes.set(key,mesh);}
             }
-        } let a = new yn().setFromObject(this.model); a.isEmpty() && (a.min.set(-3, 0, 0), a.max.set(3, e.block.height, s)), this.box = a; let o = a.getSize(new L), l = a.getCenter(new L), c = Math.max(o.x, o.y, o.z, 1); this.camera.far = c * 100, this.camera.updateProjectionMatrix(), this.fitted || (this.fit(), this.fitted = !0), this.resize(), this.setVisualLabels(e), this.addFloorGrid(), this.visualPlayback?.setGeometry(n, zn(e, "lower"), s, this.shownRingPositions(e)), this.applyLayer(); this.configureAesthetic(e,t,n,s); }
+        } let a = new yn().setFromObject(this.model); a.isEmpty() && (a.min.set(-3, 0, 0), a.max.set(3, e.block.height, s)), this.box = a; let o = a.getSize(new L), l = a.getCenter(new L), c = Math.max(o.x, o.y, o.z, 1); this.camera.far = c * 100, this.camera.updateProjectionMatrix(), this.fitted || (this.fit(), this.fitted = !0), this.resize(), this.setVisualLabels(e), this.addFloorGrid(), this.visualPlayback?.setGeometry(n, zn(e, "lower"), s, this.shownRingPositions(e), br(e).filter(__sectionActive)), this.applyLayer(); this.configureAesthetic(e,t,n,s); }
         configureAesthetic(project,visibility,samples,length) {
             const all=br(project), shown=all.filter(__sectionActive);
             const coords=rows=>[...new Set(rows.map(h=>Number(h.collar[1])).filter(Number.isFinite))].sort((a,b)=>a-b);
             const segments=shown.map(h=>[h.collar,h.toe].map(([x,y,z])=>[x,z,y]));
             const radius=Math.max(.025,Math.min(.25,Math.max(project.block.height,length)*.0035));
-            this.aesthetic?.configure(samples,length,segments,radius,[...this.ringMeshes.values()].filter(m=>m.userData.visualSelected),coords(all),coords(shown),visibility);
+            this.aesthetic?.configure(samples,length,segments,radius,[...this.ringMeshes.values()].filter(m=>m.userData.visualSelected),coords(all),coords(shown),visibility,shown,project.charge?.influenceM??null);
         }
         // Posiciones longitudinales (ya existentes) de los anillos que se están mostrando: todos, o solo la sección elegida. Solo lectura.
         shownRingPositions(project) {

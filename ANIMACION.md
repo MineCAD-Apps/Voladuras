@@ -37,3 +37,12 @@ El visor 3D entrega a la capa decorativa las posiciones longitudinales ya existe
 - Con resultados externos, el orden de aparición usa el inicio capturado si existe; si no, el orden numérico de las secciones, solo ilustrativo.
 - Los resultados cargados viven en memoria: se pierden al recargar la página.
 - Pendiente: la sección 2D todavía no se colorea por modo, y con una sección individual elegida el 3D conserva su resaltado de sección.
+
+## Secuencia por barreno (25 nov 2026) — sustituye lo anterior donde difiera
+
+- Tiempo de un barreno = (anillo − primer anillo visible) × retardo entre anillos + (n.º de barreno − 1) × retardo entre taladros. El orden dentro del anillo es la numeración R<n>-1, R<n>-2, …
+- La duración es el último de esos tiempos entre las líneas visibles. Sin retardo entre taladros, el anillo inicia a la vez.
+- Fuente única: `MineCADLayerData.sequence()`; reloj común: `MineCADAnimation.timeline()`.
+- Velocidad Auto: el diseño completo dura unos 12 s y una selección parcial dura proporcionalmente menos, más una entrada y una cola fijas para el resplandor y la caída.
+- Sin tiempos capturados se conserva el avance ilustrativo global de 8 s.
+- El radio de influencia lo escribe el usuario; no se calcula. Resplandor, caída y fragmentos son ilustrativos.
