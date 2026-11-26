@@ -49,9 +49,7 @@ window.MineCADCreateViewer3D = function (dependencies) {
         } }
         update(e, t) { this.clear(); this.ringMeshes = new Map; let n = xs(e), s = e.block.length, r = (h, u) => [...n.map(d => [d[h], d.z]), ...n.slice().reverse().map(d => [d[u], d.z])]; if (t.elos && this.solid(r("elosLeft", "elosRight"), s, 13658989, .045), t.mining && this.solid(r("mineLeft", "mineRight"), s, 6079226, .035), t.vein && this.solid(r("left", "right"), s, 0xadb97b, .17), t.works)
             for (let h of ["lower", "upper"])
-                this.solid(zn(e, h).points, s, h === "lower" ? 5877747 : 6608314, .16); if (t.holes)
-            for (let h of e.holes)
-                this.line([h.collar, h.toe].map(([u, d, p]) => [u, p, d]), 16054268, 1); if (t.rings) {
+                this.solid(zn(e, h).points, s, h === "lower" ? 5877747 : 6608314, .16); if (t.rings) {
             const all = br(e), asSegments = rows => rows.map(h => [h.collar, h.toe].map(([x, y, z]) => [x, z, y])), radius = Math.max(.025, Math.min(.25, Math.max(e.block.height, e.block.length) * .0035));
             const byRing = new Map();
             for (const h of all) {
