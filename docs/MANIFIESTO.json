@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "source": "Metadatos del repositorio main c6f59d3 con registro-calculo-formato.js y .css aportados por el usuario. Sin validación funcional del código.",
+  "source": "Base main c63d146; ventana estática de consulta transcrita del Excel aportado, sin cambios de lógica de cálculo",
   "files": [
     {
       "path": ".nojekyll",
@@ -39,8 +39,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 813,
-      "sha256": "e9812965ac1d5dcf61577c4ba72dd2102ae044084692b10e531386588e271e84"
+      "bytes": 925,
+      "sha256": "16fe4b833c25e14f0b9ae77085b2dfa0b369d8e97f0c41b930767335e1b59354"
     },
     {
       "path": "integraciones/minecad-tema.user.js",
@@ -93,6 +93,16 @@
       "sha256": "206597f38c70d01311745637f47b36110ccb93f713ee9af92873e75581919d49"
     },
     {
+      "path": "registro-calculo-teoria.css",
+      "bytes": 3985,
+      "sha256": "b539c15d163751d6305010325a1287bd55ba4383cceeb2e1fb3d8adeb10828f4"
+    },
+    {
+      "path": "registro-calculo-teoria.js",
+      "bytes": 15426,
+      "sha256": "01496fd4fd4617cdcfa0be72a0c45543b530536fb78487af158f0423da466761"
+    },
+    {
       "path": "registro-controles.js",
       "bytes": 21120,
       "sha256": "274b320848f64b129827e955437a48634a54ced12c3fcd773f3101fdf28d1176"
@@ -104,8 +114,8 @@
     },
     {
       "path": "tools/verify.mjs",
-      "bytes": 1574,
-      "sha256": "d0b65df5e0bf7ccafdf0a0edb6512e9af26e8edb10284bed912fc1bc55c7d77d"
+      "bytes": 1603,
+      "sha256": "4cfb535cdc25624793f47f2db56cf838c0059512110ae5a2424667db5a5d8eb5"
     },
     {
       "path": "vendor/THREE-LICENSE.txt",
