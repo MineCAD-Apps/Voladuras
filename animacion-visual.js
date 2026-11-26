@@ -68,15 +68,19 @@
         });
         let ready = false;
         return {
-            setGeometry(samples, lower, length) {
+            setGeometry(samples, lower, length, ringZ) {
                 ready = Array.isArray(samples) && samples.length > 1;
                 if (!ready) return;
                 const height = Math.max(...samples.map(s => s.z)) - Math.min(...samples.map(s => s.z));
+                // Posiciones de los anillos mostrados (entregadas por la aplicación). Sin ellas, la zona central decorativa de siempre.
+                const rings = Array.isArray(ringZ) ? ringZ.filter(Number.isFinite) : [];
+                let gap = Infinity; for (let k = 1; k < rings.length; k++) gap = Math.min(gap, rings[k] - rings[k - 1]);
+                const spread = rings.length > 1 && gap > 0 ? gap * .4 : length * .03;
                 for (let i = 0; i < rocks.length; i++) {
                     const rock = rocks[i], row = samples[Math.min(samples.length - 1, Math.floor(seed(i + 1) * samples.length))];
                     const radius = Math.max(.04, Math.min(height * .019, (row.right - row.left) * .16)) * (.6 + seed(i + 90));
                     rock.x = row.left + (row.right - row.left) * (.15 + seed(i + 200) * .7);
-                    rock.y = row.z; rock.z = length * (.35 + seed(i + 300) * .22);
+                    rock.y = row.z; rock.z = rings.length ? rings[i % rings.length] + (seed(i + 310) - .5) * spread : length * (.35 + seed(i + 300) * .22);
                     rock.target = Math.min(rock.y, lower.floor + Math.min(height * .1, .8) + seed(i + 400) * height * .03);
                     rock.mesh.scale.set(radius, radius * (.7 + seed(i + 450)), radius);
                 }

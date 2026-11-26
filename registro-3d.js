@@ -66,7 +66,15 @@ window.MineCADCreateViewer3D = function (dependencies) {
                 this.tubes(asSegments(all.filter(h => !__sectionActive(h))), 0x95a8b8, .28, radius * .45);
                 this.tubes(asSegments(all.filter(__sectionActive)), 0xffd966, 1, radius);
             }
-        } let a = new yn().setFromObject(this.model); a.isEmpty() && (a.min.set(-3, 0, 0), a.max.set(3, e.block.height, s)), this.box = a; let o = a.getSize(new L), l = a.getCenter(new L), c = Math.max(o.x, o.y, o.z, 1); this.camera.far = c * 100, this.camera.updateProjectionMatrix(), this.fitted || (this.fit(), this.fitted = !0), this.resize(), this.setVisualLabels(e), this.addFloorGrid(), this.visualPlayback?.setGeometry(n, zn(e, "lower"), s), this.applyLayer(); }
+        } let a = new yn().setFromObject(this.model); a.isEmpty() && (a.min.set(-3, 0, 0), a.max.set(3, e.block.height, s)), this.box = a; let o = a.getSize(new L), l = a.getCenter(new L), c = Math.max(o.x, o.y, o.z, 1); this.camera.far = c * 100, this.camera.updateProjectionMatrix(), this.fitted || (this.fit(), this.fitted = !0), this.resize(), this.setVisualLabels(e), this.addFloorGrid(), this.visualPlayback?.setGeometry(n, zn(e, "lower"), s, this.shownRingPositions(e)), this.applyLayer(); }
+        // Posiciones longitudinales (ya existentes) de los anillos que se están mostrando: todos, o solo la sección elegida. Solo lectura.
+        shownRingPositions(project) {
+            try {
+                const rows = br(project), shown = dependencies.getSection() === null ? rows : rows.filter(__sectionActive);
+                return [...new Set(shown.map(h => Number(h.collar[1])).filter(Number.isFinite))].sort((a, b) => a - b);
+            }
+            catch { return []; }
+        }
         // Colorea los tubos de anillo con la capa de datos suministrada (o restaura el color original). No calcula ni asigna valores.
         applyLayer(layer) {
             layer = layer === undefined ? window.MineCADAnimation?.getLayer?.() : layer;

@@ -22,3 +22,7 @@ Los modos Tiempo y Carga leen lo que el usuario ya ingresó en «Tiempos y secue
 - Sin datos: se mantiene el dibujo original y el mensaje «sin datos». Con una capa activa se oculta el efecto decorativo.
 - Daño y Frag. siguen sin datos.
 - Limitación conocida: con una sección individual seleccionada el 3D usa el resaltado de sección existente y la capa no se aplica; en 2D todavía no se colorea nada por capa.
+
+## Posición de las piezas decorativas (26 nov 2026)
+
+El visor 3D entrega a la capa decorativa las posiciones longitudinales ya existentes de los anillos mostrados (todos, o solo la sección elegida) mediante `shownRingPositions()`. Las piezas se reparten sobre esos anillos en lugar de la zona central fija (35–57 % del bloque). Si no hay anillos que mostrar, se conserva la zona central de antes. Sigue siendo ilustración: todas las piezas siguen el mismo avance, sin orden de iniciación ni cálculo.
