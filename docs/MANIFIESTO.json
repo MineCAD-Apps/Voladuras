@@ -24,18 +24,18 @@
     },
     {
       "path": "registro-controles.js",
-      "bytes": 21054,
-      "sha256": "7f093e6a7c32af727ab3f196908ed10644d64fa116a3d6f9bee30b9d9e49b2e0"
+      "bytes": 21120,
+      "sha256": "274b320848f64b129827e955437a48634a54ced12c3fcd773f3101fdf28d1176"
     },
     {
       "path": "registro-aspecto.js",
-      "bytes": 14223,
-      "sha256": "f933999a7f177cb7eea6f4be0cc87f6ccb7ebd8ff8d42bca39ad622b1a3279fb"
+      "bytes": 15220,
+      "sha256": "a7422b32861e4d2c9744c38c2485428177dd2e2cbeb19114c3c8e061ff83c8be"
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 15301,
-      "sha256": "fc2f67838b9502db5619502fa356b1f1344e11711e6a5e8f8a2d42188e172800"
+      "bytes": 21460,
+      "sha256": "01b3630d939609742267c97831b83080e77d902b1664328706b4f293a9191005"
     },
     {
       "path": "registro.css",
@@ -54,13 +54,13 @@
     },
     {
       "path": "ANIMACION.md",
-      "bytes": 5383,
-      "sha256": "080c5853a53b1a1b7916b96b8f399916f26799dbf16559e673e9f4c01ca5f5b7"
+      "bytes": 5833,
+      "sha256": "1de7ef2bbae3081c5f276338d38bad6e1c517a975ca364a3f7eafe687cf40910"
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 2201,
-      "sha256": "2ae2f2df76583ae7520987cd8504dacedea29d722fe98ba3b82458e2cbc67494"
+      "bytes": 2506,
+      "sha256": "2fcad5ff6fafba680f8604aa8296053159f35b27cd945696428985ad2d4089f7"
     },
     {
       "path": "vendor/three-vendor.js",
