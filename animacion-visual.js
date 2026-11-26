@@ -90,6 +90,9 @@
                 if (!group.visible) return;
                 for (let i = 0; i < rocks.length; i++) {
                     const rock = rocks[i], phase = clamp((p - .12 - rock.phase * .18) / .7);
+                    // No mostrar piezas durante la espera decorativa previa al movimiento.
+                    rock.mesh.visible = phase > 0;
+                    if (!rock.mesh.visible) continue;
                     rock.mesh.position.set(rock.x + Math.sin(i * 2.1) * phase * .16, rock.y + (rock.target - rock.y) * phase * phase, rock.z + Math.cos(i) * phase * .12);
                     rock.mesh.rotation.set(phase * (i % 7), phase * (i % 5), phase * (i % 3));
                 }
