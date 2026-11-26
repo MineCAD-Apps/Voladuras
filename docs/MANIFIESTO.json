@@ -1,6 +1,6 @@
 {
   "date": "2026-11-25",
-  "source": "Base main 4ab307c; actualización local de presentación ilustrativa y selección visual múltiple",
+  "source": "Base main d213138; eliminación completa de la función de barrenos registrados",
   "files": [
     {
       "path": ".nojekyll",
@@ -64,18 +64,18 @@
     },
     {
       "path": "registro-3d.js",
-      "bytes": 12905,
-      "sha256": "f1b88bc1a7ebb7c1bc9d78725ed2dc1b5a4dd38b3f2f9d3fde51165caea456ab"
+      "bytes": 12795,
+      "sha256": "bc7e4ad8b03ecba781626cf7d3389924495a6c1793db8b397ce18932f06cd5c1"
     },
     {
       "path": "registro-app.js",
-      "bytes": 79205,
-      "sha256": "4f029d539923559c3a8fabbb6faed19b7d1c9ede6fbd0d4c60a52efdf039910d"
+      "bytes": 75274,
+      "sha256": "4e38b43fef1f8d910da41f3c5ff22f63968d0440b91af1d0bbdaf808e813e5d8"
     },
     {
       "path": "registro-aspecto.js",
-      "bytes": 6643,
-      "sha256": "59c56a6cb4401cae13a12790268eafc00bce9ea4b7f5c8e0e179412be1a0e60a"
+      "bytes": 6759,
+      "sha256": "026c24a13f61ba6de27ca4c5e04e8efb849ad1ed4d12d792753f1e0d2efd702c"
     },
     {
       "path": "registro-controles.js",
@@ -84,8 +84,8 @@
     },
     {
       "path": "registro.css",
-      "bytes": 11515,
-      "sha256": "6e4d9a6eb88e04cda84ef6e2c0fd4d321a0c94dd65f3e712d262dfb8ac323ec4"
+      "bytes": 11184,
+      "sha256": "4cf4b21c305dc48b31a6aa76646e13814d0a5da4b7a0acb7f8bef37466a7de5d"
     },
     {
       "path": "tools/verify.mjs",
