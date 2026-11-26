@@ -7,3 +7,5 @@ El efecto es una ilustración gráfica de duración fija. No utiliza cargas, ret
 Archivos de presentación: animacion-visual.js, registro-controles.js y registro-3d.js. index.html carga la capa de animación antes de iniciar la aplicación. El código de aplicación y la biblioteca Three.js no se modifican.
 
 Pruebas: reproducción, cambio de vista conservando porcentaje, avance manual, reinicio y ausencia de errores de consola en la vista previa local.
+
+Actualización de interfaz: ayudas por modo, foco visible de teclado, pausa con Escape y respeto a movimiento reducido (la barra manual sigue disponible). Estas adiciones se comprobaron con eventos simulados; su revisión visual en navegador queda pendiente.

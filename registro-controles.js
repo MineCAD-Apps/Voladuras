@@ -13,6 +13,7 @@
 #visual-playback output{min-width:32px;text-align:right;font-variant-numeric:tabular-nums;color:#c7e8fb}
 #visual-playback .vp-note{width:100%;color:#93acc0;font-size:.9em;line-height:1.2;min-height:1.2em}
 #visual-playback .vp-play{min-width:86px;border-color:#5081a3}#visual-playback [hidden]{display:none!important}
+#visual-playback button:focus-visible,#visual-playback input:focus-visible{outline:2px solid #88dcff;outline-offset:2px}
 @media(max-width:650px){#visual-playback{gap:4px;padding:3px 5px}#visual-playback .vp-clock{min-width:180px}}
 `;
     document.head.append(style);
@@ -23,6 +24,13 @@
     workspace.insertBefore(bar, scene);
     const play = bar.querySelector('.vp-play'), range = bar.querySelector('input'), output = bar.querySelector('output'), note = bar.querySelector('.vp-note');
     const notes = ['Tipo · colores actuales del visor.', 'Tiempo · sin datos de visualización temporal vinculados.', 'Carga · sin datos de coloración por carga vinculados.', 'Daño · sin capa de daño disponible.', 'Frag. · sin capa de fragmentación disponible.'];
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    range.setAttribute('aria-label', 'Avance ilustrativo en porcentaje; no representa tiempo físico');
+    bar.querySelectorAll('[data-vp-mode]').forEach(button => {
+        button.title = notes[Number(button.dataset.vpMode)];
+        button.setAttribute('aria-describedby', 'visual-playback-note');
+    });
+    note.id = 'visual-playback-note';
     let frame = 0, progress = 0, last = 0, running = false, mode = 0;
     function show() { window.MineCADAnimation?.setProgress(progress); range.value = String(Math.floor(progress)); output.value = Math.floor(progress) + ' %'; range.setAttribute('aria-valuetext', Math.floor(progress) + ' por ciento, animación ilustrativa'); }
     function stop() { running = false; cancelAnimationFrame(frame); play.textContent = progress >= 100 ? '↻ Repetir' : progress > 0 ? '▶ Reanudar' : '▶ Simular'; play.setAttribute('aria-label', progress >= 100 ? 'Repetir animación ilustrativa' : progress > 0 ? 'Reanudar animación ilustrativa' : 'Simular animación ilustrativa'); }
@@ -36,6 +44,9 @@
         frame = requestAnimationFrame(tick); }
     play.addEventListener('click', () => { if (running) {
         stop();
+        return;
+    } if (reducedMotion.matches) {
+        note.textContent = 'Movimiento reducido activo. Usa la barra de avance para revisar la ilustración sin reproducción automática.';
         return;
     } if (progress >= 100)
         progress = 0; show(); running = true; last = 0; play.textContent = 'Ⅱ Pausar'; play.setAttribute('aria-label', 'Pausar animación ilustrativa'); note.textContent = notes[mode] + ' Animación visual de sección y fragmentos; sin predicción física.'; frame = requestAnimationFrame(tick); });
@@ -51,5 +62,11 @@
     document.addEventListener('visibilitychange', () => { if (document.hidden)
         stop(); });
     window.addEventListener('pagehide', stop);
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && running) { stop(); note.textContent = notes[mode] + ' Animación pausada.'; }
+    });
+    reducedMotion.addEventListener('change', e => {
+        if (e.matches) { stop(); note.textContent = 'Movimiento reducido activo. Usa la barra de avance.'; }
+    });
     show();
 })();
