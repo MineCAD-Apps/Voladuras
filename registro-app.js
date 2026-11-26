@@ -419,7 +419,7 @@ try {
                     }
                     catch (error) { return { state: 'error', source: SRC, message: 'No se pudieron leer los datos capturados: ' + error.message }; }
                 }
-                window.MineCADLayerData = Object.freeze({ get: layerData });
+                window.MineCADLayerData = Object.freeze({ get: layerData, rings() { try { return Do(ae).map(x => x.index); } catch { return []; } } });
                 const _rm = refreshMods;
                 refreshMods = function () { _rm.apply(this, arguments); document.dispatchEvent(new CustomEvent('minecad:datos')); };
             }

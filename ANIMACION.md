@@ -26,3 +26,14 @@ Los modos Tiempo y Carga leen lo que el usuario ya ingresó en «Tiempos y secue
 ## Posición de las piezas decorativas (26 nov 2026)
 
 El visor 3D entrega a la capa decorativa las posiciones longitudinales ya existentes de los anillos mostrados (todos, o solo la sección elegida) mediante `shownRingPositions()`. Las piezas se reparten sobre esos anillos en lugar de la zona central fija (35–57 % del bloque). Si no hay anillos que mostrar, se conserva la zona central de antes. Sigue siendo ilustración: todas las piezas siguen el mismo avance, sin orden de iniciación ni cálculo.
+
+## Modos Tiempo, Carga, Daño y Frag. (26 nov 2026)
+
+- **Tiempo:** color por inicio nominal capturado (rampa de 0 ms al máximo, con escala en la leyenda). Al avanzar la barra, los anillos alcanzados se encienden, los demás se atenúan y el recién alcanzado destella.
+- **Carga:** color por agente de columna capturado. Si se carga un archivo externo de cantidades, se dibuja con rampa de valores.
+- **Daño y Frag.:** sin datos hasta que se carguen resultados externos. La herramienta no los calcula.
+- Botones «Cargar resultados (JSON)…», «Plantilla» (anillos actuales con valores vacíos) y «Quitar resultados».
+- Formato: `{"layers":[{"schema":"minecad-capa/1","mode":"dano|frag|carga","label":"…","unit":"…","source":"…","rings":{"1":valor|null,"2":…}}]}`. `label`, `unit` y `source` son obligatorios; la procedencia queda visible en la leyenda. Los números de anillo van de 1 al total actual. `null` = sin dato (gris), no cero.
+- Con resultados externos, el orden de aparición usa el inicio capturado si existe; si no, el orden numérico de las secciones, solo ilustrativo.
+- Los resultados cargados viven en memoria: se pierden al recargar la página.
+- Pendiente: la sección 2D todavía no se colorea por modo, y con una sección individual elegida el 3D conserva su resaltado de sección.

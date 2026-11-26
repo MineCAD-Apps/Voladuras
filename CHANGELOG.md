@@ -4,6 +4,7 @@
 
 - Los modos Tiempo y Carga del visor muestran los datos capturados en «Tiempos y secuencia» y «Explosivo y carga» (3D con todos los anillos), con leyenda y procedencia. Sin datos: se conserva el dibujo y el aviso.
 - El efecto decorativo 3D se reparte sobre los anillos mostrados o la sección elegida, en lugar de la zona central fija.
+- Tiempo con rampa de color, escala y destello; carga de resultados externos (JSON) para Daño, Frag. y cantidad de Carga, con plantilla y procedencia visible.
 - Nuevo adaptador de solo lectura `MineCADLayerData` y evento `minecad:datos`. No se añaden cálculos de carga, secuencia, daño ni fragmentación.
 
 ## Organización web del 25 de noviembre de 2026
