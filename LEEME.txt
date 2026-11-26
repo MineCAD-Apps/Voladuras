@@ -1,24 +1,27 @@
-MINECAD — NIVELES OPCIONALES
-26/11/2026. Base: main f6bba61 de MineCAD-Apps/Voladuras.
+VENTANA DE CAPTURA — CALCULAR BORDO Y ESPACIAMIENTO
+Base: main b19030c de MineCAD-Apps/Voladuras.
 
 INSTALACIÓN
-Copiar el contenido del ZIP sobre la raíz de la aplicación web conservando la carpeta docs/.
-Modificados: registro-app.js, registro-3d.js y registro.css.
-Actualizado: docs/MANIFIESTO.json.
-No requiere borrar archivos ni modificar las bibliotecas.
+Copiar el contenido del ZIP sobre la raíz de la aplicación web conservando docs/ y tools/.
+Se actualiza index.html para cargar dos archivos nuevos: registro-calculo-formato.js y registro-calculo-formato.css.
+Se actualizan el verificador y el manifiesto. No sustituir registro-app.js, registro-3d.js ni el código de animación.
 
-FUNCIONAMIENTO
-Cada obra tiene su propia casilla «Existe este nivel» dentro de Bloque y niveles.
-Al desmarcarla se desactivan sus controles de dimensiones y se retira su perfil y sus etiquetas de sección 2D y modelo 3D. Las medidas se conservan para restaurar la obra y como referencias geométricas del bloque.
-Si no existen ambos niveles, el alto se describe como referencia del bloque en vez de distancia piso a piso.
-Un nivel inexistente queda desactivado como nueva elección de origen. Si ya era el origen capturado, se conserva ese dato y se muestra un aviso; la planta no dibuja una galería inexistente.
-Las banderas lower.exists y upper.exists se guardan con el proyecto. Los JSON anteriores que no las incluyen se abren con ambas en true.
+UBICACIÓN
+En Perforación · registro de anillos, abrir el botón «Calcular bordo y espaciamiento».
+
+FORMATO
+Ventana modal con tabla de tres casos comparables, campos de captura, áreas de presentación de bordo y espaciamiento y observaciones.
+El diámetro usa mm para conservar el criterio de MineCAD. No se realizan conversiones desde las unidades del Excel.
+Solo se adaptaron los campos pertinentes al formato solicitado. No se importan valores, tablas de factores o fórmulas de la plantilla.
+Cerrar conserva los campos mientras la página permanezca abierta. Recargar la página los descarta.
+«Limpiar campos» vacía la captura de esta ventana. No modifica los datos del proyecto.
+El cierre funciona con el botón, la cruz y Escape, devolviendo el foco al botón de apertura.
 
 ALCANCE
-Esta actualización cambia la existencia y representación de las obras. Conserva las funciones actuales de geometría y las cotas de referencia: no redefine automáticamente extremos de barrenos ni referencias de los efectos decorativos.
-No se añadió la barrera solicitada ligada a la primera línea sin detonar ni se modificaron la animación de fragmentos, tiempos o secuencias.
+Formato sin cálculo enlazado. Las áreas de resultados permanecen sin valores.
+El TXT adjunto documenta los cálculos excluidos sin transcribir fórmulas ni instrucciones de enlace.
 
-VERIFICACIÓN
-Pruebas en navegador de las cuatro combinaciones de existencia, perfiles y etiquetas 2D/3D, campos desactivados, opciones de origen, aviso de planta, restauración, exportación de banderas y apertura de proyectos anteriores. Sin errores JS. Sintaxis, rutas e integridad verificadas.
-
-Son cambios locales: no publicados desde esta sesión.
+VERIFICADO
+Escritorio y vista compacta: 15 comprobaciones de apertura, cierre, foco, Escape, captura, limpieza, independencia del diseño y reconstrucción del botón. Capturas revisadas visualmente.
+Sintaxis, rutas e integridad verificadas.
+Cambios locales: no publicados desde esta sesión.

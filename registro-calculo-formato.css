@@ -1,0 +1,42 @@
+#open-spacing-capture{display:block;width:100%;margin:8px 0;padding:7px 9px;border-color:#598bb1;color:#c9ecff;text-align:left;font-size:11px}
+#spacing-capture-dialog{box-sizing:border-box;width:min(940px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:0;border:1px solid #496780;border-radius:9px;background:#102234;color:#dcebf5;box-shadow:0 18px 70px #0009;font:11px/1.4 'Segoe UI',Arial,sans-serif;overflow:auto;color-scheme:dark}
+#spacing-capture-dialog::backdrop{background:#040d18b8}
+#spacing-capture-form{margin:0}
+#spacing-capture-dialog .sc-header{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 17px;background:#163149;border-bottom:1px solid #36546d}
+#spacing-capture-dialog .sc-kicker{color:#8fcdf1;font-size:10px;letter-spacing:1px}
+#spacing-capture-dialog h2{margin:3px 0 0;font-size:16px;font-weight:600}
+#spacing-capture-dialog button{font:inherit;padding:6px 12px}
+#spacing-capture-dialog .sc-close{padding:0;width:28px;height:28px;font-size:23px;line-height:1}
+#spacing-capture-dialog .sc-body{padding:14px 17px}
+#spacing-capture-dialog p{margin:0 0 10px}
+#spacing-capture-dialog .sc-notice{padding:8px 10px;border-left:3px solid #d9b064;background:#d9b0640d;color:#e7c88c}
+#spacing-capture-dialog h3{margin:17px 0 9px;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#9cd7f8}
+#spacing-capture-dialog .sc-table-wrap{overflow:auto;border:1px solid #365169;border-radius:5px}
+#spacing-capture-dialog .sc-table{width:100%;min-width:640px;border-collapse:collapse;table-layout:fixed}
+#spacing-capture-dialog .sc-table th,#spacing-capture-dialog .sc-table td{padding:6px 8px;border-bottom:1px solid #294257}
+#spacing-capture-dialog .sc-table thead{background:#1c3c55}
+#spacing-capture-dialog .sc-table thead th{text-align:center;color:#e9f6ff;font-weight:600}
+#spacing-capture-dialog .sc-table th:first-child{width:31%;text-align:left}
+#spacing-capture-dialog .sc-table th:nth-child(2){width:9%}
+#spacing-capture-dialog .sc-table tbody th{font-weight:400;color:#c4d9e7}
+#spacing-capture-dialog .sc-table tr:last-child td,#spacing-capture-dialog .sc-table tr:last-child th{border-bottom:0}
+#spacing-capture-dialog .sc-unit{text-align:center;color:#8eabc1;font-size:10px}
+#spacing-capture-dialog input,#spacing-capture-dialog textarea{box-sizing:border-box;width:100%;min-width:0;border:1px solid #50677a;border-radius:4px;background:#172a3b;color:#ffe0a0;padding:6px 7px;font:inherit}
+#spacing-capture-dialog input[type=number]{text-align:right}
+#spacing-capture-dialog input::placeholder,#spacing-capture-dialog textarea::placeholder{color:#819bad}
+#spacing-capture-dialog :focus-visible{outline:2px solid #87d7ff;outline-offset:2px}
+#spacing-capture-dialog .sc-caption{color:#92aec1;font-size:10px;margin:7px 0 0}
+#spacing-capture-dialog .sc-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#spacing-capture-dialog .sc-results article{border:1px solid #35536c;border-radius:5px;padding:10px;background:#0c1c2b}
+#spacing-capture-dialog h4{margin:0 0 9px;color:#b0d9ed;font-size:11px;font-weight:600}
+#spacing-capture-dialog dl{margin:0}
+#spacing-capture-dialog dl div{display:flex;justify-content:space-between;gap:8px;margin:4px 0}
+#spacing-capture-dialog dt span{color:#86a2b7;font-size:10px}
+#spacing-capture-dialog dd{margin:0;color:#d9c69d;font-size:14px}
+#spacing-capture-dialog .sc-results p{margin:9px 0 0;color:#8fa5b5;font-size:10px}
+#spacing-capture-dialog .sc-notes{display:block;margin-top:15px;color:#aac3d4}
+#spacing-capture-dialog textarea{display:block;margin-top:5px;resize:vertical}
+#spacing-capture-dialog .sc-footer{position:sticky;bottom:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#142c41;padding:10px 17px;border-top:1px solid #36546d}
+#spacing-capture-dialog .sc-status{flex:1;color:#99bbcf;font-size:10px}
+#spacing-capture-dialog .sc-done{border-color:#5c92b4;background:#20506b}
+@media(max-width:600px){#spacing-capture-dialog .sc-body{padding:10px}#spacing-capture-dialog .sc-header{padding:10px}#spacing-capture-dialog h2{font-size:14px}#spacing-capture-dialog .sc-results{grid-template-columns:1fr}#spacing-capture-dialog .sc-footer{padding:8px 10px}}
