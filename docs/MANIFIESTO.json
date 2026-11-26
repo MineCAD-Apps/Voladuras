@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "source": "Base main b19030c; ventana de formato y captura sin cálculo de bordo o espaciamiento",
+  "source": "Base main 0f05a11; mejoras de captura independiente sin adaptador de cálculo",
   "files": [
     {
       "path": ".nojekyll",
@@ -84,13 +84,13 @@
     },
     {
       "path": "registro-calculo-formato.css",
-      "bytes": 4245,
-      "sha256": "151eea092583c4822fab694cd378a8e5a0c3a83e545bb50ab3699524b350ae8e"
+      "bytes": 4717,
+      "sha256": "d6d9a37b1893ec84b48395246b4bfbbec20082fb6edde00fd7cc8978217a6e27"
     },
     {
       "path": "registro-calculo-formato.js",
-      "bytes": 6084,
-      "sha256": "4fb91e1030a3c24d14bde3675e83eac64bd98ee60096c993b1fb1017560d831e"
+      "bytes": 13928,
+      "sha256": "767cce974bb7016f7e2fb3d83a8986834c68dec3d5627efc883068f7667b7b79"
     },
     {
       "path": "registro-controles.js",
