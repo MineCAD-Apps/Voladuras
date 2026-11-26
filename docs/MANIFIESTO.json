@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "source": "Base main f6bba61; opciones de existencia y representación de obras",
+  "source": "Base main b19030c; ventana de formato y captura sin cálculo de bordo o espaciamiento",
   "files": [
     {
       "path": ".nojekyll",
@@ -8,49 +8,9 @@
       "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
     },
     {
-      "path": "index.html",
-      "bytes": 699,
-      "sha256": "d6260c4201b8d6355dd1a4ddaa82f12927c7bb8eb9a8628138d292b99a770440"
-    },
-    {
-      "path": "registro-app.js",
-      "bytes": 81010,
-      "sha256": "bca57b24f50c1ed8909098e57712d997b40569f952aefb388fa56eaa6d33a8ec"
-    },
-    {
-      "path": "registro-3d.js",
-      "bytes": 12993,
-      "sha256": "44683effae34ab14716894010604ceb2e970306ecd5479a8f8006ba715a352c1"
-    },
-    {
-      "path": "registro-controles.js",
-      "bytes": 21120,
-      "sha256": "274b320848f64b129827e955437a48634a54ced12c3fcd773f3101fdf28d1176"
-    },
-    {
-      "path": "registro-aspecto.js",
-      "bytes": 15220,
-      "sha256": "a7422b32861e4d2c9744c38c2485428177dd2e2cbeb19114c3c8e061ff83c8be"
-    },
-    {
       "path": "animacion-visual.js",
       "bytes": 21460,
       "sha256": "01b3630d939609742267c97831b83080e77d902b1664328706b4f293a9191005"
-    },
-    {
-      "path": "registro.css",
-      "bytes": 11281,
-      "sha256": "4bb70bb375c23a8dd75becf6d8977e8346da7a1ee39e7177e94f57d1fa46db48"
-    },
-    {
-      "path": "logo-minecad.png",
-      "bytes": 62651,
-      "sha256": "77849b8f864259b099151f570483741e4f00173f69cd1e9763531f39865c1e47"
-    },
-    {
-      "path": "README.md",
-      "bytes": 3671,
-      "sha256": "1c20aba0ab5f25c4b0e1ff49baa9ac208d9ec63e59a784a13f08906efa965823"
     },
     {
       "path": "ANIMACION.md",
@@ -61,31 +21,6 @@
       "path": "CHANGELOG.md",
       "bytes": 2506,
       "sha256": "2fcad5ff6fafba680f8604aa8296053159f35b27cd945696428985ad2d4089f7"
-    },
-    {
-      "path": "vendor/three-vendor.js",
-      "bytes": 560123,
-      "sha256": "9b8d9ee4a00ca7c351693c5775ae2106f251f5501b22fa7ea4f750ef37eae425"
-    },
-    {
-      "path": "vendor/THREE-LICENSE.txt",
-      "bytes": 1102,
-      "sha256": "df2a91696186fe58c92518a25d48bc59c8ee2edc7cac9ca6d19a5a0d599a2a05"
-    },
-    {
-      "path": "tools/verify.mjs",
-      "bytes": 1544,
-      "sha256": "8bfe66f85204f125dc0e444dce0c796c535bfbc7067d2cc1cca7b6c4823dd735"
-    },
-    {
-      "path": "integraciones/panel-externo.html",
-      "bytes": 5226,
-      "sha256": "8f9f06ba987bd6f8bea3e6f7752ac1dbecd16f074656348aa8d3d12615c92666"
-    },
-    {
-      "path": "integraciones/minecad-tema.user.js",
-      "bytes": 4448,
-      "sha256": "0e29fccac716265015935d87e7dbef0b946380550a452cc2e4525d09e7d8e2fb"
     },
     {
       "path": "docs/ARCHIVOS.md",
@@ -103,9 +38,84 @@
       "sha256": "2ff57f43259d10f77f54a23b4b42870f504cfd04384a3d659f86b511f121f3f1"
     },
     {
+      "path": "index.html",
+      "bytes": 813,
+      "sha256": "e9812965ac1d5dcf61577c4ba72dd2102ae044084692b10e531386588e271e84"
+    },
+    {
+      "path": "integraciones/minecad-tema.user.js",
+      "bytes": 4448,
+      "sha256": "0e29fccac716265015935d87e7dbef0b946380550a452cc2e4525d09e7d8e2fb"
+    },
+    {
+      "path": "integraciones/panel-externo.html",
+      "bytes": 5226,
+      "sha256": "8f9f06ba987bd6f8bea3e6f7752ac1dbecd16f074656348aa8d3d12615c92666"
+    },
+    {
       "path": "LEEME-PRIMERO.txt",
       "bytes": 2307,
       "sha256": "ef53c64a00b60e174f00d478f1cb22d67c50d603217690301e8bcd524861135b"
+    },
+    {
+      "path": "logo-minecad.png",
+      "bytes": 62651,
+      "sha256": "77849b8f864259b099151f570483741e4f00173f69cd1e9763531f39865c1e47"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3671,
+      "sha256": "1c20aba0ab5f25c4b0e1ff49baa9ac208d9ec63e59a784a13f08906efa965823"
+    },
+    {
+      "path": "registro-3d.js",
+      "bytes": 13148,
+      "sha256": "d11f157d982b6ec41d51ce430c39bea44fed6516123180182070f1238f5630b3"
+    },
+    {
+      "path": "registro-app.js",
+      "bytes": 81500,
+      "sha256": "c8620f195f0efca2a8845424c0be6d4c74bb9d46c70c6de17b842ba266180527"
+    },
+    {
+      "path": "registro-aspecto.js",
+      "bytes": 15220,
+      "sha256": "a7422b32861e4d2c9744c38c2485428177dd2e2cbeb19114c3c8e061ff83c8be"
+    },
+    {
+      "path": "registro-calculo-formato.css",
+      "bytes": 4245,
+      "sha256": "151eea092583c4822fab694cd378a8e5a0c3a83e545bb50ab3699524b350ae8e"
+    },
+    {
+      "path": "registro-calculo-formato.js",
+      "bytes": 6084,
+      "sha256": "4fb91e1030a3c24d14bde3675e83eac64bd98ee60096c993b1fb1017560d831e"
+    },
+    {
+      "path": "registro-controles.js",
+      "bytes": 21120,
+      "sha256": "274b320848f64b129827e955437a48634a54ced12c3fcd773f3101fdf28d1176"
+    },
+    {
+      "path": "registro.css",
+      "bytes": 11281,
+      "sha256": "4bb70bb375c23a8dd75becf6d8977e8346da7a1ee39e7177e94f57d1fa46db48"
+    },
+    {
+      "path": "tools/verify.mjs",
+      "bytes": 1574,
+      "sha256": "d0b65df5e0bf7ccafdf0a0edb6512e9af26e8edb10284bed912fc1bc55c7d77d"
+    },
+    {
+      "path": "vendor/THREE-LICENSE.txt",
+      "bytes": 1102,
+      "sha256": "df2a91696186fe58c92518a25d48bc59c8ee2edc7cac9ca6d19a5a0d599a2a05"
+    },
+    {
+      "path": "vendor/three-vendor.js",
+      "bytes": 560123,
+      "sha256": "9b8d9ee4a00ca7c351693c5775ae2106f251f5501b22fa7ea4f750ef37eae425"
     }
   ]
 }
