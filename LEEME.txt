@@ -1,27 +1,12 @@
-VENTANA DE CAPTURA — CALCULAR BORDO Y ESPACIAMIENTO
-Base: main b19030c de MineCAD-Apps/Voladuras.
+ACTUALIZACIÓN DE CAPTURA — MINECAD
+Base del repositorio: main 0f05a11.
 
-INSTALACIÓN
-Copiar el contenido del ZIP sobre la raíz de la aplicación web conservando docs/ y tools/.
-Se actualiza index.html para cargar dos archivos nuevos: registro-calculo-formato.js y registro-calculo-formato.css.
-Se actualizan el verificador y el manifiesto. No sustituir registro-app.js, registro-3d.js ni el código de animación.
+Copiar el contenido del ZIP sobre la raíz de la aplicación web conservando docs/.
+Solo se sustituyen registro-calculo-formato.js, registro-calculo-formato.css y docs/MANIFIESTO.json. index.html ya carga estos archivos.
 
-UBICACIÓN
-En Perforación · registro de anillos, abrir el botón «Calcular bordo y espaciamiento».
+Incluye precarga limitada al Caso 1, guardado en el navegador, exportación e importación de captura JSON y validación de formato.
+No incluye adaptador ni archivo de cálculo externo. Los resultados siguen sin cálculo enlazado.
+La documentación adjunta corresponde a los datos de captura, no a un contrato de motor de cálculo.
 
-FORMATO
-Ventana modal con tabla de tres casos comparables, campos de captura, áreas de presentación de bordo y espaciamiento y observaciones.
-El diámetro usa mm para conservar el criterio de MineCAD. No se realizan conversiones desde las unidades del Excel.
-Solo se adaptaron los campos pertinentes al formato solicitado. No se importan valores, tablas de factores o fórmulas de la plantilla.
-Cerrar conserva los campos mientras la página permanezca abierta. Recargar la página los descarta.
-«Limpiar campos» vacía la captura de esta ventana. No modifica los datos del proyecto.
-El cierre funciona con el botón, la cruz y Escape, devolviendo el foco al botón de apertura.
-
-ALCANCE
-Formato sin cálculo enlazado. Las áreas de resultados permanecen sin valores.
-El TXT adjunto documenta los cálculos excluidos sin transcribir fórmulas ni instrucciones de enlace.
-
-VERIFICADO
-Escritorio y vista compacta: 15 comprobaciones de apertura, cierre, foco, Escape, captura, limpieza, independencia del diseño y reconstrucción del botón. Capturas revisadas visualmente.
-Sintaxis, rutas e integridad verificadas.
-Cambios locales: no publicados desde esta sesión.
+Comprobado en Chrome y con recarga del navegador. Sintaxis, rutas e integridad verificadas.
+No está publicado desde esta sesión.

@@ -10,6 +10,10 @@
 #spacing-capture-dialog .sc-body{padding:14px 17px}
 #spacing-capture-dialog p{margin:0 0 10px}
 #spacing-capture-dialog .sc-notice{padding:8px 10px;border-left:3px solid #d9b064;background:#d9b0640d;color:#e7c88c}
+#spacing-capture-dialog .sc-actions{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+#spacing-capture-dialog .sc-file[hidden],#spacing-capture-dialog .sc-validation[hidden]{display:none}
+#spacing-capture-dialog .sc-validation{border:1px solid #b96666;background:#71353530;color:#ffc7c7;border-radius:4px;padding:8px;margin-top:10px}
+#spacing-capture-dialog input[aria-invalid=true]{border-color:#e99292;background:#56292950}
 #spacing-capture-dialog h3{margin:17px 0 9px;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#9cd7f8}
 #spacing-capture-dialog .sc-table-wrap{overflow:auto;border:1px solid #365169;border-radius:5px}
 #spacing-capture-dialog .sc-table{width:100%;min-width:640px;border-collapse:collapse;table-layout:fixed}

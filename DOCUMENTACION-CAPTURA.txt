@@ -1,0 +1,53 @@
+DOCUMENTACIÓN DEL FORMATO DE CAPTURA MINECAD
+26/11/2026
+
+ALCANCE
+Este documento describe únicamente la captura, su persistencia y su intercambio como datos. No define una interfaz para un motor de cálculo, funciones de registro, ecuaciones ni instrucciones para enlazar cálculos operativos de voladura.
+No se creó registro-calculo-modulo.js. Los resultados de bordo y espaciamiento permanecen sin cálculo enlazado.
+
+ARCHIVOS
+registro-calculo-formato.js: ventana, captura, validación de formato, persistencia e intercambio JSON.
+registro-calculo-formato.css: presentación de la ventana.
+Los archivos de geometría, animación y captura del proyecto no se modificaron en esta actualización.
+
+PRECARGA
+Al abrir por primera vez sin un borrador guardado, se copian al Caso 1 el diámetro del barreno y la altura de referencia del bloque que ya estén capturados en la pantalla principal. Solo se llenan campos vacíos.
+El botón Precargar Caso 1 permite repetir esa operación. No sobrescribe valores capturados, incluido cero, ni completa los otros casos. No copia densidades ni aplica conversiones o criterios de diseño.
+
+PERSISTENCIA
+Clave de localStorage: minecad-captura-bordo-v1.
+La captura es independiente del proyecto. Hay un borrador de esta ventana por navegador y origen web, no uno por cada proyecto JSON de MineCAD.
+Se guarda al editar, cerrar, precargar e importar cuando el formato es válido.
+Si los datos son inválidos, no se sobrescribe la última captura válida y la ventana muestra qué campos requieren revisión.
+Si el navegador impide guardar, se informa y puede usarse la exportación.
+Limpiar campos guarda una captura vacía. Borrar el almacenamiento del navegador elimina el borrador.
+
+FORMATO JSON DE CAPTURA
+Objeto con exactamente estas propiedades:
+- schema: texto fijo minecad-captura/1.
+- cases: lista de exactamente tres registros, identificados mediante id 1, 2 y 3.
+- observations: texto de hasta 2000 caracteres.
+
+Cada registro contiene id y estos campos de captura:
+diameter: número o null, mm.
+explosiveDensity: número o null, g/cm³.
+rockDensity: número o null, g/cm³.
+height: número o null, m.
+rows: entero no negativo o null.
+deposit: texto de hasta 160 caracteres.
+structure: texto de hasta 160 caracteres.
+competence: texto de hasta 160 caracteres.
+adoptedBurden: número o null, m; captura manual opcional.
+
+Un campo numérico vacío se conserva como null. Cero se conserva como número 0. Un texto vacío se conserva como cadena vacía. No se aceptan valores numéricos infinitos, negativos ni campos desconocidos.
+Estas son comprobaciones de formato. No validan idoneidad minera ni constituyen recomendaciones de diseño.
+El archivo no contiene resultados calculados, fórmulas ni código ejecutable. No es una firma de entrada/salida de una función de cálculo.
+
+EXPORTACIÓN E IMPORTACIÓN
+Exportar captura descarga minecad-captura-bordo.json. La exportación se detiene si el formato es inválido.
+Importar captura valida íntegramente un archivo antes de sustituir la captura actual. Se rechazan archivos de más de 512000 bytes, esquemas incompatibles, casos duplicados, campos desconocidos y tipos inválidos. Un archivo rechazado no borra la captura existente.
+La importación y la exportación no modifican los parámetros ni el JSON del diseño principal.
+
+COMPROBACIONES
+Navegador: precarga, no sobrescritura, distinción vacío/cero, validación de enteros y negativos, conservación de última captura válida, exportación e importación, rechazo sin pérdida de datos, cierre y reapertura, recuperación después de recargar y presentación compacta. Sin resultados numéricos generados ni errores JavaScript.
+No se implementaron ni probaron ecuaciones o lógica de diseño de voladura.
