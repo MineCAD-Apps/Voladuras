@@ -52,3 +52,13 @@ El visor 3D entrega a la capa decorativa las posiciones longitudinales ya existe
 - Cada fragmento 3D se aproxima con una esfera y se apoya en el piso o sobre los anteriores; rueda si la pendiente supera unos 37°. No calcula volumen, esponjamiento ni forma real de la rezaga.
 - Máximo aproximado de 4,000 fragmentos (mínimo 12 por línea). Con muchas líneas se reducen de tamaño para que la pila quepa en la obra inferior.
 - Daño: cada zona aparece desde el inicio de su barreno.
+
+## Roca sin detonar, volumen por línea y obras huecas (26 nov 2026)
+
+- **Roca sin detonar:** en el 3D, el material de una línea no pasa del punto medio entre la última línea detonada y la siguiente sin detonar (el límite de cada losa). La losa de cada línea va del punto medio con la anterior al punto medio con la siguiente; al detonar una línea se abre su losa y las contiguas ya detonadas. Con una selección parcial, las líneas ocultas cuentan como sin detonar. Sin secuencia capturada se asume que todas detonan a la vez.
+- **Talud:** solo dentro del hueco de la obra inferior el material corre hacia el lado sin detonar y se acomoda con el mismo reposo ilustrativo (unos 37°). Sobre la corona la caída y el reposo quedan dentro de la roca ya abierta.
+- **Cantidad de material:** cada línea recibe fragmentos en proporción a su volumen = ancho × alto de la sección con roca × espesor de su losa (espaciamiento entre líneas; las líneas de los extremos tienen media losa, o el bordo capturado si solo hay una). La densidad ilustrativa es de 12 fragmentos/m³; si el diseño pide más de 4,000 se reduce por igual para todas las líneas, conservando la proporción. El tamaño de cada pieza sale del volumen que representa. Se eliminó la reducción de tamaño que ajustaba la pila a la obra inferior: ahora la pila crece sobre la corona si el volumen lo pide (sin esponjamiento).
+- **Obras huecas:** el área de la sección y el origen de los fragmentos excluyen los polígonos de las obras inferior y superior. En 2D, una máscara deja fuera el hueco de la textura y del resplandor; la cantidad de piezas en 2D sigue el mismo volumen (área × bordo × líneas mostradas, 1.5 piezas/m³).
+- Datos nuevos: `MineCADLayerData.burden()` (bordo capturado, solo lectura), polígonos ocultos `data-drift` en la sección 2D y un tercer parámetro de `setGeometry` con todos los anillos, la obra superior y el bordo.
+- Sigue siendo ilustración: no calcula esponjamiento, fragmentación real ni empuje de la roca; el reposo y las densidades son valores gráficos.
+- Pruebas: Chromium con WebGL por software, 1, 4 y 21 líneas, con y sin tiempos; sin errores de consola. Ningún fragmento reposa sobre la corona fuera de su tramo de roca abierta (0 de 1,818 en el diseño de 21 líneas); la vista 2D no cubre los huecos.

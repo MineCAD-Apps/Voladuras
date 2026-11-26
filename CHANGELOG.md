@@ -1,5 +1,11 @@
 # Cambios
 
+## Roca sin detonar y volumen por línea (26 nov 2026)
+
+- La roca sin detonar frena el material: no pasa del punto medio entre la última línea detonada y la siguiente; solo dentro de la obra inferior corre hacia ese lado y forma talud.
+- La cantidad de fragmentos por línea sigue el volumen (ancho × alto de la sección × espaciamiento entre líneas).
+- Las obras superior e inferior se tratan como huecos: no se genera material dentro de ellas (3D y 2D).
+
 ## Acumulación de material y daño por secuencia (25 nov 2026)
 
 - Los fragmentos 3D se apilan en la obra inferior sin ocupar el mismo lugar (acomodo geométrico, no simulación física).
