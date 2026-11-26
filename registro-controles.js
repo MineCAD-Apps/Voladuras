@@ -18,14 +18,14 @@
     document.head.append(style);
     const bar = document.createElement('section');
     bar.id = 'visual-playback';
-    bar.setAttribute('aria-label', 'Apariencia y vista previa de simulación');
-    bar.innerHTML = `<div class="vp-modes" role="group" aria-label="Colorear visualización por">${['Tipo', 'Tiempo', 'Carga', 'Daño', 'Frag.'].map((x, i) => `<button type="button" data-vp-mode="${i}" aria-pressed="${i === 0}">${x}</button>`).join('')}</div><div class="vp-clock"><button type="button" class="vp-play" aria-label="Simular vista previa de interfaz">▶ Simular</button><button type="button" class="vp-reset" aria-label="Reiniciar vista previa" title="Reiniciar">↺</button><input type="range" min="0" max="100" step="1" value="0" aria-label="Avance de la vista previa"><output>0 %</output></div><div class="vp-note" role="status" aria-live="polite">Tipo · colores actuales del visor. Simular: vista previa de interfaz.</div>`;
+    bar.setAttribute('aria-label', 'Apariencia y animación ilustrativa');
+    bar.innerHTML = `<div class="vp-modes" role="group" aria-label="Colorear visualización por">${['Tipo', 'Tiempo', 'Carga', 'Daño', 'Frag.'].map((x, i) => `<button type="button" data-vp-mode="${i}" aria-pressed="${i === 0}">${x}</button>`).join('')}</div><div class="vp-clock"><button type="button" class="vp-play" aria-label="Simular animación ilustrativa">▶ Simular</button><button type="button" class="vp-reset" aria-label="Reiniciar vista previa" title="Reiniciar">↺</button><input type="range" min="0" max="100" step="1" value="0" aria-label="Avance de la vista previa"><output>0 %</output></div><div class="vp-note" role="status" aria-live="polite">Tipo · colores actuales del visor. Simular: animación ilustrativa.</div>`;
     workspace.insertBefore(bar, scene);
     const play = bar.querySelector('.vp-play'), range = bar.querySelector('input'), output = bar.querySelector('output'), note = bar.querySelector('.vp-note');
     const notes = ['Tipo · colores actuales del visor.', 'Tiempo · sin datos de visualización temporal vinculados.', 'Carga · sin datos de coloración por carga vinculados.', 'Daño · sin capa de daño disponible.', 'Frag. · sin capa de fragmentación disponible.'];
     let frame = 0, progress = 0, last = 0, running = false, mode = 0;
-    function show() { range.value = String(Math.round(progress)); output.value = Math.round(progress) + ' %'; range.setAttribute('aria-valuetext', Math.round(progress) + ' por ciento, vista previa de interfaz'); }
-    function stop() { running = false; cancelAnimationFrame(frame); play.textContent = progress >= 100 ? '↻ Repetir' : progress > 0 ? '▶ Reanudar' : '▶ Simular'; play.setAttribute('aria-label', progress >= 100 ? 'Repetir vista previa de interfaz' : progress > 0 ? 'Reanudar vista previa de interfaz' : 'Simular vista previa de interfaz'); }
+    function show() { window.MineCADAnimation?.setProgress(progress); range.value = String(Math.floor(progress)); output.value = Math.floor(progress) + ' %'; range.setAttribute('aria-valuetext', Math.floor(progress) + ' por ciento, animación ilustrativa'); }
+    function stop() { running = false; cancelAnimationFrame(frame); play.textContent = progress >= 100 ? '↻ Repetir' : progress > 0 ? '▶ Reanudar' : '▶ Simular'; play.setAttribute('aria-label', progress >= 100 ? 'Repetir animación ilustrativa' : progress > 0 ? 'Reanudar animación ilustrativa' : 'Simular animación ilustrativa'); }
     function tick(now) { if (!running)
         return; if (last)
         progress = Math.min(100, progress + (now - last) / 80); last = now; show(); if (progress >= 100) {
@@ -38,11 +38,11 @@
         stop();
         return;
     } if (progress >= 100)
-        progress = 0; running = true; last = 0; play.textContent = 'Ⅱ Pausar'; play.setAttribute('aria-label', 'Pausar vista previa de interfaz'); note.textContent = notes[mode] + ' Vista previa de la barra; sin resultados físicos.'; frame = requestAnimationFrame(tick); });
+        progress = 0; show(); running = true; last = 0; play.textContent = 'Ⅱ Pausar'; play.setAttribute('aria-label', 'Pausar animación ilustrativa'); note.textContent = notes[mode] + ' Animación visual de sección y fragmentos; sin predicción física.'; frame = requestAnimationFrame(tick); });
     bar.querySelector('.vp-reset').addEventListener('click', () => { progress = 0; stop(); show(); note.textContent = notes[mode] + ' Vista previa restablecida.'; });
     range.addEventListener('input', () => { progress = Number(range.value); last = 0; show(); if (!running)
         stop(); });
-    bar.querySelectorAll('[data-vp-mode]').forEach(button => button.addEventListener('click', () => { mode = Number(button.dataset.vpMode); bar.querySelectorAll('[data-vp-mode]').forEach(b => b.setAttribute('aria-pressed', String(b === button))); note.textContent = notes[mode] + (mode ? ' Selección de interfaz; el dibujo conserva sus colores.' : ' Simular: vista previa de interfaz.'); }));
+    bar.querySelectorAll('[data-vp-mode]').forEach(button => button.addEventListener('click', () => { mode = Number(button.dataset.vpMode); bar.querySelectorAll('[data-vp-mode]').forEach(b => b.setAttribute('aria-pressed', String(b === button))); note.textContent = notes[mode] + (mode ? ' Selección de interfaz; el dibujo conserva sus colores.' : ' Simular: animación ilustrativa.'); }));
     document.addEventListener('click', e => { const tab = e.target.closest?.('[data-view]'); if (tab) {
         bar.hidden = tab.dataset.view === 'stability';
         if (bar.hidden)

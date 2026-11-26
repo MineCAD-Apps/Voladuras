@@ -3,9 +3,9 @@ window.MineCADCreateViewer3D = function (dependencies) {
     const { Bs, Ze, yo, It, So, tr, ir, Pn, Vt, L, ns, _i, Pt, js, Jt, ss, Js, rn, yn, zs } = window.MineCADThree;
     const { xs, zn, br, ri, __sectionActive, Bn } = dependencies;
     var wo = class {
-        constructor(e) { this.el = e, this.scene = new Bs, this.scene.background = new Ze("#0c1a29"), this.renderer = new yo({ antialias: !0, alpha: !1 }), this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2)), e.append(this.renderer.domElement), this.camera = new It(45, 1, .01, 1e4), this.controls = new So(this.camera, this.renderer.domElement), this.controls.enableDamping = !0, this.scene.add(new tr(13625599, 2571080, 2.3)); let t = new ir(16777215, 2.4); t.position.set(20, 40, 30), this.scene.add(t), this.model = new Pn, this.scene.add(this.model), this.observer = new ResizeObserver(() => this.resize()), this.observer.observe(e), this.labelLayer = document.createElement("div"), this.labelLayer.className = "scene-object-labels", this.el.append(this.labelLayer), this.visualLabels = [], this.running = !0, this.animate(); }
+        constructor(e) { this.el = e, this.scene = new Bs, this.scene.background = new Ze("#0c1a29"), this.renderer = new yo({ antialias: !0, alpha: !1 }), this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2)), e.append(this.renderer.domElement), this.camera = new It(45, 1, .01, 1e4), this.controls = new So(this.camera, this.renderer.domElement), this.controls.enableDamping = !0, this.scene.add(new tr(13625599, 2571080, 2.3)); let t = new ir(16777215, 2.4); t.position.set(20, 40, 30), this.scene.add(t), this.model = new Pn, this.scene.add(this.model), this.observer = new ResizeObserver(() => this.resize()), this.observer.observe(e), this.labelLayer = document.createElement("div"), this.labelLayer.className = "scene-object-labels", this.el.append(this.labelLayer), this.visualLabels = [], this.visualPlayback = window.MineCADAnimation?.create3D(this, window.MineCADThree), this.running = !0, this.animate(); }
         resize() { let e = this.el.clientWidth, t = this.el.clientHeight; !e || !t || (this.camera.aspect = e / t, this.camera.updateProjectionMatrix(), this.renderer.setSize(e, t, !1)); }
-        animate() { this.running && (requestAnimationFrame(() => this.animate()), this.controls.update(), this.positionLabels(), this.renderer.render(this.scene, this.camera)); }
+        animate() { this.running && (requestAnimationFrame(() => this.animate()), this.controls.update(), this.positionLabels(), this.visualPlayback?.render(), this.renderer.render(this.scene, this.camera)); }
         clear() { this.model.traverse(e => { if (e.geometry?.dispose(), e.material)
             for (let t of Array.isArray(e.material) ? e.material : [e.material])
                 t.dispose(); }), this.model.clear(); }
@@ -58,7 +58,7 @@ window.MineCADCreateViewer3D = function (dependencies) {
                 this.tubes(asSegments(all.filter(h => !__sectionActive(h))), 0x95a8b8, .28, radius * .45);
                 this.tubes(asSegments(all.filter(__sectionActive)), 0xffd966, 1, radius);
             }
-        } let a = new yn().setFromObject(this.model); a.isEmpty() && (a.min.set(-3, 0, 0), a.max.set(3, e.block.height, s)), this.box = a; let o = a.getSize(new L), l = a.getCenter(new L), c = Math.max(o.x, o.y, o.z, 1); this.camera.far = c * 100, this.camera.updateProjectionMatrix(), this.fitted || (this.fit(), this.fitted = !0), this.resize(), this.setVisualLabels(e), this.addFloorGrid(); }
+        } let a = new yn().setFromObject(this.model); a.isEmpty() && (a.min.set(-3, 0, 0), a.max.set(3, e.block.height, s)), this.box = a; let o = a.getSize(new L), l = a.getCenter(new L), c = Math.max(o.x, o.y, o.z, 1); this.camera.far = c * 100, this.camera.updateProjectionMatrix(), this.fitted || (this.fit(), this.fitted = !0), this.resize(), this.setVisualLabels(e), this.addFloorGrid(), this.visualPlayback?.setGeometry(n, zn(e, "lower"), s); }
         setVisualLabels(project) {
             this.labelLayer.replaceChildren();
             this.visualLabels = [];
@@ -118,7 +118,7 @@ window.MineCADCreateViewer3D = function (dependencies) {
             this.camera.position.copy(centre).addScaledVector(direction, high);
             this.controls.update();
         }
-        dispose() { this.running = !1, this.observer.disconnect(), this.controls.dispose(), this.clear(), this.renderer.dispose(), this.el.replaceChildren(); }
+        dispose() { this.visualPlayback?.dispose(); this.running = !1, this.observer.disconnect(), this.controls.dispose(), this.clear(), this.renderer.dispose(), this.el.replaceChildren(); }
     };
     return wo;
 };

@@ -1,0 +1,146 @@
+{
+  "date": "2026-11-25",
+  "source": "Aplicación web directa; textos normalizados a finales de línea LF para Git",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 55,
+      "sha256": "600623829b1f0b5d35d14e0ceae0ef91b9c003894b2d19e98eb53043068b7fe5"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 103,
+      "sha256": "d037f3440c29476daf9b021881d34354f194cc79863a1fb6bb3aad2c8a7e6598"
+    },
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "animacion-visual.js",
+      "bytes": 6737,
+      "sha256": "a842f7f712e75322827f95c5e1b78837ba92276dc6b35b5f5ac555fcdab9c53d"
+    },
+    {
+      "path": "ANIMACION.md",
+      "bytes": 947,
+      "sha256": "1a0512c9b8f0c54299191104255167aa92d5df6cfaf5bc3a9c3c5417d8b932a8"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 1027,
+      "sha256": "42ce60508c71ced7f1f6b02187254593fdc7ae80225bc9c62d8deeff2f666e8a"
+    },
+    {
+      "path": "docs/ARCHIVOS.md",
+      "bytes": 1868,
+      "sha256": "82fcedf3bda1b1bf7d08807adfe4ee0520750045298033c89c9a86da74043eda"
+    },
+    {
+      "path": "docs/capturas/cabecera-tema.jpg",
+      "bytes": 17442,
+      "sha256": "511172229d0dcb99601d312d030882ee3b3a63dc9d745ebf58e16b7990b14ef2"
+    },
+    {
+      "path": "docs/capturas/vista-3d.jpg",
+      "bytes": 77741,
+      "sha256": "5da6430b049b44c850b4593dc5c61a4564ec675a1caa89b83d94dabfe75a5c87"
+    },
+    {
+      "path": "docs/capturas/vista-web.jpg",
+      "bytes": 73348,
+      "sha256": "3270747f11130f08ed22403277f5a60c8caabfbb5fbcd40e989e0a8aef1edade"
+    },
+    {
+      "path": "docs/capturas/vista.jpg",
+      "bytes": 75180,
+      "sha256": "ac33718e6bb327884ec036b216517bf93f696b7224a6126a1b5a042fead52a8d"
+    },
+    {
+      "path": "docs/DEPENDENCIAS.md",
+      "bytes": 865,
+      "sha256": "b63839347af5431f33781a0719580e2f53b7eed9dc48bea5062a2125115644c4"
+    },
+    {
+      "path": "docs/referencia/Inventario-funcional.html",
+      "bytes": 13388,
+      "sha256": "f6c69771048cfeee77ef001a29f6c3a76560c774635807919ae259e92b647d94"
+    },
+    {
+      "path": "docs/referencia/Inventario-funcional.txt",
+      "bytes": 11563,
+      "sha256": "a97246f16ce8cb8090a4a92cf8b3ef58251bc292c07f263d40a0366d60b50761"
+    },
+    {
+      "path": "docs/referencia/REPORTE-PARA-OTRA-IA.txt",
+      "bytes": 19543,
+      "sha256": "fd57a8985d5f40c22f014c9cc095569ef9ca7c2582bb31b247548404a2f3ecff"
+    },
+    {
+      "path": "docs/WEB.md",
+      "bytes": 2262,
+      "sha256": "bfd4fb7a60ed4fafce0982bd39097cbad498bc9e88134fb36ecc7106d87752ae"
+    },
+    {
+      "path": "index.html",
+      "bytes": 647,
+      "sha256": "27ecd517aca195d723641d62806efe61077881a4bf98532e063446d00aa4db7c"
+    },
+    {
+      "path": "integraciones/minecad-tema.user.js",
+      "bytes": 4390,
+      "sha256": "c55b69f555e0099acfbb6cc42e0d68c7277d6b6f4b62853fdb62d738c72e37ac"
+    },
+    {
+      "path": "integraciones/panel-externo.html",
+      "bytes": 5181,
+      "sha256": "f692190a7ab2379ff281bdf1cc3c45ab605704f9bbf2991cf3b898cac3263c72"
+    },
+    {
+      "path": "logo-minecad.png",
+      "bytes": 62651,
+      "sha256": "77849b8f864259b099151f570483741e4f00173f69cd1e9763531f39865c1e47"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3600,
+      "sha256": "8dcb6520fa510ecb2fc82b66b45613976c7027eed0cf7e5e512adc584d849b32"
+    },
+    {
+      "path": "registro-3d.js",
+      "bytes": 10267,
+      "sha256": "667fc104b8d4cb9eb4c591085a79dd84ebbfa8fa26825922752863c4fd907674"
+    },
+    {
+      "path": "registro-app.js",
+      "bytes": 73059,
+      "sha256": "0ee64ea598903f3a7e18a58c415c05c0c72b499154e1e6fb16327e697d303bbc"
+    },
+    {
+      "path": "registro-controles.js",
+      "bytes": 5259,
+      "sha256": "1d4b1753aa8e8d81b14264e2b37b27b15c225f28274c0d6b76d00babe0f4fa12"
+    },
+    {
+      "path": "registro.css",
+      "bytes": 11514,
+      "sha256": "d619fa14212c0a73a3b540d488ecc53d9af440b359613db9e23cbdb19bb09055"
+    },
+    {
+      "path": "tools/verify.mjs",
+      "bytes": 1505,
+      "sha256": "ef5703f2c5fdcc239f74afa475686667590610b29701d9961340ce7ce881f257"
+    },
+    {
+      "path": "vendor/THREE-LICENSE.txt",
+      "bytes": 1081,
+      "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
+    },
+    {
+      "path": "vendor/three-vendor.js",
+      "bytes": 556164,
+      "sha256": "774e666ddf7c55ff01613e381b7133fe875042cf957e8b1cfe2ef10f6d4e9367"
+    }
+  ]
+}
