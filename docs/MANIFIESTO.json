@@ -19,18 +19,18 @@
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 7668,
-      "sha256": "2b1fbf990c5af1a261902d05dc571f46fde9f0caf4ef3abe7f0cbfee06afffda"
+      "bytes": 8182,
+      "sha256": "e46f855c27d055aff7e9e0b823dac7b61c89bd4048594f87e8d8dfd402915efc"
     },
     {
       "path": "ANIMACION.md",
-      "bytes": 2641,
-      "sha256": "feb8b63d6cae199285adf300356ef52188a018ed224d3b980c11fc933fe6d923"
+      "bytes": 3149,
+      "sha256": "afe53b22580fbb94cb56a84c72e83d9ba4462b945b1cc2f41e12613f2d85f451"
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 1423,
-      "sha256": "b8f2bdd584918f89dfb4d87ab9caf86829019f9b6fce19c03207523272b7ff7a"
+      "bytes": 1545,
+      "sha256": "86140d2e28c414e14bc164ce7f5eca5f8b972fbfb953a299945fa6671684fe7e"
     },
     {
       "path": "docs/ARCHIVOS.md",
@@ -109,8 +109,8 @@
     },
     {
       "path": "registro-3d.js",
-      "bytes": 11796,
-      "sha256": "0a55985446fc7044d33d0d452b409f05c22952ab582442a90ddb980d7e8fa9ea"
+      "bytes": 12323,
+      "sha256": "5bfd3a0faa7c1dbf00fe21e02a74f0b48ee9af69f2c71f4ea541079a0af6b1b4"
     },
     {
       "path": "registro-app.js",
