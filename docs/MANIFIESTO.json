@@ -1,11 +1,11 @@
 {
   "date": "2026-11-26",
-  "source": "Base main 0f05a11; mejoras de captura independiente sin adaptador de cálculo",
+  "source": "Metadatos del repositorio main c6f59d3 con registro-calculo-formato.js y .css aportados por el usuario. Sin validación funcional del código.",
   "files": [
     {
       "path": ".nojekyll",
-      "bytes": 2,
-      "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
     },
     {
       "path": "animacion-visual.js",
@@ -24,18 +24,18 @@
     },
     {
       "path": "docs/ARCHIVOS.md",
-      "bytes": 1895,
-      "sha256": "dbab0e4b5dddb6acc92dbbfec418e8c861d291c562dcce9610c509f60b559797"
+      "bytes": 1868,
+      "sha256": "82fcedf3bda1b1bf7d08807adfe4ee0520750045298033c89c9a86da74043eda"
     },
     {
       "path": "docs/DEPENDENCIAS.md",
-      "bytes": 880,
-      "sha256": "f93823a00e30292d20982381e1d56145c730f2ba9a21cb8c27938d6528c60b25"
+      "bytes": 865,
+      "sha256": "b63839347af5431f33781a0719580e2f53b7eed9dc48bea5062a2125115644c4"
     },
     {
       "path": "docs/WEB.md",
-      "bytes": 2287,
-      "sha256": "2ff57f43259d10f77f54a23b4b42870f504cfd04384a3d659f86b511f121f3f1"
+      "bytes": 2262,
+      "sha256": "bfd4fb7a60ed4fafce0982bd39097cbad498bc9e88134fb36ecc7106d87752ae"
     },
     {
       "path": "index.html",
@@ -44,18 +44,18 @@
     },
     {
       "path": "integraciones/minecad-tema.user.js",
-      "bytes": 4448,
-      "sha256": "0e29fccac716265015935d87e7dbef0b946380550a452cc2e4525d09e7d8e2fb"
+      "bytes": 4390,
+      "sha256": "c55b69f555e0099acfbb6cc42e0d68c7277d6b6f4b62853fdb62d738c72e37ac"
     },
     {
       "path": "integraciones/panel-externo.html",
-      "bytes": 5226,
-      "sha256": "8f9f06ba987bd6f8bea3e6f7752ac1dbecd16f074656348aa8d3d12615c92666"
+      "bytes": 5181,
+      "sha256": "f692190a7ab2379ff281bdf1cc3c45ab605704f9bbf2991cf3b898cac3263c72"
     },
     {
       "path": "LEEME-PRIMERO.txt",
-      "bytes": 2307,
-      "sha256": "ef53c64a00b60e174f00d478f1cb22d67c50d603217690301e8bcd524861135b"
+      "bytes": 2273,
+      "sha256": "98f18d669b18457fa8785d40332e08d44da3daf605821eb9c0b9f3d271036711"
     },
     {
       "path": "logo-minecad.png",
@@ -64,18 +64,18 @@
     },
     {
       "path": "README.md",
-      "bytes": 3671,
-      "sha256": "1c20aba0ab5f25c4b0e1ff49baa9ac208d9ec63e59a784a13f08906efa965823"
+      "bytes": 3600,
+      "sha256": "8dcb6520fa510ecb2fc82b66b45613976c7027eed0cf7e5e512adc584d849b32"
     },
     {
       "path": "registro-3d.js",
-      "bytes": 13148,
-      "sha256": "d11f157d982b6ec41d51ce430c39bea44fed6516123180182070f1238f5630b3"
+      "bytes": 12993,
+      "sha256": "44683effae34ab14716894010604ceb2e970306ecd5479a8f8006ba715a352c1"
     },
     {
       "path": "registro-app.js",
-      "bytes": 81500,
-      "sha256": "c8620f195f0efca2a8845424c0be6d4c74bb9d46c70c6de17b842ba266180527"
+      "bytes": 81010,
+      "sha256": "bca57b24f50c1ed8909098e57712d997b40569f952aefb388fa56eaa6d33a8ec"
     },
     {
       "path": "registro-aspecto.js",
@@ -84,13 +84,13 @@
     },
     {
       "path": "registro-calculo-formato.css",
-      "bytes": 4717,
-      "sha256": "d6d9a37b1893ec84b48395246b4bfbbec20082fb6edde00fd7cc8978217a6e27"
+      "bytes": 785,
+      "sha256": "4ff3f5c11c91baaa0be419bf9a44752e5632de2cd3aa87d010239ecb85046dbf"
     },
     {
       "path": "registro-calculo-formato.js",
-      "bytes": 13928,
-      "sha256": "767cce974bb7016f7e2fb3d83a8986834c68dec3d5627efc883068f7667b7b79"
+      "bytes": 28279,
+      "sha256": "206597f38c70d01311745637f47b36110ccb93f713ee9af92873e75581919d49"
     },
     {
       "path": "registro-controles.js",
@@ -109,13 +109,13 @@
     },
     {
       "path": "vendor/THREE-LICENSE.txt",
-      "bytes": 1102,
-      "sha256": "df2a91696186fe58c92518a25d48bc59c8ee2edc7cac9ca6d19a5a0d599a2a05"
+      "bytes": 1081,
+      "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
     },
     {
       "path": "vendor/three-vendor.js",
-      "bytes": 560123,
-      "sha256": "9b8d9ee4a00ca7c351693c5775ae2106f251f5501b22fa7ea4f750ef37eae425"
+      "bytes": 556164,
+      "sha256": "774e666ddf7c55ff01613e381b7133fe875042cf957e8b1cfe2ef10f6d4e9367"
     }
   ]
 }
