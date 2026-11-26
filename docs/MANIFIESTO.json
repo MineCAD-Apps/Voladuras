@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-25",
-  "source": "Entrega completa local: base main d213138 y eliminación de barrenos registrados",
+  "date": "2026-11-26",
+  "source": "Base main f6bba61; opciones de existencia y representación de obras",
   "files": [
     {
       "path": ".nojekyll",
@@ -14,13 +14,13 @@
     },
     {
       "path": "registro-app.js",
-      "bytes": 78856,
-      "sha256": "ca21b2478724c24197587339ebb67fb12ff0fbdcb4ca06f7aa9c3cd055590026"
+      "bytes": 81010,
+      "sha256": "bca57b24f50c1ed8909098e57712d997b40569f952aefb388fa56eaa6d33a8ec"
     },
     {
       "path": "registro-3d.js",
-      "bytes": 12865,
-      "sha256": "4b9e4e3c2052878d094a10964facaf903c45b2ba8c77bdc3a215045e5218ab57"
+      "bytes": 12993,
+      "sha256": "44683effae34ab14716894010604ceb2e970306ecd5479a8f8006ba715a352c1"
     },
     {
       "path": "registro-controles.js",
@@ -39,8 +39,8 @@
     },
     {
       "path": "registro.css",
-      "bytes": 11184,
-      "sha256": "4cf4b21c305dc48b31a6aa76646e13814d0a5da4b7a0acb7f8bef37466a7de5d"
+      "bytes": 11281,
+      "sha256": "4bb70bb375c23a8dd75becf6d8977e8346da7a1ee39e7177e94f57d1fa46db48"
     },
     {
       "path": "logo-minecad.png",
@@ -104,8 +104,8 @@
     },
     {
       "path": "LEEME-PRIMERO.txt",
-      "bytes": 2273,
-      "sha256": "98f18d669b18457fa8785d40332e08d44da3daf605821eb9c0b9f3d271036711"
+      "bytes": 2307,
+      "sha256": "ef53c64a00b60e174f00d478f1cb22d67c50d603217690301e8bcd524861135b"
     }
   ]
 }
