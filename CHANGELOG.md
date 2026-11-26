@@ -1,5 +1,10 @@
 # Cambios
 
+## Acumulación de material y daño por secuencia (25 nov 2026)
+
+- Los fragmentos 3D se apilan en la obra inferior sin ocupar el mismo lugar (acomodo geométrico, no simulación física).
+- Cada zona de daño aparece cuando inicia su barreno, en 3D y 2D. En 0 % se muestran todas como vista previa.
+
 ## Secuencia por barreno (25 nov 2026)
 
 - La duración de la animación corresponde solo a las líneas visibles, con tiempo cero en la primera.

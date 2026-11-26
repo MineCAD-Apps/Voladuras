@@ -46,3 +46,9 @@ El visor 3D entrega a la capa decorativa las posiciones longitudinales ya existe
 - Velocidad Auto: el diseño completo dura unos 12 s y una selección parcial dura proporcionalmente menos, más una entrada y una cola fijas para el resplandor y la caída.
 - Sin tiempos capturados se conserva el avance ilustrativo global de 8 s.
 - El radio de influencia lo escribe el usuario; no se calcula. Resplandor, caída y fragmentos son ilustrativos.
+
+## Acumulación y daño (25 nov 2026)
+
+- Cada fragmento 3D se aproxima con una esfera y se apoya en el piso o sobre los anteriores; rueda si la pendiente supera unos 37°. No calcula volumen, esponjamiento ni forma real de la rezaga.
+- Máximo aproximado de 4,000 fragmentos (mínimo 12 por línea). Con muchas líneas se reducen de tamaño para que la pila quepa en la obra inferior.
+- Daño: cada zona aparece desde el inicio de su barreno.

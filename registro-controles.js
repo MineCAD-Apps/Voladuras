@@ -82,7 +82,7 @@
             const timed = !!seq?.available, why = seq?.message ?? 'sin secuencia';
             const scope = timed ? seq.rings.length + (seq.rings.length === 1 ? ' línea' : ' líneas') + ' · ' + seq.holeCount + ' barrenos' + (seq.holeMissing ? ' · sin retardo entre taladros: cada anillo inicia a la vez' : '') : '';
             notes[2] = timed ? 'Carga · cada barreno pasa de rojo a amarillo en su tiempo nominal (' + scope + ').' : 'Carga · transición global de rojo a amarillo; para usar la secuencia, ' + why + '.';
-            notes[3] = radius ? 'Daño · zona cilíndrica con el radio de influencia capturado (' + radius + ' m); no es un resultado calculado.' : 'Daño · captura el «Radio de influencia» en «Explosivo y carga» para dibujar las zonas.';
+            notes[3] = radius ? 'Daño · zona cilíndrica con el radio de influencia capturado (' + radius + ' m)' + (timed ? '; cada zona aparece al iniciar su barreno' : '') + '. No es un resultado calculado.' : 'Daño · captura el «Radio de influencia» en «Explosivo y carga» para dibujar las zonas.';
             notes[4] = timed ? 'Frag. · prismas y fragmentos ilustrativos que aparecen según el barreno de origen; sin tamaño de fragmentación calculado.' : 'Frag. · prismas decorativos; para usar la secuencia, ' + why + '.';
             note.textContent = notes[mode];
             dataRow.hidden = true; clearBtn.hidden = true; legend.hidden = false;

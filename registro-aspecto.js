@@ -66,6 +66,9 @@
             for (const line of lines) {
                 const key = keyOf(line);
                 if (projections.has(key)) continue;
+                // Aparece cuando inicia alguno de los barrenos que comparten esta proyección.
+                const times = tl && progress > 0 ? tl.seq.times.get(line.dataset.holeId) : null;
+                if (times && !times.some(time => tl.age(time) >= 0)) continue;
                 projections.add(key);
                 const copy = line.cloneNode(false);
                 copy.removeAttribute('data-visual-hole'); copy.removeAttribute('vector-effect');
@@ -147,7 +150,8 @@
                 item.core.material.emissiveIntensity = fired ? .55 + .45 * strength : 0;
                 for (const layer of item.layers) { layer.mesh.visible = strength > 0; layer.mesh.material.opacity = layer.opacity * strength; }
             }
-            for (const mesh of halos) mesh.visible = mode === 'dano';
+            // En 0 % se muestran todas como vista previa; al avanzar, cada una desde que inicia su barreno.
+            for (const zone of halos) zone.mesh.visible = mode === 'dano' && (!tl || progress <= 0 || zone.time === null || tl.age(zone.time) >= 0);
             for (const block of blocks) block.mesh.visible = mode === 'frag' && (!tl || progress <= 0 || block.time === null || tl.age(block.time) >= 0);
         }
         listeners.add(apply);
@@ -156,9 +160,17 @@
                 halos = []; blocks = []; selected = meshes; charges = null;
                 shownHoles = holes ?? []; baseRadius = radius; showRings = !!visibility.rings;
                 // Zona cilíndrica con el radio capturado por el usuario (m); sin dato no se dibuja.
-                if(visibility.rings && influence > 0) for(const [factor,opacity] of [[1,.11],[.6,.07],[.3,.08]]) {
-                    const mesh = viewer.tubes(segments,0xff3030,opacity,influence*factor,28);
-                    if(mesh) { mesh.userData.aesthetic = true; mesh.material.depthWrite = false; halos.push(mesh); }
+                if(visibility.rings && influence > 0) {
+                    const seq = window.MineCADLayerData?.sequence?.(), byTime = new Map();
+                    for (const hole of shownHoles) {
+                        const time = seq?.available ? seq.times.get(hole.id)?.[0] ?? null : null;
+                        if (!byTime.has(time)) byTime.set(time, []);
+                        byTime.get(time).push([hole.collar, hole.toe].map(([x,y,z]) => [x,z,y]));
+                    }
+                    for (const [time, rows] of byTime) for (const [factor,opacity] of [[1,.11],[.6,.07],[.3,.08]]) {
+                        const mesh = viewer.tubes(rows,0xff3030,opacity,influence*factor,28);
+                        if(mesh) { mesh.userData.aesthetic = true; mesh.material.depthWrite = false; halos.push({ mesh, time }); }
+                    }
                 }
                 if(visibility.vein && samples.length>1 && length>0) {
                     const groups=new Map(), seq=window.MineCADLayerData?.sequence?.(), counters=new Map();
