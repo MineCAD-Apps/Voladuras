@@ -62,10 +62,17 @@
         geometry.setAttribute('position', new Pt([-1,-.5,-.6, 1,-.5,-.6, 0,1,.1, 0,-.5,1], 3));
         geometry.setIndex([0,2,1, 0,1,3, 1,2,3, 2,0,3]); geometry.computeVertexNormals();
         const materials = [0x997649,0xc29a60,0xdfb979].map(color => new js({ color, roughness: .96, transparent: true, opacity: .93 }));
-        const rocks = Array.from({ length: 96 }, (_, i) => {
-            const mesh = new Jt(geometry, materials[i % materials.length]); group.add(mesh);
-            return { mesh, x: 0, y: 0, z: 0, target: 0, phase: seed(i + 700) };
-        });
+        // Cantidad artística fija por línea; no representa masa ni volumen.
+        const piecesPerLine = 96, rocks = [];
+        function resizePieces(count) {
+            while (rocks.length > count) group.remove(rocks.pop().mesh);
+            while (rocks.length < count) {
+                const localIndex = rocks.length % piecesPerLine;
+                const mesh = new Jt(geometry, materials[localIndex % materials.length]);
+                mesh.visible = false; group.add(mesh);
+                rocks.push({ mesh, x: 0, y: 0, z: 0, target: 0, phase: seed(localIndex + 700) });
+            }
+        }
         let ready = false;
         return {
             setGeometry(samples, lower, length, ringZ) {
@@ -74,15 +81,17 @@
                 const height = Math.max(...samples.map(s => s.z)) - Math.min(...samples.map(s => s.z));
                 // Posiciones de los anillos mostrados (entregadas por la aplicación). Sin ellas, la zona central decorativa de siempre.
                 const rings = Array.isArray(ringZ) ? ringZ.filter(Number.isFinite) : [];
+                resizePieces(piecesPerLine * Math.max(1, rings.length));
                 let gap = Infinity; for (let k = 1; k < rings.length; k++) gap = Math.min(gap, rings[k] - rings[k - 1]);
                 const spread = rings.length > 1 && gap > 0 ? gap * .4 : length * .03;
                 for (let i = 0; i < rocks.length; i++) {
-                    const rock = rocks[i], row = samples[Math.min(samples.length - 1, Math.floor(seed(i + 1) * samples.length))];
-                    const radius = Math.max(.04, Math.min(height * .019, (row.right - row.left) * .16)) * (.6 + seed(i + 90));
-                    rock.x = row.left + (row.right - row.left) * (.15 + seed(i + 200) * .7);
-                    rock.y = row.z; rock.z = rings.length ? rings[i % rings.length] + (seed(i + 310) - .5) * spread : length * (.35 + seed(i + 300) * .22);
-                    rock.target = Math.min(rock.y, lower.floor + Math.min(height * .1, .8) + seed(i + 400) * height * .03);
-                    rock.mesh.scale.set(radius, radius * (.7 + seed(i + 450)), radius);
+                    const j = i % piecesPerLine, lineIndex = Math.floor(i / piecesPerLine);
+                    const rock = rocks[i], row = samples[Math.min(samples.length - 1, Math.floor(seed(j + 1) * samples.length))];
+                    const radius = Math.max(.04, Math.min(height * .019, (row.right - row.left) * .16)) * (.6 + seed(j + 90));
+                    rock.x = row.left + (row.right - row.left) * (.15 + seed(j + 200) * .7);
+                    rock.y = row.z; rock.z = rings.length ? rings[lineIndex] + (seed(j + 310) - .5) * spread : length * (.35 + seed(j + 300) * .22);
+                    rock.target = Math.min(rock.y, lower.floor + Math.min(height * .1, .8) + seed(j + 400) * height * .03);
+                    rock.mesh.scale.set(radius, radius * (.7 + seed(j + 450)), radius);
                 }
             },
             render() {
