@@ -84,6 +84,8 @@ window.MineCADCreateViewer3D = function (dependencies) {
             layer = layer === undefined ? window.MineCADAnimation?.getLayer?.() : layer;
             const on = !!layer && layer.state === 'disponible';
             for (const [index, mesh] of this.ringMeshes) {
+                // La capa de color no debe volver a mostrar líneas fuera de la selección.
+                mesh.visible = mesh.userData.visualSelected !== false;
                 const base = mesh.userData.base, style = on ? (layer.byRing?.get(index) ?? layer.all ?? null) : null;
                 mesh.material.color.setHex(style ? style.color : base.color);
                 mesh.material.opacity = style ? style.opacity : base.opacity;
