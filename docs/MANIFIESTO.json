@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-25",
+  "date": "2026-11-26",
   "source": "Aplicación web directa; textos normalizados a finales de línea LF para Git",
   "files": [
     {
@@ -19,18 +19,18 @@
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 6737,
-      "sha256": "a842f7f712e75322827f95c5e1b78837ba92276dc6b35b5f5ac555fcdab9c53d"
+      "bytes": 7668,
+      "sha256": "2b1fbf990c5af1a261902d05dc571f46fde9f0caf4ef3abe7f0cbfee06afffda"
     },
     {
       "path": "ANIMACION.md",
-      "bytes": 1207,
-      "sha256": "56686ea6072af85d8df21ae59b2630cefba433fbea96418a1be501ecefc4e466"
+      "bytes": 2641,
+      "sha256": "feb8b63d6cae199285adf300356ef52188a018ed224d3b980c11fc933fe6d923"
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 1027,
-      "sha256": "42ce60508c71ced7f1f6b02187254593fdc7ae80225bc9c62d8deeff2f666e8a"
+      "bytes": 1423,
+      "sha256": "b8f2bdd584918f89dfb4d87ab9caf86829019f9b6fce19c03207523272b7ff7a"
     },
     {
       "path": "docs/ARCHIVOS.md",
@@ -109,18 +109,18 @@
     },
     {
       "path": "registro-3d.js",
-      "bytes": 10267,
-      "sha256": "667fc104b8d4cb9eb4c591085a79dd84ebbfa8fa26825922752863c4fd907674"
+      "bytes": 11796,
+      "sha256": "0a55985446fc7044d33d0d452b409f05c22952ab582442a90ddb980d7e8fa9ea"
     },
     {
       "path": "registro-app.js",
-      "bytes": 73059,
-      "sha256": "0ee64ea598903f3a7e18a58c415c05c0c72b499154e1e6fb16327e697d303bbc"
+      "bytes": 76509,
+      "sha256": "c56da308da2fcd8a8c3bf42907a30cffb15cc45e115ae700bf000c309171bb8a"
     },
     {
       "path": "registro-controles.js",
-      "bytes": 6337,
-      "sha256": "f74cceecddb0cfa54af2579ce4af4cc79a31f438e608bb4e5a7eb4f1169f424a"
+      "bytes": 10360,
+      "sha256": "4f198403041e180c1c44070cd9031dce8005767c6bc08f24a398ca48e94af99c"
     },
     {
       "path": "registro.css",
