@@ -24,13 +24,13 @@
     },
     {
       "path": "ANIMACION.md",
-      "bytes": 3149,
-      "sha256": "afe53b22580fbb94cb56a84c72e83d9ba4462b945b1cc2f41e12613f2d85f451"
+      "bytes": 4469,
+      "sha256": "adffb614ecf5ae3e710fc45ba2789f3de49d922a763c6d42693a8f02a898b427"
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 1545,
-      "sha256": "86140d2e28c414e14bc164ce7f5eca5f8b972fbfb953a299945fa6671684fe7e"
+      "bytes": 1705,
+      "sha256": "c401bb03d6a6e7aa761231045dfa468a642e49287781c4c27764ac5fd95afd76"
     },
     {
       "path": "docs/ARCHIVOS.md",
@@ -114,13 +114,13 @@
     },
     {
       "path": "registro-app.js",
-      "bytes": 76509,
-      "sha256": "c56da308da2fcd8a8c3bf42907a30cffb15cc45e115ae700bf000c309171bb8a"
+      "bytes": 76584,
+      "sha256": "a2a9c4a0cced82c2bfdcd8c4c3ea9bc6c3acf63c0dec3fa3b589a78dd410fa0c"
     },
     {
       "path": "registro-controles.js",
-      "bytes": 10360,
-      "sha256": "4f198403041e180c1c44070cd9031dce8005767c6bc08f24a398ca48e94af99c"
+      "bytes": 17410,
+      "sha256": "83fc27311b4bd7518574a17919c3186062bdb5c2a6ebd28c16802b90083be7eb"
     },
     {
       "path": "registro.css",
