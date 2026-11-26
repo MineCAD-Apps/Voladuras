@@ -1,12 +1,18 @@
-ACTUALIZACIÓN DE CAPTURA — MINECAD
-Base del repositorio: main 0f05a11.
+RECORTE VISUAL DE PRISMAS — OBRA INFERIOR
+Base: main 1b814c3 de MineCAD-Apps/Voladuras, 26/11/2026.
 
-Copiar el contenido del ZIP sobre la raíz de la aplicación web conservando docs/.
-Solo se sustituyen registro-calculo-formato.js, registro-calculo-formato.css y docs/MANIFIESTO.json. index.html ya carga estos archivos.
+Copiar el contenido sobre la raíz de la aplicación conservando docs/.
+Sustituir registro-app.js, registro-3d.js, registro-aspecto.js y docs/MANIFIESTO.json.
+No reemplazar animacion-visual.js ni los módulos de captura, cálculo o teoría.
 
-Incluye precarga limitada al Caso 1, guardado en el navegador, exportación e importación de captura JSON y validación de formato.
-No incluye adaptador ni archivo de cálculo externo. Los resultados siguen sin cálculo enlazado.
-La documentación adjunta corresponde a los datos de captura, no a un contrato de motor de cálculo.
+La vista de fragmentación descuenta el perfil de la obra inferior:
+- 2D: máscara del hueco, manteniendo el contorno de la veta.
+- 3D: las columnas de prismas comienzan por encima del techo del perfil. Las piezas que quedan enteramente dentro del hueco no se dibujan.
+- Si la obra inferior no existe, no se aplica esta sustracción.
+El recorte 3D por prismas rectangulares puede dejar un margen visual pequeño junto a la bóveda; no representa un descuento o balance de volumen.
 
-Comprobado en Chrome y con recarga del navegador. Sintaxis, rutas e integridad verificadas.
-No está publicado desde esta sesión.
+Solo se cambió la representación de la cuadrícula. No se modifican movimiento de fragmentos, acumulación, límites móviles, cantidades, tiempos o cálculos.
+Se conservan byte por byte los archivos actuales de animación, controles, cálculo y teoría; no se utilizaron los archivos completos del ZIP v3 anterior.
+
+Verificado: sintaxis, metadatos, pruebas geométricas estáticas del hueco y del nivel inexistente; máscara 2D y dibujo 3D en Chrome con datos geométricos aislados, sin reproducir la simulación. Sin errores JavaScript.
+Cambios locales: no publicados desde esta sesión.

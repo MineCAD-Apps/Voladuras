@@ -67,7 +67,7 @@ window.MineCADCreateViewer3D = function (dependencies) {
             const coords=rows=>[...new Set(rows.map(h=>Number(h.collar[1])).filter(Number.isFinite))].sort((a,b)=>a-b);
             const segments=shown.map(h=>[h.collar,h.toe].map(([x,y,z])=>[x,z,y]));
             const radius=Math.max(.025,Math.min(.25,Math.max(project.block.height,length)*.0035));
-            this.aesthetic?.configure(samples,length,segments,radius,[...this.ringMeshes.values()].filter(m=>m.userData.visualSelected),coords(all),coords(shown),visibility,shown,project.charge?.influenceM??null);
+            this.aesthetic?.configure(samples,length,segments,radius,[...this.ringMeshes.values()].filter(m=>m.userData.visualSelected),coords(all),coords(shown),visibility,shown,project.charge?.influenceM??null,project.lower?.exists === false ? [] : zn(project,'lower').points);
         }
         // Posiciones longitudinales (ya existentes) de los anillos que se están mostrando: todos, o solo la sección elegida. Solo lectura.
         shownRingPositions(project) {

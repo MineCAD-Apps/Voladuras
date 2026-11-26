@@ -84,6 +84,22 @@
                 const defs = document.createElementNS(ns,'defs'), clip = document.createElementNS(ns,'clipPath');
                 clip.id = 'aesthetic-vein-clip'; clip.append(vein.cloneNode(false)); defs.append(clip); overlay.append(defs);
                 const cells = document.createElementNS(ns,'g'); cells.setAttribute('clip-path','url(#aesthetic-vein-clip)');
+                // El perfil de obra es un hueco, aunque se desactive su capa de contorno.
+                const mask=document.createElementNS(ns,'mask'); mask.id='aesthetic-lower-work-mask';
+                mask.setAttribute('maskUnits','userSpaceOnUse'); mask.setAttribute('maskContentUnits','userSpaceOnUse');
+                const area={x:box.x-box.width,y:box.y-box.height,width:box.width*3,height:box.height*3};
+                for(const [key,value] of Object.entries(area)) mask.setAttribute(key,value);
+                const white=document.createElementNS(ns,'rect');
+                for(const [key,value] of Object.entries({...area,fill:'#fff'})) white.setAttribute(key,value);
+                mask.append(white);
+                const profile=window.MineCADLayerData?.lowerWorkProfile?.() ?? [];
+                if(profile.length>=3) {
+                    const opening=document.createElementNS(ns,'polygon');
+                    opening.setAttribute('points',profile.map(([x,z])=>x+','+(-z)).join(' '));
+                    opening.setAttribute('fill','#000'); mask.append(opening);
+                }
+                defs.append(mask);
+                const cutout=document.createElementNS(ns,'g'); cutout.setAttribute('mask','url(#aesthetic-lower-work-mask)');
                 const step = Math.max(box.width/8, box.height/40, .01);
                 let count = 0;
                 const projected = lines.map(line => [line, ...['x1','y1','x2','y2'].map(a=>Number(line.getAttribute(a)))]);
@@ -104,7 +120,7 @@
                     for(const [key,value] of Object.entries({x,y,width:step*.9,height:step*.9,fill:'#ddb77b',opacity:.7})) rect.setAttribute(key,value);
                     cells.append(rect);
                 }
-                overlay.append(cells);
+                cutout.append(cells); overlay.append(cutout);
             }
         }
         // Colocar detrás de los fragmentos, las anotaciones y los propios barrenos.
@@ -156,7 +172,7 @@
         }
         listeners.add(apply);
         return {
-            configure(samples,length,segments,radius,meshes,allPositions,shownPositions,visibility,holes,influence) {
+            configure(samples,length,segments,radius,meshes,allPositions,shownPositions,visibility,holes,influence,lowerWork) {
                 halos = []; blocks = []; selected = meshes; charges = null;
                 shownHoles = holes ?? []; baseRadius = radius; showRings = !!visibility.rings;
                 // Zona cilíndrica con el radio capturado por el usuario (m); sin dato no se dibuja.
@@ -200,6 +216,17 @@
                         for(const i of [0,2,1,0,3,2,4,5,6,4,6,7,0,1,5,0,5,4,3,7,6,3,6,2,0,4,7,0,7,3,1,2,6,1,6,5]) indices.push(base+i);
                     };
                     const nearest = z => allPositions.reduce((best,v)=>Math.abs(v-z)<Math.abs(best-z)?v:best,allPositions[0]);
+                    // Recorte estático: cota superior del perfil de la obra sobre el ancho de cada prisma.
+                    const lowerRoof = (x1,x2) => {
+                        if (!Array.isArray(lowerWork) || lowerWork.length < 3) return -Infinity;
+                        let top=-Infinity;
+                        for(let i=0;i<lowerWork.length;i++) {
+                            const [ax,ay]=lowerWork[i], [bx,by]=lowerWork[(i+1)%lowerWork.length];
+                            if(ax>=x1 && ax<=x2) top=Math.max(top,ay);
+                            for(const x of [x1,x2]) if((x-ax)*(x-bx)<0) top=Math.max(top,ay+(by-ay)*(x-ax)/(bx-ax));
+                        }
+                        return top;
+                    };
                     for(let iy=0;iy<40;iy++) {
                         const h=(ymax-ymin)/40,y=ymin+iy*h,row=sampleAt(y+h/2),w=(row.right-row.left)/5;
                         for(let iz=0;iz<32;iz++) {
@@ -209,11 +236,13 @@
                                 const time=allPositions.length ? timeAt(row.left+(ix+.5)*w,y+h/2,nearest(z+d/2)) : null;
                                 if(!groups.has(time)) groups.set(time,{positions:[],indices:[]});
                                 ({positions,indices}=groups.get(time));
-                                addBox(row.left+ix*w+w*.06,y+h*.06,z+d*.06,w*.88,h*.88,d*.88);
+                                const x1=row.left+ix*w+w*.06, base=Math.max(y+h*.06,lowerRoof(x1,x1+w*.88)), visibleHeight=y+h*.94-base;
+                                if(visibleHeight>1e-9) addBox(x1,base,z+d*.06,w*.88,visibleHeight,d*.88);
                             }
                         }
                     }
                     for(const [time,data] of groups) {
+                        if(!data.positions.length) continue;
                         const geometry=new Vt(); geometry.setAttribute('position',new Pt(data.positions,3)); geometry.setIndex(data.indices); geometry.computeVertexNormals();
                         const mesh=new Jt(geometry,new js({color:0xd6b779,transparent:true,opacity:.72,roughness:.9}));
                         mesh.userData.aesthetic=true; viewer.model.add(mesh); blocks.push({mesh,time});

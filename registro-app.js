@@ -475,7 +475,7 @@ try {
                     }
                     catch (error) { return { state: 'error', source: SRC, message: 'No se pudieron leer los datos capturados: ' + error.message }; }
                 }
-                window.MineCADLayerData = Object.freeze({ get: layerData, sequence, influenceRadius: () => ae.charge?.influenceM ?? null, burden: () => { const b = ae.drilling?.burdenM; return Number.isFinite(b) && b > 0 ? b : null; }, rings() { try { return Do(ae).map(x => x.index); } catch { return []; } } });
+                window.MineCADLayerData = Object.freeze({ get: layerData, sequence, lowerWorkProfile: () => { try { return ae.lower?.exists === false ? [] : zn(ae, 'lower').points; } catch { return []; } }, influenceRadius: () => ae.charge?.influenceM ?? null, burden: () => { const b = ae.drilling?.burdenM; return Number.isFinite(b) && b > 0 ? b : null; }, rings() { try { return Do(ae).map(x => x.index); } catch { return []; } } });
                 const _rm = refreshMods;
                 refreshMods = function () { _rm.apply(this, arguments); document.dispatchEvent(new CustomEvent('minecad:datos')); };
             }
