@@ -1,8 +1,12 @@
-/* Efectos gráficos ilustrativos. No consulta cargas, retardos ni modelos físicos. */
+/* Efectos gráficos ilustrativos. No consulta cargas, retardos ni modelos físicos.
+   Solo retransmite al visor la capa de datos ya capturados (setLayer); no calcula nada. */
 (() => {
     'use strict';
     const svgNS = 'http://www.w3.org/2000/svg';
-    let progress = 0, section = null, source = null, overlay = null, cells = [];
+    let progress = 0, section = null, source = null, overlay = null, cells = [], layer = null;
+    const listeners = new Set();
+    // Capa de datos suministrados (Carga/Tiempo capturados por el usuario). Cuando está activa se oculta el efecto decorativo.
+    const layerActive = () => !!layer && layer.state === 'disponible' && (!!layer.all || !!layer.byRing);
     const clamp = x => Math.max(0, Math.min(1, x));
     const seed = n => { const x = Math.sin(n * 127.1 + 37.7) * 43758.5453; return x - Math.floor(x); };
     function node(tag, attributes) {
@@ -18,7 +22,10 @@
             caption.style.cssText = 'position:absolute;right:10px;top:8px;z-index:4;pointer-events:none;padding:4px 8px;border:1px solid #a88840;border-radius:12px;background:#102234e8;color:#ffe2a0;font:11px Segoe UI,sans-serif';
             frame.append(caption);
         }
-        if (caption) { caption.hidden = progress <= 0; caption.textContent = 'Animación ilustrativa · ' + Math.floor(progress) + ' %'; }
+        if (caption) {
+            if (layerActive()) { caption.hidden = !layer.caption; caption.textContent = layer.caption || ''; }
+            else { caption.hidden = progress <= 0; caption.textContent = 'Animación ilustrativa · ' + Math.floor(progress) + ' %'; }
+        }
         const svg = document.querySelector('#section');
         const vein = svg?.querySelector('polygon[fill="#e5b66b65"]');
         if (!svg || !vein) { overlay?.remove(); source = null; return; }
@@ -39,7 +46,7 @@
             const flash = node('polygon', { points, fill: '#ffe4a0', 'data-animation-flash': '' });
             overlay.append(texture, flash); svg.append(overlay);
         }
-        overlay.style.display = progress > 0 ? '' : 'none';
+        overlay.style.display = progress > 0 && !layerActive() ? '' : 'none';
         const p = progress / 100, flash = overlay.querySelector('[data-animation-flash]');
         flash.setAttribute('opacity', String(p < .2 ? Math.sin(p / .2 * Math.PI) * .5 : 0));
         for (const cell of cells) {
@@ -75,7 +82,7 @@
                 }
             },
             render() {
-                const p = progress / 100; group.visible = ready && p > 0;
+                const p = progress / 100; group.visible = ready && p > 0 && !layerActive();
                 if (!group.visible) return;
                 for (let i = 0; i < rocks.length; i++) {
                     const rock = rocks[i], phase = clamp((p - .12 - rock.phase * .18) / .7);
@@ -92,7 +99,12 @@
     }
     window.MineCADAnimation = Object.freeze({
         setProgress(value) { progress = Math.max(0, Math.min(100, Number(value) || 0)); render2D(); },
-        getProgress() { return progress; }, create3D
+        getProgress() { return progress; },
+        // Capa de datos: { mode, state:'disponible'|'sin_datos'|'error', all:{color,opacity}|null, byRing:Map|null, caption }.
+        setLayer(value) { layer = value && typeof value === 'object' ? value : null; listeners.forEach(fn => fn(layer)); },
+        getLayer() { return layer; },
+        subscribeLayer(fn) { listeners.add(fn); return () => listeners.delete(fn); },
+        create3D
     });
     // Redibujar la capa si la aplicación reemplaza la sección al editar o cambiar de vista.
     document.addEventListener('input', () => queueMicrotask(render2D));

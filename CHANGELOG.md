@@ -1,5 +1,10 @@
 # Cambios
 
+## 26 de noviembre de 2026
+
+- Los modos Tiempo y Carga del visor muestran los datos capturados en «Tiempos y secuencia» y «Explosivo y carga» (3D con todos los anillos), con leyenda y procedencia. Sin datos: se conserva el dibujo y el aviso.
+- Nuevo adaptador de solo lectura `MineCADLayerData` y evento `minecad:datos`. No se añaden cálculos de carga, secuencia, daño ni fragmentación.
+
 ## Organización web del 25 de noviembre de 2026
 
 - index.html en la raíz como entrada principal de la aplicación propia.

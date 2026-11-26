@@ -386,6 +386,43 @@ try {
                 st.textContent = 'summary[data-resumen]::after{content:" · " attr(data-resumen);font-weight:400;font-size:.86em;color:#9bb4c8}.mod-chk{flex-direction:row;align-items:center;gap:6px}.seq-wrap{max-height:170px;overflow:auto;border:1px solid #294158;border-radius:4px;margin:6px 0}.seq{width:100%;border-collapse:collapse;font-size:.9rem}.seq th,.seq td{padding:3px 5px;text-align:right;border-bottom:1px solid #1d3347;white-space:nowrap}.seq th{position:sticky;top:0;background:#19334a;color:#a2bed2}.seq tbody tr{cursor:pointer}.seq tbody tr:hover{background:#1b3348}.seq tr.on{background:#3b3a1c;color:#ffda63}';
                 document.head.append(st);
             }
+            /* ===== Adaptador de datos para el visor (solo lectura de lo capturado) =====
+               Entrega al visor lo que el usuario ya ingresó en «Explosivo y carga» y «Tiempos y secuencia».
+               No calcula cargas, retardos ni secuencias; reutiliza los valores nominales que muestra la tabla de anillos. */
+            {
+                const SRC = 'Ingresado por el usuario (sin cálculo ni validación)';
+                const CARGA_COLOR = { anfo: 0xe8a33d, emulsion_granel: 0x4cc9f0, emulsion_cartucho: 0x4895ef, hidrogel: 0x7bd88f, mezcla: 0xc792ff, otro: 0xb0b8c0 };
+                const nodata = (message) => ({ state: 'sin_datos', source: SRC, message });
+                function layerData(mode) {
+                    try {
+                        const c = ae.charge, t = ae.timing;
+                        if (mode === 'carga') {
+                            if (!c || c.column === 'sin_capturar') return nodata('Carga · sin agente de columna capturado en «Explosivo y carga».');
+                            const legend = [['Columna', lab(CAT, c.column)]];
+                            if (c.density !== null) legend.push(['Densidad', Je(c.density) + ' g/cc']);
+                            if (c.coupling !== null) legend.push(['Acoplamiento', Je(c.coupling, 0) + ' %']);
+                            legend.push(['Toe', c.toe === 'sin_capturar' ? 'sin datos' : lab(TOE, c.toe)]);
+                            legend.push(['Cuña', c.wedgeShare ? 'igual que los anillos' : (c.wedge === 'sin_capturar' ? 'sin datos' : lab(CAT, c.wedge))]);
+                            if (c.wedgeLoads !== null) legend.push(['Cargas por barreno de la cuña', String(c.wedgeLoads)]);
+                            return { state: 'disponible', source: SRC, color: CARGA_COLOR[c.column] ?? 0xb0b8c0, legend };
+                        }
+                        if (mode === 'tiempo') {
+                            if (!t || t.ringMs === null) return nodata('Tiempo · sin retardo entre anillos capturado en «Tiempos y secuencia».');
+                            const secs = Do(ae);
+                            if (!secs.length) return nodata('Tiempo · sin anillos: captura bordo y perforación.');
+                            // Mismo valor nominal que la columna «Inicio ms» de la tabla de anillos.
+                            const rings = secs.map(s => ({ index: s.index, startMs: s.index * t.ringMs }));
+                            const legend = [['Sistema', lab(SYS, t.system)], ['Entre anillos', Je(t.ringMs, 0) + ' ms'], ['Entre taladros', t.holeMs === null ? 'sin datos' : Je(t.holeMs, 0) + ' ms (solo informativo; no se dibuja por barreno)']];
+                            return { state: 'disponible', source: SRC, unit: 'ms', rings, maxMs: Math.max(...rings.map(r => r.startMs)), legend };
+                        }
+                        return nodata(mode === 'dano' ? 'Daño · sin capa de daño disponible.' : 'Frag. · sin capa de fragmentación disponible.');
+                    }
+                    catch (error) { return { state: 'error', source: SRC, message: 'No se pudieron leer los datos capturados: ' + error.message }; }
+                }
+                window.MineCADLayerData = Object.freeze({ get: layerData });
+                const _rm = refreshMods;
+                refreshMods = function () { _rm.apply(this, arguments); document.dispatchEvent(new CustomEvent('minecad:datos')); };
+            }
             ens(ae);
             cc();
             Pi();
