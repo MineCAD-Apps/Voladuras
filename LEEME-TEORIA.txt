@@ -1,0 +1,24 @@
+VENTANA DE TEORÍA DE LA PLANTILLA
+26/11/2026. Base: main c63d146 de MineCAD-Apps/Voladuras.
+
+INSTALACIÓN
+Copiar el contenido del ZIP sobre la raíz del repositorio, conservando docs/ y tools/.
+Se actualiza index.html para cargar registro-calculo-teoria.js y registro-calculo-teoria.css, ambos nuevos. Se actualizan el manifiesto y la lista de archivos del verificador.
+No sustituir registro-calculo-formato.js ni registro-calculo-formato.css: el paquete conserva sus versiones actuales en el repositorio.
+
+USO
+Abrir «Calcular bordo y espaciamiento» y pulsar «Teoría de la plantilla».
+Se abre una segunda ventana de consulta con navegación por apartados, criterios desplegables y botones para expandir o contraerlos.
+«Volver al cálculo», la cruz y Escape cierran solo la ventana de teoría y devuelven el foco a su botón. La ventana de cálculo permanece abierta.
+
+CONTENIDO
+Transcripción estática de la hoja Documentación del Excel Plantilla_diseno_voladura.xlsx aportado por el usuario: 13 criterios, 4 convenciones, 3 referencias orientativas y 3 limitaciones.
+Las expresiones y explicaciones se muestran literalmente como texto, incluidas las ambigüedades y limitaciones que declara la propia hoja. No se ejecutan, corrigen, completan ni validan matemáticamente.
+No se añadieron fuentes, coeficientes o explicaciones operativas externos.
+El Excel original no se modifica ni necesita estar presente en el navegador.
+
+COMPROBADO
+Sintaxis del nuevo módulo, rutas e integridad del paquete.
+Pruebas de interfaz en entorno aislado de escritorio y pantalla pequeña: botón dentro de la ventana principal, segunda ventana, foco, coincidencia literal del contenido, desplegables, navegación, Escape, retorno, captura intacta y ausencia de desbordamiento horizontal o errores JS.
+Los archivos existentes de cálculo, captura, animación y visor se conservaron byte por byte. No se ejecutó ni validó su lógica de cálculo.
+Cambios locales: no publicados desde esta sesión.

@@ -1,0 +1,36 @@
+#minecad-theory-dialog{box-sizing:border-box;width:min(960px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:0;border:1px solid #4a6b86;border-radius:8px;background:#102234;color:#d9e9f3;font:11px/1.55 'Segoe UI',Arial,sans-serif;overflow:auto;box-shadow:0 18px 70px #000a;color-scheme:dark}
+#minecad-theory-dialog::backdrop{background:#030b16b8}
+#minecad-theory-dialog .mt-header{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;height:auto;padding:12px 16px;background:#17334c;border-bottom:1px solid #3c5b72}
+#minecad-theory-dialog .mt-kicker{font-size:10px;letter-spacing:.8px;color:#98d8fa}
+#minecad-theory-dialog h2{margin:3px 0 0;font-size:15px;line-height:1.35;color:#e1f1fb}
+#minecad-theory-dialog button{font:inherit;padding:5px 10px}
+#minecad-theory-dialog .mt-close{flex:none;width:28px;height:28px;padding:0;font-size:22px;line-height:1}
+#minecad-theory-dialog .mt-body{padding:12px 16px 18px}
+#minecad-theory-dialog p{margin:0 0 10px;white-space:pre-wrap;overflow-wrap:anywhere}
+#minecad-theory-dialog .mt-source{color:#92b7d0;font-size:10px}
+#minecad-theory-dialog .mt-intro{color:#c8dce9}
+#minecad-theory-dialog .mt-nav{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0 16px;padding-bottom:10px;border-bottom:1px solid #2f4c62}
+#minecad-theory-dialog .mt-section{margin-top:18px;scroll-margin-top:86px}
+#minecad-theory-dialog h3{font-size:12px;margin:0 0 10px;color:#a4d9f5;scroll-margin-top:86px}
+#minecad-theory-dialog .mt-tools{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+#minecad-theory-dialog .mt-tools button{font-size:10px;padding:3px 8px;color:#b7d3e4}
+#minecad-theory-dialog .mt-criterion{margin:7px 0;border:1px solid #36546c;border-radius:5px;background:#0d1e2e}
+#minecad-theory-dialog summary{display:flex;align-items:center;gap:8px;padding:9px 10px;cursor:pointer;list-style:none}
+#minecad-theory-dialog summary::before{content:'▸';color:#8fc9ee}
+#minecad-theory-dialog details[open]>summary::before{content:'▾'}
+#minecad-theory-dialog .mt-number{color:#8daec5;min-width:14px;font-variant-numeric:tabular-nums}
+#minecad-theory-dialog .mt-label{flex:1;color:#dbeaf3;font-weight:600}
+#minecad-theory-dialog .mt-type{font-size:10px;color:#d1bb8d;border:1px solid #796848;border-radius:4px;padding:1px 5px;max-width:38%;text-align:right}
+#minecad-theory-dialog .mt-detail{padding:10px 12px;border-top:1px solid #29465d}
+#minecad-theory-dialog h4{margin:0 0 5px;color:#a4c4d9;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+#minecad-theory-dialog .mt-formula{margin:0 0 12px;padding:8px 10px;border:1px solid #365063;border-radius:4px;white-space:pre-wrap;overflow-wrap:anywhere;background:#091826;color:#ead39c;font:10px/1.6 Consolas,monospace}
+#minecad-theory-dialog .mt-origin{margin-top:9px;color:#93acc0;font-size:10px}
+#minecad-theory-dialog .mt-definitions{display:block;margin:0;border-top:1px solid #2b465c}
+#minecad-theory-dialog dt{margin-top:10px;color:#c6dce9;font-weight:600}
+#minecad-theory-dialog dd{margin:4px 0 10px;color:#b4cbdc;white-space:pre-wrap;overflow-wrap:anywhere}
+#minecad-theory-dialog ul{margin:0;padding-left:19px}
+#minecad-theory-dialog li{margin:8px 0;overflow-wrap:anywhere}
+#minecad-theory-dialog .mt-footer{position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:9px 16px;background:#173148;border-top:1px solid #3b596f;font-size:10px;color:#9cb9cf}
+#minecad-theory-dialog .mt-back{background:#20516c;border-color:#6394b2;color:#e8f5fc}
+#minecad-theory-dialog :focus-visible{outline:2px solid #8ad9ff;outline-offset:2px}
+@media(max-width:600px){#minecad-theory-dialog .mt-header,#minecad-theory-dialog .mt-body{padding:10px}#minecad-theory-dialog h2{font-size:13px}#minecad-theory-dialog summary{flex-wrap:wrap;gap:6px}#minecad-theory-dialog .mt-type{max-width:none;margin-left:30px;text-align:left}#minecad-theory-dialog .mt-footer{padding:8px 10px}}
