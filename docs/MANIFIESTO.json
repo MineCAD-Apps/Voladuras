@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "source": "Base main c63d146; ventana estática de consulta transcrita del Excel aportado, sin cambios de lógica de cálculo",
+  "source": "Base main 1b814c3; recorte exclusivamente visual de los prismas en la obra inferior",
   "files": [
     {
       "path": ".nojekyll",
@@ -69,18 +69,18 @@
     },
     {
       "path": "registro-3d.js",
-      "bytes": 13237,
-      "sha256": "84428718129c7ffb645e10340132c03a399d5cb7349bc9906c9375f95bd81ffd"
+      "bytes": 13303,
+      "sha256": "79f53ff8682f986eabf0d49d545149f580ea09442aa13c3e0a4ebbcc6c37b60e"
     },
     {
       "path": "registro-app.js",
-      "bytes": 81299,
-      "sha256": "3084f166e3507c595680a7cdf4775d383a5c9fa39d9699ba93bcdbeb3c347e07"
+      "bytes": 81422,
+      "sha256": "2573abd4910fea8fd167cda5b9ae101b20601fc786fb1d6b1c804e52f585072e"
     },
     {
       "path": "registro-aspecto.js",
-      "bytes": 15220,
-      "sha256": "a7422b32861e4d2c9744c38c2485428177dd2e2cbeb19114c3c8e061ff83c8be"
+      "bytes": 17469,
+      "sha256": "c8cfb94f5ab47d733121506b8c67155503292aad61c08b403afbb7048bfe79de"
     },
     {
       "path": "registro-calculo-formato.css",
