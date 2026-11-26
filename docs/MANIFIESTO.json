@@ -18,6 +18,16 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
+      "path": "animacion-visual.js",
+      "bytes": 6737,
+      "sha256": "a842f7f712e75322827f95c5e1b78837ba92276dc6b35b5f5ac555fcdab9c53d"
+    },
+    {
+      "path": "ANIMACION.md",
+      "bytes": 1207,
+      "sha256": "56686ea6072af85d8df21ae59b2630cefba433fbea96418a1be501ecefc4e466"
+    },
+    {
       "path": "CHANGELOG.md",
       "bytes": 1027,
       "sha256": "42ce60508c71ced7f1f6b02187254593fdc7ae80225bc9c62d8deeff2f666e8a"
@@ -74,8 +84,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 601,
-      "sha256": "4e95c7d26b513851841f2f5da2b03184121927c5752ca7e044592835f5514b28"
+      "bytes": 647,
+      "sha256": "27ecd517aca195d723641d62806efe61077881a4bf98532e063446d00aa4db7c"
     },
     {
       "path": "integraciones/minecad-tema.user.js",
@@ -99,8 +109,8 @@
     },
     {
       "path": "registro-3d.js",
-      "bytes": 10064,
-      "sha256": "11a16bda34826efab9a1f35e06bca5b7a5bc5064c3cafa4dcc0e2ec5ebc3d961"
+      "bytes": 10267,
+      "sha256": "667fc104b8d4cb9eb4c591085a79dd84ebbfa8fa26825922752863c4fd907674"
     },
     {
       "path": "registro-app.js",
@@ -109,8 +119,8 @@
     },
     {
       "path": "registro-controles.js",
-      "bytes": 5206,
-      "sha256": "7113a8c19dd23d07d4b90aa594320e05b66f61b370781c9467d546b8bedad5b8"
+      "bytes": 6337,
+      "sha256": "f74cceecddb0cfa54af2579ce4af4cc79a31f438e608bb4e5a7eb4f1169f424a"
     },
     {
       "path": "registro.css",
@@ -119,8 +129,8 @@
     },
     {
       "path": "tools/verify.mjs",
-      "bytes": 1483,
-      "sha256": "ce47fc5714c008df5d2d123a2ff609d86781db7f3bf6475165d301cfe71bdb4c"
+      "bytes": 1505,
+      "sha256": "ef5703f2c5fdcc239f74afa475686667590610b29701d9961340ce7ce881f257"
     },
     {
       "path": "vendor/THREE-LICENSE.txt",
