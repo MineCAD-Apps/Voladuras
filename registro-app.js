@@ -101,6 +101,7 @@ try {
         /* Biblioteca y visor en archivos externos; funciones existentes conservadas. */
         var wo = window.MineCADCreateViewer3D({ xs, zn, br, ri, __sectionActive, Bn, getSection: () => __minecadSection });
         var __minecadSection = 0;
+        var __minecadCount = 1;
         var Ve = i => document.querySelector(i), bt = i => String(i ?? "").replace(/[&<>"']/g, e => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[e]), Je = (i, e = 2) => i == null ? "\u2014" : Number(i).toLocaleString("es-MX", { maximumFractionDigits: e, minimumFractionDigits: e }), fr = "minecad-geometria-paleta-v1", ae = Lo(), wn = "section", Ii = null, At = { vein: !0, works: !0, mining: !0, elos: !0, holes: !0, rings: !0, annotations: !0 }, pr = 1, mr = [0, 0], lc = !0;
         try {
             let i = localStorage.getItem(fr);
@@ -225,7 +226,7 @@ try {
                 let H = ae.drilling.origin === "superior" ? 1 : 0, V = t[H], originZ = V.floor + (H === 0 ? ae.lower.height : 0);
                 w += `<circle cx="${V.centre}" cy="${-originZ}" r="${b * .45}" fill="#f09bcb"/>` + O(V.centre - b, originZ - b * 1.4, ["ORIGEN REGISTRADO"], "#f09bcb", "end");
             }
-        } i.innerHTML = `<g stroke="#20364a" stroke-width=".6">${P}</g>${At.elos ? `<polygon points="${I("elosLeft", "elosRight")}" fill="#d76d722b" stroke="#e27f83" stroke-dasharray="5 4"><title>ELOS supuesto \xB7 no predicci\xF3n de rotura</title></polygon>` : ""}${At.mining ? `<polygon points="${I("mineLeft", "mineRight")}" fill="#5cc2fa0c" stroke="#5cc2fa" stroke-dasharray="5 3"/>` : ""}${At.vein ? `<polygon points="${I("left", "right")}" fill="#e5b66b65" stroke="#e5b66b"/>` : ""}<polyline points="${M(e.map(E => [E.centre, E.z]))}" stroke="#f3ce9377" fill="none" stroke-dasharray="3 4"/>${At.works ? t.map((E, F) => `<polygon points="${M(E.points)}" fill="${F ? "#65d6b955" : "#59aff355"}" stroke="${F ? "#65d6b9" : "#59aff3"}"/>`).join("") : ""}${At.holes ? ae.holes.map(E => `<line x1="${E.collar[0]}" y1="${-E.collar[2]}" x2="${E.toe[0]}" y2="${-E.toe[2]}" stroke="#f1f7ff"><title>${bt(E.id)} \xB7 proyecci\xF3n X/Z</title></line>`).join("") : ""}${At.rings ? __sectionHoles(ae).map(E => `<line x1="${E.collar[0]}" y1="${-E.collar[2]}" x2="${E.toe[0]}" y2="${-E.toe[2]}" stroke="${ri[E.template]}" stroke-width="1.8"><title>${bt(E.id)} \xB7 plantilla de anillo \xB7 proyecci\xF3n X/Z</title></line><circle cx="${E.collar[0]}" cy="${-E.collar[2]}" r="${b * .3}" fill="${ri[E.template]}"/>`).join("") : ""}${w}`, i.querySelectorAll("polygon,polyline,line,circle").forEach(E => { E.setAttribute("vector-effect", "non-scaling-stroke"), E.hasAttribute("stroke-width") || E.setAttribute("stroke-width", "1.2"); }); let v = Ve("#section-meta"); v || (v = document.createElement("div"), v.id = "section-meta", v.className = "section-meta", Ve(".cross-section").append(v)), v.textContent = Tc(ae) + " \xB7 rumbo " + Je(ae.block.length, 1) + " m" + (Mr(ae) ? " \xB7 " + Mr(ae) : ""); }
+        } i.innerHTML = `<g stroke="#20364a" stroke-width=".6">${P}</g>${At.elos ? `<polygon points="${I("elosLeft", "elosRight")}" fill="#d76d722b" stroke="#e27f83" stroke-dasharray="5 4"><title>ELOS supuesto \xB7 no predicci\xF3n de rotura</title></polygon>` : ""}${At.mining ? `<polygon points="${I("mineLeft", "mineRight")}" fill="#5cc2fa0c" stroke="#5cc2fa" stroke-dasharray="5 3"/>` : ""}${At.vein ? `<polygon data-visual-vein points="${I("left", "right")}" fill="#e5b66b65" stroke="#e5b66b"/>` : ""}<polyline points="${M(e.map(E => [E.centre, E.z]))}" stroke="#f3ce9377" fill="none" stroke-dasharray="3 4"/>${At.works ? t.map((E, F) => `<polygon points="${M(E.points)}" fill="${F ? "#65d6b955" : "#59aff355"}" stroke="${F ? "#65d6b9" : "#59aff3"}"/>`).join("") : ""}${At.holes ? ae.holes.map(E => `<line x1="${E.collar[0]}" y1="${-E.collar[2]}" x2="${E.toe[0]}" y2="${-E.toe[2]}" stroke="#f1f7ff"><title>${bt(E.id)} \xB7 proyecci\xF3n X/Z</title></line>`).join("") : ""}${At.rings ? __sectionHoles(ae).map(E => `<line data-visual-hole x1="${E.collar[0]}" y1="${-E.collar[2]}" x2="${E.toe[0]}" y2="${-E.toe[2]}" stroke="${ri[E.template]}" stroke-width="1.8"><title>${bt(E.id)} \xB7 plantilla de anillo \xB7 proyecci\xF3n X/Z</title></line><circle cx="${E.collar[0]}" cy="${-E.collar[2]}" r="${b * .3}" fill="${ri[E.template]}"/>`).join("") : ""}${w}`, i.querySelectorAll("polygon,polyline,line,circle").forEach(E => { E.setAttribute("vector-effect", "non-scaling-stroke"), E.hasAttribute("stroke-width") || E.setAttribute("stroke-width", "1.2"); }); let v = Ve("#section-meta"); v || (v = document.createElement("div"), v.id = "section-meta", v.className = "section-meta", Ve(".cross-section").append(v)), v.textContent = Tc(ae) + " \xB7 rumbo " + Je(ae.block.length, 1) + " m" + (Mr(ae) ? " \xB7 " + Mr(ae) : ""); }
         function uc(i = !0) { let e = Ve("#stability-view"), t = No(ae); if (!i && e.querySelector("[data-face-values]")) {
             for (let r of t)
                 e.querySelector("[data-face-values=" + r.id + "]").innerHTML = Uu(r, ae.stability.faces[r.id]);
@@ -261,7 +262,11 @@ try {
         }
         function bg() { let i = Ve("#help-popover"), e = null, t = null; function n() { i.hidden = !0, t = null; } function s(r) { clearTimeout(e); let a = yc[r.dataset.help]; if (!a)
             return; t = r, i.innerHTML = "<strong>" + bt(a.title) + "</strong><p>" + bt(a.body) + "</p>" + (a.table ? "<table>" + a.table.map(([c, h, u]) => "<tr><td>" + (u ? '<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + bt(c) + "</a>" : bt(c)) + "</td><td>" + bt(h) + "</td></tr>").join("") + "</table>" : "") + '<p class="reference">' + bt(a.reference) + "</p>" + (a.url ? '<a href="' + a.url + '" target="_blank" rel="noopener noreferrer">' + bt(a.source) + "</a>" : "") + (a.extraUrl ? '<br><a href="' + a.extraUrl + '" target="_blank" rel="noopener noreferrer">' + bt(a.extraSource) + "</a>" : ""), i.hidden = !1; let o = r.getBoundingClientRect(), l = Math.min(350, innerWidth - 16); i.style.width = l + "px", i.style.left = Math.max(8, Math.min(o.right + 10, innerWidth - l - 8)) + "px", i.style.top = Math.max(8, Math.min(o.top, innerHeight - i.offsetHeight - 8)) + "px"; } document.addEventListener("pointerover", r => { let a = r.target.closest?.("[data-help]"); a && s(a); }), document.addEventListener("pointerout", r => { r.target.closest?.("[data-help]") && (e = setTimeout(n, 180)); }), document.addEventListener("focusin", r => { let a = r.target.closest?.("[data-help]"); a && s(a); }), document.addEventListener("click", r => { let a = r.target.closest?.("[data-help]"); a ? (r.preventDefault(), s(a)) : i.contains(r.target) || n(); }), document.addEventListener("keydown", r => { r.key === "Escape" && n(); }), document.addEventListener("focusout", r => { r.target.closest?.("[data-help]") && (e = setTimeout(n, 180)); }), i.onpointerenter = () => clearTimeout(e), i.onpointerleave = () => e = setTimeout(n, 180), Ve("#inspector").addEventListener("scroll", n), window.addEventListener("resize", () => { n(), zu(); }); }
-        function __sectionActive(h) { return __minecadSection === null || h.id.startsWith('R' + (__minecadSection + 1) + '-'); }
+        function __sectionActive(h) {
+            if (__minecadSection === null) return true;
+            const match = /^R(\d+)-/.exec(String(h.id)), index = match ? Number(match[1])-1 : -1;
+            return index >= __minecadSection && index < __minecadSection + __minecadCount;
+        }
         function __sectionHoles(project) { return __minecadSection === null ? vr(project) : br(project).filter(__sectionActive); }
         function __renderSectionButtons() {
             const root = Ve('#section-selector');
@@ -271,8 +276,25 @@ try {
             const sections = Do(ae);
             if (__minecadSection !== null && __minecadSection >= sections.length)
                 __minecadSection = Math.max(0, sections.length - 1);
+            __minecadCount = Math.max(1, Math.min(__minecadCount, sections.length || 1));
+            if (__minecadSection !== null) __minecadSection = Math.min(__minecadSection, Math.max(0, sections.length-__minecadCount));
             root.innerHTML = '<span>Sección</span><div class="section-options"><button type="button" data-section="all" aria-pressed="' + (__minecadSection === null) + '">Todas</button>' + sections.map(s => '<button type="button" data-section="' + s.index + '" aria-label="Ver sección ' + (s.index + 1) + '" aria-pressed="' + (__minecadSection === s.index) + '">' + (s.index + 1) + '</button>').join('') + '</div><span class="section-display-note">' + (sections.length ? (__minecadSection === null ? 'Vista general' : (__minecadSection + 1) + ' / ' + sections.length) : 'Sin secciones disponibles') + '</span>';
-            root.querySelectorAll('[data-section]').forEach(button => button.onclick = () => { __minecadSection = button.dataset.section === 'all' ? null : Number(button.dataset.section); Eo(); zu(); if (Ii)
+            const counter = document.createElement('label');
+            counter.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:11px';
+            counter.innerHTML = 'Líneas visibles <input type="number" min="1" max="' + Math.max(1,sections.length) + '" value="' + (__minecadSection === null ? Math.max(1,sections.length) : __minecadCount) + '" aria-label="Cantidad de líneas visibles" style="width:58px;padding:3px"' + (sections.length ? '' : ' disabled') + '>';
+            root.append(counter);
+            counter.querySelector('input').onchange = event => {
+                const value = Number(event.target.value);
+                __minecadCount = Math.max(1,Math.min(sections.length || 1,Math.round(Number.isFinite(value) ? value : 1)));
+                __minecadSection = Math.min(__minecadSection ?? 0,Math.max(0,sections.length-__minecadCount));
+                Eo(); zu(); if(Ii) Ii.update(ae,At);
+            };
+            const start = __minecadSection ?? 0, count = __minecadSection === null ? sections.length : __minecadCount;
+            root.querySelector('.section-display-note').textContent = sections.length ? 'Mostrando ' + count + ' · desde ' + (start+1) + ' hasta ' + Math.min(sections.length,start+count) : 'Sin secciones disponibles';
+            root.querySelectorAll('[data-section]').forEach(button => {
+                if(button.dataset.section !== 'all') button.setAttribute('aria-pressed',String(Number(button.dataset.section)>=start && Number(button.dataset.section)<start+count));
+            });
+            root.querySelectorAll('[data-section]').forEach(button => button.onclick = () => { if(__minecadSection === null && button.dataset.section !== 'all') __minecadCount = 1; __minecadSection = button.dataset.section === 'all' ? null : Number(button.dataset.section); __minecadSection === null || (__minecadSection = Math.min(__minecadSection,Math.max(0,sections.length-__minecadCount))); Eo(); zu(); if (Ii)
                 Ii.update(ae, At); });
             let label = Ve('#section-3d-title');
             if (!label) {
@@ -280,7 +302,7 @@ try {
                 label.id = 'section-3d-title';
                 Ve('#model-view').append(label);
             }
-            label.textContent = sections.length ? (__minecadSection === null ? 'VISTA GENERAL · ' + sections.length + ' SECCIONES' : 'SECCIÓN ' + (__minecadSection + 1) + ' DE ' + sections.length) : 'SIN SECCIONES DISPONIBLES';
+            label.textContent = sections.length ? 'VISTA · ' + count + ' LÍNEAS · ' + (start+1) + '–' + Math.min(sections.length,start+count) : 'SIN SECCIONES DISPONIBLES';
         }
         document.addEventListener('click', event => { if (event.target.closest('[data-view]'))
             __renderSectionButtons(); });

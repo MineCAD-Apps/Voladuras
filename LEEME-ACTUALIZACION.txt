@@ -1,0 +1,21 @@
+ACTUALIZACIÓN VISUAL MINECAD — 25/11/2026
+
+Copiar el contenido sobre la raíz de la aplicación web conservando las rutas docs/ y tools/. Sustituir los seis archivos HTML/JS de la raíz y añadir registro-aspecto.js (ya incluido). Conservar registro.css, vendor/, logo y demás dependencias.
+Base: main 4ab307c. Comparar antes si el repositorio recibió cambios posteriores.
+No sustituir el módulo instalado en AutoCAD con esta versión web.
+
+CARGA: transición global ilustrativa de rojo a amarillo pastel con el porcentaje de la barra. No usa tiempos ni datos de explosivos.
+DAÑO: halos rojos concéntricos de opacidad decreciente. Grosor decorativo fijo, independiente del espaciamiento; sin escala física ni predicción de daño.
+FRAG.: representación geométrica de la veta en prismas rectangulares. Es una retícula artística, sin cálculo de tamaño de fragmentación.
+LÍNEAS VISIBLES: escribir cantidad de 1 al total. Los botones numerados eligen el comienzo del grupo consecutivo. Cerca del final se ajusta el comienzo para conservar la cantidad. «Todas» muestra el conjunto; al pasar de «Todas» a un botón se vuelve a una línea.
+La selección se comparte en 2D y 3D. Se atenúan las líneas fuera del grupo y el material decorativo se limita al grupo seleccionado: 96 piezas por línea. Incluye la corrección de aparición anticipada.
+
+Las apariencias ilustrativas Carga/Daño/Frag. reemplazan en esos modos la anterior coloración por datos; la captura del proyecto se conserva. El selector Tiempo mantiene su comportamiento anterior; no se añadió enlace entre sus tiempos y los efectos decorativos.
+
+COMPROBADO
+Sintaxis, rutas e integridad.
+Navegador Chrome con WebGL por software: 5 líneas, 480 piezas, colores inicial/final, halos 2D/3D, prismas 3D y retícula 2D, reducción a 1 y ausencia de errores JS.
+Prueba adicional de material con 1, 2 y 19 líneas, retirada de piezas sobrantes y reinicio.
+Capturas revisadas visualmente. Comprobar rendimiento con todos los anillos en el equipo de uso.
+
+Cambios locales; no publicados desde esta sesión.

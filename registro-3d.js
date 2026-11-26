@@ -3,7 +3,7 @@ window.MineCADCreateViewer3D = function (dependencies) {
     const { Bs, Ze, yo, It, So, tr, ir, Pn, Vt, L, ns, _i, Pt, js, Jt, ss, Js, rn, yn, zs } = window.MineCADThree;
     const { xs, zn, br, ri, __sectionActive, Bn } = dependencies;
     var wo = class {
-        constructor(e) { this.el = e, this.scene = new Bs, this.scene.background = new Ze("#0c1a29"), this.renderer = new yo({ antialias: !0, alpha: !1 }), this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2)), e.append(this.renderer.domElement), this.camera = new It(45, 1, .01, 1e4), this.controls = new So(this.camera, this.renderer.domElement), this.controls.enableDamping = !0, this.scene.add(new tr(13625599, 2571080, 2.3)); let t = new ir(16777215, 2.4); t.position.set(20, 40, 30), this.scene.add(t), this.model = new Pn, this.scene.add(this.model), this.observer = new ResizeObserver(() => this.resize()), this.observer.observe(e), this.labelLayer = document.createElement("div"), this.labelLayer.className = "scene-object-labels", this.el.append(this.labelLayer), this.visualLabels = [], this.ringMeshes = new Map, this.visualPlayback = window.MineCADAnimation?.create3D(this, window.MineCADThree), this.unsubscribeLayer = window.MineCADAnimation?.subscribeLayer?.(layer => this.applyLayer(layer)), this.running = !0, this.animate(); }
+        constructor(e) { this.el = e, this.scene = new Bs, this.scene.background = new Ze("#0c1a29"), this.renderer = new yo({ antialias: !0, alpha: !1 }), this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2)), e.append(this.renderer.domElement), this.camera = new It(45, 1, .01, 1e4), this.controls = new So(this.camera, this.renderer.domElement), this.controls.enableDamping = !0, this.scene.add(new tr(13625599, 2571080, 2.3)); let t = new ir(16777215, 2.4); t.position.set(20, 40, 30), this.scene.add(t), this.model = new Pn, this.scene.add(this.model), this.observer = new ResizeObserver(() => this.resize()), this.observer.observe(e), this.labelLayer = document.createElement("div"), this.labelLayer.className = "scene-object-labels", this.el.append(this.labelLayer), this.visualLabels = [], this.ringMeshes = new Map, this.aesthetic = window.MineCADAppearance?.create3D(this,window.MineCADThree), this.visualPlayback = window.MineCADAnimation?.create3D(this, window.MineCADThree), this.unsubscribeLayer = window.MineCADAnimation?.subscribeLayer?.(layer => this.applyLayer(layer)), this.running = !0, this.animate(); }
         resize() { let e = this.el.clientWidth, t = this.el.clientHeight; !e || !t || (this.camera.aspect = e / t, this.camera.updateProjectionMatrix(), this.renderer.setSize(e, t, !1)); }
         animate() { this.running && (requestAnimationFrame(() => this.animate()), this.controls.update(), this.positionLabels(), this.visualPlayback?.render(), this.renderer.render(this.scene, this.camera)); }
         clear() { this.model.traverse(e => { if (e.geometry?.dispose(), e.material)
@@ -53,20 +53,24 @@ window.MineCADCreateViewer3D = function (dependencies) {
             for (let h of e.holes)
                 this.line([h.collar, h.toe].map(([u, d, p]) => [u, p, d]), 16054268, 1); if (t.rings) {
             const all = br(e), asSegments = rows => rows.map(h => [h.collar, h.toe].map(([x, y, z]) => [x, z, y])), radius = Math.max(.025, Math.min(.25, Math.max(e.block.height, e.block.length) * .0035));
-            if (dependencies.getSection() === null) {
-                // Un tubo por anillo (índice tomado del id «R<n>-<m>» que genera la propia aplicación), para poder aplicar la capa de datos sin reconstruir el visor.
-                const byRing = new Map();
-                for (const h of all) { const m = /^R(\d+)-/.exec(String(h.id)); const key = m ? Number(m[1]) - 1 : 't' + h.template; if (!byRing.has(key)) byRing.set(key, []); byRing.get(key).push(h); }
-                for (const [key, rows] of byRing) {
-                    const mesh = this.tubes(asSegments(rows), ri[rows[0].template], .8, radius);
-                    if (mesh && typeof key === 'number') this.ringMeshes.set(key, mesh);
-                }
+            const byRing = new Map();
+            for (const h of all) {
+                const m = /^R(\d+)-/.exec(String(h.id)), key = m ? Number(m[1])-1 : 't'+h.template;
+                if(!byRing.has(key)) byRing.set(key,[]); byRing.get(key).push(h);
             }
-            else {
-                this.tubes(asSegments(all.filter(h => !__sectionActive(h))), 0x95a8b8, .28, radius * .45);
-                this.tubes(asSegments(all.filter(__sectionActive)), 0xffd966, 1, radius);
+            for(const [key,rows] of byRing) {
+                const active = __sectionActive(rows[0]);
+                const mesh = this.tubes(asSegments(rows),active ? ri[rows[0].template] : 0x95a8b8,active ? .8 : .16,active ? radius : radius*.45);
+                if(mesh && typeof key === 'number') {mesh.userData.visualSelected=active;this.ringMeshes.set(key,mesh);}
             }
-        } let a = new yn().setFromObject(this.model); a.isEmpty() && (a.min.set(-3, 0, 0), a.max.set(3, e.block.height, s)), this.box = a; let o = a.getSize(new L), l = a.getCenter(new L), c = Math.max(o.x, o.y, o.z, 1); this.camera.far = c * 100, this.camera.updateProjectionMatrix(), this.fitted || (this.fit(), this.fitted = !0), this.resize(), this.setVisualLabels(e), this.addFloorGrid(), this.visualPlayback?.setGeometry(n, zn(e, "lower"), s, this.shownRingPositions(e)), this.applyLayer(); }
+        } let a = new yn().setFromObject(this.model); a.isEmpty() && (a.min.set(-3, 0, 0), a.max.set(3, e.block.height, s)), this.box = a; let o = a.getSize(new L), l = a.getCenter(new L), c = Math.max(o.x, o.y, o.z, 1); this.camera.far = c * 100, this.camera.updateProjectionMatrix(), this.fitted || (this.fit(), this.fitted = !0), this.resize(), this.setVisualLabels(e), this.addFloorGrid(), this.visualPlayback?.setGeometry(n, zn(e, "lower"), s, this.shownRingPositions(e)), this.applyLayer(); this.configureAesthetic(e,t,n,s); }
+        configureAesthetic(project,visibility,samples,length) {
+            const all=br(project), shown=all.filter(__sectionActive);
+            const coords=rows=>[...new Set(rows.map(h=>Number(h.collar[1])).filter(Number.isFinite))].sort((a,b)=>a-b);
+            const segments=shown.map(h=>[h.collar,h.toe].map(([x,y,z])=>[x,z,y]));
+            const radius=Math.max(.025,Math.min(.25,Math.max(project.block.height,length)*.0035));
+            this.aesthetic?.configure(samples,length,segments,radius,[...this.ringMeshes.values()].filter(m=>m.userData.visualSelected),coords(all),coords(shown),visibility);
+        }
         // Posiciones longitudinales (ya existentes) de los anillos que se están mostrando: todos, o solo la sección elegida. Solo lectura.
         shownRingPositions(project) {
             try {
@@ -144,7 +148,7 @@ window.MineCADCreateViewer3D = function (dependencies) {
             this.camera.position.copy(centre).addScaledVector(direction, high);
             this.controls.update();
         }
-        dispose() { this.unsubscribeLayer?.(); this.visualPlayback?.dispose(); this.running = !1, this.observer.disconnect(), this.controls.dispose(), this.clear(), this.renderer.dispose(), this.el.replaceChildren(); }
+        dispose() { this.unsubscribeLayer?.(); this.aesthetic?.dispose(); this.visualPlayback?.dispose(); this.running = !1, this.observer.disconnect(), this.controls.dispose(), this.clear(), this.renderer.dispose(), this.el.replaceChildren(); }
     };
     return wo;
 };
