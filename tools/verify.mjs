@@ -4,7 +4,7 @@ import vm from 'node:vm';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-for(const name of ['vendor/three-vendor.js','registro-3d.js','registro-app.js','registro-controles.js','animacion-visual.js','registro-aspecto.js']) new vm.Script(fs.readFileSync(path.join(root,name),'utf8'),{filename:name});
+for(const name of ['vendor/three-vendor.js','registro-3d.js','registro-app.js','registro-controles.js','animacion-visual.js','registro-aspecto.js','registro-calculo-formato.js']) new vm.Script(fs.readFileSync(path.join(root,name),'utf8'),{filename:name});
 const entry=fs.readFileSync(path.join(root,'index.html'),'utf8');
 for(const match of entry.matchAll(/(?:src|href)="\.\/([^"]+)"/g)) if(!fs.existsSync(path.join(root,match[1])))throw Error('Falta '+match[1]);
 if(!fs.existsSync(path.join(root,'logo-minecad.png')))throw Error('Falta el logo');
