@@ -235,7 +235,8 @@
     const veinAtSample = (samples, y) => interpRow(samples, y);
     function create3D(viewer, types) {
         const { Pn, Vt, Pt, Jt, js } = types;
-        const group = new Pn(); group.visible = false; viewer.scene.add(group);
+        const displayRoot = viewer.geometryRoot || viewer.scene;
+        const group = new Pn(); group.visible = false; displayRoot.add(group);
         const geometry = new Vt();
         geometry.setAttribute('position', new Pt([-1,-.5,-.6, 1,-.5,-.6, 0,1,.1, 0,-.5,1], 3));
         geometry.setIndex([0,2,1, 0,1,3, 1,2,3, 2,0,3]); geometry.computeVertexNormals();
@@ -627,7 +628,7 @@
                     material.emissiveIntensity = !tl && p < .2 ? Math.sin(p / .2 * Math.PI) * .7 : 0;
                 }
             },
-            dispose() { document.removeEventListener('minecad:datos', onDatos); viewer.scene.remove(group); geometry.dispose(); materials.forEach(m => m.dispose()); group.clear(); }
+            dispose() { document.removeEventListener('minecad:datos', onDatos); displayRoot.remove(group); geometry.dispose(); materials.forEach(m => m.dispose()); group.clear(); }
         };
         /* Los datos de explosivo y carga no pasan por la geometría del visor: si cambia el resultado de
            Kuz-Ram se recalculan los fragmentos con la última geometría recibida. */
