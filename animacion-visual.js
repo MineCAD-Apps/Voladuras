@@ -32,35 +32,45 @@
     /* Muestreo exclusivamente VISUAL de volúmenes equivalentes. Consume P80 ya calculado;
        no modifica tamaños del modelo, acomodo, cantidades, tiempos ni fórmulas de fragmentación.
        Conserva el volumen de la muestra y reserva el 20% para piezas mayores que P80. */
-    function visualP80Sizes(sizes, p80, random) {
-        if (!(Number.isFinite(p80) && p80 > 0) || sizes.length < 3 || sizes.some(x => !Number.isFinite(x) || x <= 0)) return null;
-        const total = sizes.reduce((v, x) => v + x ** 3, 0), coarse = total * .2, fine = total - coarse;
-        const cap = (p80 * (1 - 1e-6)) ** 3, base = (p80 * (1 + 1e-6)) ** 3;
-        // Una muestra finita puede no contener volumen suficiente para un solo bloque > P80.
-        if (coarse < base) return null;
-        const minimum = 1;
-        const maximum = Math.min(sizes.length - Math.ceil(fine / cap), Math.floor(coarse / base));
-        if (minimum > maximum) return null;
-        const count = Math.max(minimum, Math.min(maximum, Math.max(1, Math.round(coarse / (p80 * 1.35) ** 3))));
-        const order = sizes.map((_, i) => i).sort((a, b) => random(a + 901) - random(b + 901) || a - b);
-        const coarseIds = order.slice(0, count), fineIds = order.slice(count), output = sizes.slice();
-        // Volumen libre distribuido entre los bloques grandes: algunos próximos a P80 y otros mayores.
-        const weights = coarseIds.map(i => .05 + random(i + 1237) ** 2);
-        const sum = weights.reduce((a, b) => a + b, 0), extra = coarse - count * base;
-        coarseIds.forEach((id, i) => output[id] = Math.cbrt(base + extra * weights[i] / sum));
-        // Un bloque de referencia tiene exactamente P80 y pertenece al 80% pasante.
-        const boundaryId = fineIds.shift(); output[boundaryId] = p80;
-        const fineRest = fine - p80 ** 3;
-        const volumes = fineIds.map(i => Math.min(cap, sizes[i] ** 3));
-        const value = scale => volumes.reduce((v, x) => v + Math.min(cap, x * scale), 0);
-        let lo = 0, hi = 1;
-        while (value(hi) < fineRest && hi < 1e18) hi *= 2;
-        if (value(hi) < fineRest * (1 - 1e-10)) return null;
-        for (let j = 0; j < 80; j++) { const m = (lo + hi) / 2; if (value(m) < fineRest) lo = m; else hi = m; }
-        fineIds.forEach((id, i) => output[id] = Math.cbrt(Math.min(cap, volumes[i] * ((lo + hi) / 2))));
-        return { sizes: output, p80, coarsePieces: count, coarseVolume: coarse, totalVolume: total };
+    function visualP80Sizes(sizes, p80, random, x50) {
+        if (!(Number.isFinite(x50) && x50 > 0 && Number.isFinite(p80) && p80 > x50) || sizes.length < 6 || sizes.some(x => !Number.isFinite(x) || x <= 0)) return null;
+        const total = sizes.reduce((v, x) => v + x ** 3, 0), a = x50 ** 3, b = p80 ** 3;
+        const fine = total * .5, middle = total * .3, coarse = total * .2, eps = 1e-6;
+        const fineCap = a * (1 - eps), midMin = a * (1 + eps), midCap = b * (1 - eps), coarseMin = b * (1 + eps);
+        if (fine < a || middle < b || coarse < coarseMin || midCap <= midMin) return null;
+        const minFine = 1 + Math.max(0, Math.ceil((fine - a) / fineCap));
+        const minMid = 1 + Math.max(0, Math.ceil((middle - b) / midCap));
+        const maxMid = 1 + Math.floor((middle - b) / midMin);
+        const maxCoarse = Math.min(Math.floor(coarse / coarseMin), sizes.length - minFine - minMid);
+        if (maxCoarse < 1 || minMid > maxMid) return null;
+        const countCoarse = Math.max(1, Math.min(maxCoarse, Math.round(coarse / (p80 * 1.35) ** 3)));
+        const upperMid = Math.min(maxMid, sizes.length - minFine - countCoarse);
+        if (upperMid < minMid) return null;
+        const countMid = Math.max(minMid, Math.min(upperMid, Math.round(middle / ((x50 + p80) / 2) ** 3)));
+        const order = sizes.map((_, i) => i).sort((i, j) => random(i + 901) - random(j + 901) || i - j);
+        const coarseIds = order.slice(0, countCoarse), midIds = order.slice(countCoarse, countCoarse + countMid), fineIds = order.slice(countCoarse + countMid);
+        const output = sizes.slice();
+        function assign(ids, budget, lower, upper, reference) {
+            ids = ids.slice();
+            if (reference != null) { output[ids.shift()] = reference; budget -= reference ** 3; }
+            if (!ids.length) return Math.abs(budget) < total * 1e-10;
+            if (budget < ids.length * lower - total * 1e-10 || budget > ids.length * upper + total * 1e-10) return false;
+            const weights = ids.map(i => Math.max(1e-30, sizes[i] ** 3 * (.5 + random(i + 1237))));
+            const volume = scale => weights.reduce((sum, w) => sum + Math.min(upper, lower + w * scale), 0);
+            let lo = 0, hi = 1;
+            while (volume(hi) < budget && hi < 1e30) hi *= 2;
+            for (let k = 0; k < 90; k++) { const m = (lo + hi) / 2; if (volume(m) < budget) lo = m; else hi = m; }
+            ids.forEach((id, k) => output[id] = Math.cbrt(Math.min(upper, lower + weights[k] * ((lo + hi) / 2))));
+            return true;
+        }
+        if (!assign(fineIds, fine, 0, fineCap, x50) || !assign(midIds, middle, midMin, midCap, p80) || !assign(coarseIds, coarse, coarseMin, Infinity, null)) return null;
+        return { sizes: output, x50, p80, coarsePieces: countCoarse, coarseVolume: coarse, totalVolume: total };
     }
-    const fragmentPath = (x, y, r) => 'M' + (x-r) + ',' + y + ' l' + (r*.5) + ',' + (-r) + ' ' + (r*1.4) + ',' + (r*.25) + ' ' + (r*.4) + ',' + r + ' ' + (-r*.8) + ',' + (r*.8) + ' Z';
+    function fragmentPath(x, y, size, ky = 1) {
+        const radius = size / Math.cbrt(.8 * ky), h = radius * ky;
+        // Proyección X/Z de los vértices del tetraedro empleado por el visor 3D; SVG invierte Z.
+        return 'M' + (x-radius) + ',' + (y+h*.5) + ' L' + (x+radius) + ',' + (y+h*.5) + ' L' + x + ',' + (y-h) + ' Z';
+    }
     // ---- Geometría común a 2D y 3D ----
     // Intervalos [x0, x1] donde la recta horizontal a la cota z corta un polígono [[x, z], …] (regla par-impar).
     function polyIntervals(points, z) {
@@ -144,10 +154,10 @@
             const volume = area * (window.MineCADLayerData?.burden?.() ?? 1) * (seq?.rings?.length ?? 1);
             const total = Math.max(12, Math.min(700, Math.round(DENSITY_2D * volume)));
             const texture = node('g', { 'clip-path': 'url(#minecad-illustration-clip)' });
-            const addRock = (i, x, y, time, offset = riseFraction(-y, -box.y - box.height, -box.y)) => {
+            const addRock = (i, x, y, time, offset = riseFraction(-y, -box.y - box.height, -box.y), axis = null) => {
                 const r = Math.max(box.height * .008, Math.min(box.width * .14, box.height * .022)) * (.65 + seed(i + 300));
                 const rock = node('path', { d: `M${x-r},${y} l${r*.5},${-r} ${r*1.4},${r*.25} ${r*.4},${r} ${-r*.8},${r*.8} Z`, fill: ['#92704b','#b59261','#d2b077'][i % 3], stroke: '#5a4935', 'stroke-width': box.height * .0009 });
-                texture.append(rock); cells.push({ node: rock, x, y, time, offset, travel: box.height * (.035 + seed(i + 900) * .055) });
+                texture.append(rock); cells.push({ node: rock, x, y, axis, time, offset, travel: box.height * (.035 + seed(i + 900) * .055) });
             };
             // Con secuencia, cada fragmento nace sobre la proyección de su barreno de origen.
             const groups = new Map();
@@ -174,7 +184,7 @@
                 for (let i = 0; i < count; i++, n++) {
                     const [x, y] = inside[Math.floor(seed(n + 1) * inside.length)];
                     const time = list[list.length > count ? Math.floor(i * list.length / count) : i % list.length];
-                    addRock(n, x + (seed(n + 191) - .5) * box.width * .12, y + (seed(n + 77) - .5) * box.height * .025, time, riseFraction(-y, bottom, top));
+                    addRock(n, x, y, time, riseFraction(-y, bottom, top), { dx: x2 - x1, dy: y2 - y1 });
                 }
             }
             if (!cells.length) for (let i = 0; i < total; i++) {
@@ -185,14 +195,27 @@
             // Muestra de tamaños en la proyección 2D, expresada en metros.
             const visualKR = window.MineCADFragmentacion?.();
             const visual2D = visualKR?.X50 > 0 && visualKR?.P80 > visualKR.X50
-                ? visualP80Sizes(cells.map(() => visualKR.X50 / 100), visualKR.P80 / 100, seed) : null;
-            if (visual2D) cells.forEach((cell, i) => cell.node.setAttribute('d', fragmentPath(cell.x, cell.y, visual2D.sizes[i] / 2.3)));
+                ? visualP80Sizes(cells.map(() => visualKR.X50 / 100), visualKR.P80 / 100, seed, visualKR.X50 / 100) : null;
+            if (visual2D) cells.forEach((cell, i) => {
+                cell.visualSize = visual2D.sizes[i];
+                cell.node.setAttribute('d', fragmentPath(cell.x, cell.y, cell.visualSize, .8 + seed(i + 450) * .35));
+                cell.node.setAttribute('data-size-m', String(cell.visualSize));
+            });
+            else if (visualKR?.X50 > 0) cells.forEach((cell, i) => {
+                cell.visualSize = visualKR.X50 / 100;
+                cell.node.setAttribute('d', fragmentPath(cell.x, cell.y, cell.visualSize, .8 + seed(i + 450) * .35));
+                cell.node.setAttribute('data-size-m', String(cell.visualSize));
+            });
+            overlay.setAttribute('data-size-note', visual2D
+                ? 'X50 ' + visualKR.X50.toFixed(1) + ' cm · P80 ' + visualKR.P80.toFixed(1) + ' cm · 20% del volumen visual > P80'
+                : visualKR?.X50 > 0 ? 'Referencia X50; muestra insuficiente para representar los dos percentiles' : 'Tamaños ilustrativos: faltan datos de fragmentación');
             const flash = node('polygon', { points, fill: '#ffe4a0', 'data-animation-flash': '' });
             const body = node('g', { mask: 'url(#minecad-illustration-mask)' }); body.append(texture, flash); overlay.append(body);
             // Detrás de los barrenos, para que su color siga visible.
             const anchor = svg.querySelector('[data-visual-hole]');
             if (anchor) svg.insertBefore(overlay, anchor); else svg.append(overlay);
         }
+        if (caption && !layerActive() && overlay.getAttribute('data-size-note')) caption.textContent += ' · ' + overlay.getAttribute('data-size-note');
         overlay.style.display = progress > 0 && !layerActive() ? '' : 'none';
         const p = progress / 100, flash = overlay.querySelector('[data-animation-flash]');
         flash.setAttribute('opacity', String(!tl && p < .2 ? Math.sin(p / .2 * Math.PI) * .5 : 0));
@@ -204,10 +227,12 @@
             }
             else { phase = clamp((p - .12 - cell.offset * .14) / .62); opacity = phase * .82; }
             cell.node.setAttribute('opacity', String(opacity));
-            cell.node.setAttribute('transform', `translate(0 ${phase * phase * cell.travel})`);
+            const drop = phase * phase * cell.travel;
+            const shiftX = cell.axis && Math.abs(cell.axis.dy) > 1e-9 ? drop * cell.axis.dx / cell.axis.dy : 0;
+            cell.node.setAttribute('transform', `translate(${shiftX} ${drop})`);
         }
     }
-    const veinAtSample = (samples, y) => samples.reduce((a, b) => Math.abs(b.z - y) < Math.abs(a.z - y) ? b : a);
+    const veinAtSample = (samples, y) => interpRow(samples, y);
     function create3D(viewer, types) {
         const { Pn, Vt, Pt, Jt, js } = types;
         const group = new Pn(); group.visible = false; viewer.scene.add(group);
@@ -269,9 +294,7 @@
         info.style.cssText = 'position:absolute;left:10px;bottom:8px;z-index:4;pointer-events:none;max-width:calc(100% - 20px);line-height:1.35;padding:3px 8px;border:1px solid #a88840;border-radius:12px;background:#102234e8;color:#ffe2a0;font:11px Segoe UI,sans-serif';
         info.hidden = true; viewer.el.appendChild(info);
         function veinAt(y) {
-            const s = pile.samples, t = clamp((y - s[0].z) / (s[s.length - 1].z - s[0].z || 1)) * (s.length - 1);
-            const i = Math.min(s.length - 2, Math.floor(t)), f = t - i, a = s[i], b = s[i + 1];
-            return { left: a.left + (b.left - a.left) * f, right: a.right + (b.right - a.right) * f };
+            return interpRow(pile.samples, y);
         }
         /* Acomodo geométrico (no es una simulación física): cada fragmento se trata como una esfera,
            se apoya en el piso o sobre los que llegaron antes y rueda mientras la pendiente supere el
@@ -505,6 +528,7 @@
                         else ({ x, y } = randomSolid(i));
                         const at = veinAtSample(samples, y);
                         rock.hole = hole ? hole.id : null; rock.ring = k;
+                        rock.visualAxis = hole ? { dx: hole.toe[0] - hole.collar[0], dy: hole.toe[2] - hole.collar[2] } : null;
                         rock.phase = points.length
                             ? riseFraction(y, Math.min(points[0].y, points[points.length - 1].y), Math.max(points[0].y, points[points.length - 1].y))
                             : riseFraction(y, zMin, zMax);
@@ -517,7 +541,7 @@
                 });
                 // Solo la escala de dibujo cambia; rock.size y rock.radius conservan el modelo existente.
                 const visualTail = krOK && Number.isFinite(kr.P80) && kr.P80 > kr.X50
-                    ? visualP80Sizes(rocks.map(r => r.size), kr.P80 / 100, seed) : null;
+                    ? visualP80Sizes(rocks.map(r => r.size), kr.P80 / 100, seed, kr.X50 / 100) : null;
                 rocks.forEach((rock, j) => {
                     rock.visualSize = visualTail ? visualTail.sizes[j] : rock.size;
                     if (visualTail) rock.mesh.scale.multiplyScalar(rock.visualSize / rock.size);
@@ -570,7 +594,11 @@
                     // Misma aceleración para todos: lo que está más abajo llega primero.
                     const start = Math.max(rock.y, rest.y), y = Math.max(rest.y, start - maxDrop * (age / FALL) ** 2);
                     const f = start - rest.y > 1e-6 ? (start - y) / (start - rest.y) : Math.min(1, age / .2);
-                    const row = veinAt(y), slide = row.left + (row.right - row.left) * rock.u, k = f ** 4;
+                    const row = veinAt(y), axis = rock.visualAxis;
+                    const slide = axis && Math.abs(axis.dy) > 1e-9
+                        ? rock.x + (y - rock.y) * axis.dx / axis.dy
+                        : row.left + (row.right - row.left) * rock.u;
+                    const k = f ** 4;
                     // Sobre la corona la caída queda dentro de la roca abierta; el desvío hacia la roca sin detonar solo ocurre ya dentro del hueco inferior.
                     const linear = rock.z + (rest.z - rock.z) * f * f, run = rock.run;
                     let z = linear;
