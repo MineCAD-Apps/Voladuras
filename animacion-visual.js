@@ -28,6 +28,39 @@
     const glow = age => age < 0 || age >= GLOW ? 0 : Math.pow(1 - age / GLOW, 1.5);
     let built = null;
     const seed = n => { const x = Math.sin(n * 127.1 + 37.7) * 43758.5453; return x - Math.floor(x); };
+
+    /* Muestreo exclusivamente VISUAL de volúmenes equivalentes. Consume P80 ya calculado;
+       no modifica tamaños del modelo, acomodo, cantidades, tiempos ni fórmulas de fragmentación.
+       Conserva el volumen de la muestra y reserva el 20% para piezas mayores que P80. */
+    function visualP80Sizes(sizes, p80, random) {
+        if (!(Number.isFinite(p80) && p80 > 0) || sizes.length < 3 || sizes.some(x => !Number.isFinite(x) || x <= 0)) return null;
+        const total = sizes.reduce((v, x) => v + x ** 3, 0), coarse = total * .2, fine = total - coarse;
+        const cap = (p80 * (1 - 1e-6)) ** 3, base = (p80 * (1 + 1e-6)) ** 3;
+        // Una muestra finita puede no contener volumen suficiente para un solo bloque > P80.
+        if (coarse < base) return null;
+        const minimum = 1;
+        const maximum = Math.min(sizes.length - Math.ceil(fine / cap), Math.floor(coarse / base));
+        if (minimum > maximum) return null;
+        const count = Math.max(minimum, Math.min(maximum, Math.max(1, Math.round(coarse / (p80 * 1.35) ** 3))));
+        const order = sizes.map((_, i) => i).sort((a, b) => random(a + 901) - random(b + 901) || a - b);
+        const coarseIds = order.slice(0, count), fineIds = order.slice(count), output = sizes.slice();
+        // Volumen libre distribuido entre los bloques grandes: algunos próximos a P80 y otros mayores.
+        const weights = coarseIds.map(i => .05 + random(i + 1237) ** 2);
+        const sum = weights.reduce((a, b) => a + b, 0), extra = coarse - count * base;
+        coarseIds.forEach((id, i) => output[id] = Math.cbrt(base + extra * weights[i] / sum));
+        // Un bloque de referencia tiene exactamente P80 y pertenece al 80% pasante.
+        const boundaryId = fineIds.shift(); output[boundaryId] = p80;
+        const fineRest = fine - p80 ** 3;
+        const volumes = fineIds.map(i => Math.min(cap, sizes[i] ** 3));
+        const value = scale => volumes.reduce((v, x) => v + Math.min(cap, x * scale), 0);
+        let lo = 0, hi = 1;
+        while (value(hi) < fineRest && hi < 1e18) hi *= 2;
+        if (value(hi) < fineRest * (1 - 1e-10)) return null;
+        for (let j = 0; j < 80; j++) { const m = (lo + hi) / 2; if (value(m) < fineRest) lo = m; else hi = m; }
+        fineIds.forEach((id, i) => output[id] = Math.cbrt(Math.min(cap, volumes[i] * ((lo + hi) / 2))));
+        return { sizes: output, p80, coarsePieces: count, coarseVolume: coarse, totalVolume: total };
+    }
+    const fragmentPath = (x, y, r) => 'M' + (x-r) + ',' + y + ' l' + (r*.5) + ',' + (-r) + ' ' + (r*1.4) + ',' + (r*.25) + ' ' + (r*.4) + ',' + r + ' ' + (-r*.8) + ',' + (r*.8) + ' Z';
     // ---- Geometría común a 2D y 3D ----
     // Intervalos [x0, x1] donde la recta horizontal a la cota z corta un polígono [[x, z], …] (regla par-impar).
     function polyIntervals(points, z) {
@@ -114,7 +147,7 @@
             const addRock = (i, x, y, time, offset = riseFraction(-y, -box.y - box.height, -box.y)) => {
                 const r = Math.max(box.height * .008, Math.min(box.width * .14, box.height * .022)) * (.65 + seed(i + 300));
                 const rock = node('path', { d: `M${x-r},${y} l${r*.5},${-r} ${r*1.4},${r*.25} ${r*.4},${r} ${-r*.8},${r*.8} Z`, fill: ['#92704b','#b59261','#d2b077'][i % 3], stroke: '#5a4935', 'stroke-width': box.height * .0009 });
-                texture.append(rock); cells.push({ node: rock, time, offset, travel: box.height * (.035 + seed(i + 900) * .055) });
+                texture.append(rock); cells.push({ node: rock, x, y, time, offset, travel: box.height * (.035 + seed(i + 900) * .055) });
             };
             // Con secuencia, cada fragmento nace sobre la proyección de su barreno de origen.
             const groups = new Map();
@@ -149,6 +182,11 @@
                 for (let t = 1; t < 16 && !solid(x, y); t++) { x = box.x + seed(i + 1 + t * 53) * box.width; y = box.y + seed(i + 191 + t * 71) * box.height; }
                 addRock(i, x, y, null);
             }
+            // Muestra de tamaños en la proyección 2D, expresada en metros.
+            const visualKR = window.MineCADFragmentacion?.();
+            const visual2D = visualKR?.X50 > 0 && visualKR?.P80 > visualKR.X50
+                ? visualP80Sizes(cells.map(() => visualKR.X50 / 100), visualKR.P80 / 100, seed) : null;
+            if (visual2D) cells.forEach((cell, i) => cell.node.setAttribute('d', fragmentPath(cell.x, cell.y, visual2D.sizes[i] / 2.3)));
             const flash = node('polygon', { points, fill: '#ffe4a0', 'data-animation-flash': '' });
             const body = node('g', { mask: 'url(#minecad-illustration-mask)' }); body.append(texture, flash); overlay.append(body);
             // Detrás de los barrenos, para que su color siga visible.
@@ -226,7 +264,7 @@
             }
         }
         let ready = false;
-        const krKey = (kr, muck) => (kr && kr.X50 > 0 && kr.n > .3 && kr.n < 6 ? kr.X50 + '|' + kr.n : '') + '#' + (muck ? muck.swellRaw + '|' + muck.slotDiameterM : '');
+        const krKey = (kr, muck) => (kr && kr.X50 > 0 && kr.n > .3 && kr.n < 6 ? kr.X50 + '|' + kr.n + '|' + kr.P80 : '') + '#' + (muck ? muck.swellRaw + '|' + muck.slotDiameterM : '');
         const info = document.createElement('div');
         info.style.cssText = 'position:absolute;left:10px;bottom:8px;z-index:4;pointer-events:none;max-width:calc(100% - 20px);line-height:1.35;padding:3px 8px;border:1px solid #a88840;border-radius:12px;background:#102234e8;color:#ffe2a0;font:11px Segoe UI,sans-serif';
         info.hidden = true; viewer.el.appendChild(info);
@@ -477,6 +515,13 @@
                         rock.mesh.scale.set(radius, radius * ky, radius);
                     }
                 });
+                // Solo la escala de dibujo cambia; rock.size y rock.radius conservan el modelo existente.
+                const visualTail = krOK && Number.isFinite(kr.P80) && kr.P80 > kr.X50
+                    ? visualP80Sizes(rocks.map(r => r.size), kr.P80 / 100, seed) : null;
+                rocks.forEach((rock, j) => {
+                    rock.visualSize = visualTail ? visualTail.sizes[j] : rock.size;
+                    if (visualTail) rock.mesh.scale.multiplyScalar(rock.visualSize / rock.size);
+                });
                 const natural = slabs.reduce((a, s) => a + naturalOf(s), 0);
                 // Balance de volumen por línea (analítico: no depende de la muestra dibujada). El hueco de la obra inferior no se cuenta.
                 let acumulado = 0;
@@ -498,8 +543,10 @@
                     parts.push('suelto ' + f1(last.sueltoAcumulado) + ' m³ vs hueco ' + f1(last.huecoAcumulado) + ' m³');
                     if (k0 >= 0) parts.push('⚠ no cabe desde la línea ' + (k0 + 1) + ': extraer ' + f1(last.porExtraer) + ' m³');
                 }
+                if (visualTail) parts.push('Muestra visual P80 ' + kr.P80.toFixed(1) + ' cm · 20% del volumen representado > P80');
+                else if (krOK && kr.P80 > 0) parts.push('P80 ' + kr.P80.toFixed(1) + ' cm · muestra insuficiente para representar 20% > P80 sin alterar su volumen');
                 labelBase = parts.join(' · ');
-                stats = { area, density: (krOK ? coarse / tab.meanVol : DENSITY) * scale,
+                stats = { muestraVisual: visualTail ? { P80cm: kr.P80, volumenMayorP80: visualTail.coarseVolume, volumenTotal: visualTail.totalVolume, fraccionMayorP80: .2, piezasMayoresP80: visualTail.coarsePieces, soloApariencia: true } : null, area, density: (krOK ? coarse / tab.meanVol : DENSITY) * scale,
                           kuzRam: krOK ? { X50: kr.X50, n: kr.n, muestra: rocks.length, natural, escala: scale, xCorte: tab.xMin, masaDibujada: coarse, esferaK: sphereK } : null,
                           abundamiento: S, contrapozo: { diametro: slotD, volumen: slotVolume, espesorEquivalente: slotT },
                           total: rocks.length, lines,
@@ -553,6 +600,7 @@
         document.addEventListener('minecad:datos', onDatos);
         return api;
     }
+    document.addEventListener('minecad:datos', () => { built = null; render2D(); });
     window.MineCADAnimation = Object.freeze({
         setProgress(value) { progress = Math.max(0, Math.min(100, Number(value) || 0)); render2D(); },
         getProgress() { return progress; },

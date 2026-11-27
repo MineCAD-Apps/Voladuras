@@ -1,5 +1,8 @@
-Base: main c4c153f. Sustituye animacion-visual.js en la raíz y docs/MANIFIESTO.json dentro de docs.
-Cambio exclusivamente gráfico: la variación aleatoria de aparición se sustituye por el orden de altura, de abajo hacia arriba, en cada barreno (2D y 3D).
-Se conserva la ventana gráfica de aparición existente. No cambian las entradas del diseño, la secuencia capturada, el número o tamaño de fragmentos ni las fórmulas de fragmentación.
-Con barrenos horizontales, los fragmentos de igual altura aparecen juntos. Sin barreno de origen se usa la altura del bloque como referencia visual.
+Base: main 5287269. Reemplazar animacion-visual.js y docs/MANIFIESTO.json.
+Cambio exclusivamente de apariencia de fragmentos en 2D/3D. Lee X50 y P80 existentes; no altera las fórmulas ni el resultado de Kuz-Ram.
+El 20% corresponde al volumen equivalente de los fragmentos representados, no al conteo de piezas. No se calcula masa ni se predice una distribución real nueva.
+En 3D se conserva el volumen equivalente total de la muestra y se redistribuye solo la escala de las mallas. El acomodo y movimiento mantienen los tamaños internos originales: no se debe interpretar esta apariencia como una prueba de paso u obstrucción de bloques P80.
+No se modifica el volumen analítico de material, abundamiento o huecos. Se conserva la aparición de abajo hacia arriba.
+Si P80 no es válido o la muestra no alcanza para incluir un bloque mayor que P80 conservando su volumen, se mantiene la apariencia original; en 3D aparece una nota explícita. No se inventa un P80.
+La muestra 2D utiliza el mismo criterio volumétrico de tamaños; es una proyección de presentación.
 No publicado automáticamente.
