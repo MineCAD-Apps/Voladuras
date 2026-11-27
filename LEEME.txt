@@ -1,7 +1,7 @@
-Base main 2a9dde8. Sustituir animacion-visual.js y docs/MANIFIESTO.json.
-La posición inicial usa interpolación continua; el recorrido gráfico parte de esa posición y sigue el eje del barreno existente, tanto a izquierda como a derecha. El acomodo final conserva su lógica anterior.
-El contorno SVG usa la proyección del mismo tetraedro 3D y su tamaño cúbico equivalente. X50/P80 son tamaños equivalentes, no el ancho máximo del contorno.
-Un único muestreador visual reparte 50% del volumen equivalente <= X50, 30% entre X50 y P80 y 20% > P80. Hay piezas de referencia exactamente X50 y P80. Las muestras 2D y 3D pueden contener cantidades distintas, pero usan los mismos percentiles y unidades (cm -> m).
-Se conserva el volumen equivalente total de cada muestra. Si no hay suficientes piezas/volumen para representar ambos percentiles, aparece una indicación y no se afirma que se cumpla el reparto.
-Cambio de apariencia: las fórmulas de Kuz-Ram, datos de carga, secuencias y volúmenes analíticos no se modificaron. Los tamaños del acomodo interno siguen siendo los originales; no es una validación de paso u obstrucción.
+Base main 7fba1e9. Reemplazar animacion-visual.js y docs/MANIFIESTO.json.
+Se corrige el acomodo geométrico ilustrativo: la coordenada lateral acompaña el perfil existente a la altura de cada pieza; la última restricción de paredes se comprueba a la altura final.
+Se conserva el sondeo lateral existente; las restricciones usan la altura completa de cada iteración, en vez de detenerse antes de comprobarla. La transición de caída también conserva los centros dentro del contorno inclinado existente.
+No se usa el espacio del nivel inferior cuando está marcado como inexistente.
+El perfil ya definido en la aplicación se conserva: no se calcula un hueco nuevo a partir de explosivos ni se predice rotura. No se modifican fórmulas de fragmentación, cargas o tiempos.
+Es un acomodo geométrico ilustrativo, no un modelo de flujo, contacto físico o comprobación de obstrucción. Las escalas visuales X50/P80 siguen separadas del radio interno de acomodo.
 No publicado automáticamente.

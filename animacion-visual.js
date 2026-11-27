@@ -334,23 +334,32 @@
             const order = rocks.map((rock, i) => [arrival(rock), i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
             // Altura de apoyo en (x, z): x limitado a las paredes y z a la roca abierta, salvo dentro del hueco inferior.
             const support = (x, z, r, run) => {
+                // Restringir el acomodo al perfil en la altura actual sin cambiar el sondeo lateral.
                 let y = pile.floor + r;
-                for (let pass = 0; pass < 3; pass++) {
-                    const vein = veinAt(y), inDrift = y < pile.crown;
-                    const lo = (inDrift ? Math.min(pile.left, vein.left) : vein.left) + r, hi = (inDrift ? Math.max(pile.right, vein.right) : vein.right) - r;
-                    const nx = lo > hi ? (lo + hi) / 2 : Math.max(lo, Math.min(hi, x));
-                    const open = pile.hollow && inDrift && nx >= pile.left && nx <= pile.right;
+                for (let pass = 0; pass < 24; pass++) {
+                    const previous = { x, y, z }, row = veinAt(y), inDrift = pile.hollow && y < pile.crown;
+                    const lo = (inDrift ? Math.min(pile.left, row.left) : row.left) + r;
+                    const hi = (inDrift ? Math.max(pile.right, row.right) : row.right) - r;
+                    const desired = x;
+                    x = lo > hi ? (lo + hi) / 2 : Math.max(lo, Math.min(hi, desired));
+                    const open = inDrift && x >= pile.left && x <= pile.right;
                     const zlo = open ? r - slotT : run.lo + r, zhi = open ? pile.length - r : run.hi - r;
-                    const nz = zlo > zhi ? (zlo + zhi) / 2 : Math.max(zlo, Math.min(zhi, z));
-                    if (pass && Math.abs(nx - x) < 1e-4 && Math.abs(nz - z) < 1e-4) break;
-                    x = nx; z = nz; y = pile.floor + r;
+                    z = zlo > zhi ? (zlo + zhi) / 2 : Math.max(zlo, Math.min(zhi, z));
+                    y = pile.floor + r;
                     const ci = Math.floor(x / cell), ck = Math.floor(z / cell);
                     for (let i = ci - 1; i <= ci + 1; i++) for (let k = ck - 1; k <= ck + 1; k++)
                         for (const s of grid.get(keyOf(i, k)) ?? []) {
                             const reach = r + s.r, d2 = (x - s.x) ** 2 + (z - s.z) ** 2;
                             if (d2 < reach * reach) y = Math.max(y, s.y + Math.sqrt(reach * reach - d2));
                         }
+                    if (pass && Math.abs(x-previous.x) < 1e-4 && Math.abs(z-previous.z) < 1e-4 && Math.abs(y-previous.y) < 1e-4) break;
                 }
+                // La última comprobación se hace en la altura FINAL, nunca en la del paso anterior.
+                const row = veinAt(y), inDrift = pile.hollow && y < pile.crown;
+                const lo = (inDrift ? Math.min(pile.left, row.left) : row.left) + r;
+                const hi = (inDrift ? Math.max(pile.right, row.right) : row.right) - r;
+                const desired = x;
+                x = lo > hi ? (lo + hi) / 2 : Math.max(lo, Math.min(hi, desired));
                 return { x, y, z };
             };
             const directions = Array.from({ length: 8 }, (_, i) => [Math.cos(i * Math.PI / 4), Math.sin(i * Math.PI / 4)]);
@@ -607,7 +616,10 @@
                         const g = pile.hollow && rest.y < pile.crown ? clamp((pile.crown - y) / Math.max(1e-6, pile.crown - rest.y)) : 0;
                         z = inside + (linear - inside) * g;
                     }
-                    rock.mesh.position.set(slide + (rest.x - slide) * k, y, z);
+                    const lateral = slide + (rest.x - slide) * k;
+                    // En la transición también se respeta el contorno existente del hueco inclinado.
+                    const shownX = pile.hollow && y < pile.crown ? lateral : Math.max(row.left, Math.min(row.right, lateral));
+                    rock.mesh.position.set(shownX, y, z);
                     rock.mesh.rotation.set(f * (i % 7), f * (i % 5), f * (i % 3));
                 }
                 for (const material of materials) {
