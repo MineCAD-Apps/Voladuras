@@ -255,8 +255,11 @@ export function simularSecuencia(barrenos, dispersionPct = 3.0, corridas = 400) 
 export function analizarTirosQuedados(barrenos, params = {}) {
   const { umbralCongelado = 2.1 } = params;
 
-  const congelados = barrenos
-    .filter(b => (b.burden / b.diametroEquivalente) > umbralCongelado)
+  // Solo aplica con diámetro equivalente de alivio (arranque de frente). Sin él no se inventa.
+  const aplicaCongelados = barrenos.some(b => Number.isFinite(b.burden) && Number.isFinite(b.diametroEquivalente));
+  const congelados = !aplicaCongelados ? [] : barrenos
+    .filter(b => Number.isFinite(b.burden) && Number.isFinite(b.diametroEquivalente) &&
+                 (b.burden / b.diametroEquivalente) > umbralCongelado)
     .map(b => ({ id: b.id, ratio: b.burden / b.diametroEquivalente }));
 
   // Peor caso: no detona el barreno con más carga
@@ -267,6 +270,7 @@ export function analizarTirosQuedados(barrenos, params = {}) {
 
   return {
     congelados,
+    aplicaCongelados,
     totalCongelados: congelados.length,
     peorCaso: {
       id: peor.id,
@@ -321,23 +325,30 @@ export function evaluarRiesgos(datos) {
   };
 
   // Sobreexcavación
-  const sobre = estandarizarBarrenos(barrenos, seccion);
-  const dano = estandarizarBarrenos ? estimarSobreexcavacion(sobre, seccion, parametros) : null;
+  // Solo con sección de túnel (ancho/alto). En anillos de producción no aplica.
+  const dano = seccion
+    ? estimarSobreexcavacion(estandarizarBarrenos(barrenos, seccion), seccion, parametros)
+    : null;
 
   // Fragmentación
-  const frag = estimarFragmentacionKuzRam(
+  // Sin datos reales de diseño o de roca no se estima (antes se rellenaba con valores genéricos).
+  const A = roca.A ?? (Number.isFinite(roca.RMR) ? factorRocaDesdeRMR(roca.RMR) : null);
+  const reqFrag = ['burden', 'espaciamiento', 'diametro', 'alturaBanco', 'longitudCarga',
+                   'volumenPorBarreno', 'masaExplosivoPorBarreno'];
+  const fragCompleta = A != null && reqFrag.every(k => Number.isFinite(diseno[k]) && diseno[k] > 0);
+  const frag = !fragCompleta ? null : estimarFragmentacionKuzRam(
     {
-      burden: diseno.burden ?? 1.0,
-      espaciamiento: diseno.espaciamiento ?? 1.1,
-      diametro: diseno.diametro ?? 140,
-      alturaBanco: diseno.alturaBanco ?? 4.0,
-      longitudCarga: diseno.longitudCarga ?? 3.0,
+      burden: diseno.burden,
+      espaciamiento: diseno.espaciamiento,
+      diametro: diseno.diametro,
+      alturaBanco: diseno.alturaBanco,
+      longitudCarga: diseno.longitudCarga,
       desviacionPerforacion: diseno.desviacionPerforacion ?? 0.05,
-      volumenPorBarreno: diseno.volumenPorBarreno ?? 4.0,
-      masaExplosivoPorBarreno: diseno.masaExplosivoPorBarreno ?? 25,
+      volumenPorBarreno: diseno.volumenPorBarreno,
+      masaExplosivoPorBarreno: diseno.masaExplosivoPorBarreno,
       potenciaRelativa: explosivo.potenciaRelativa ?? 100
     },
-    roca.A ?? factorRocaDesdeRMR(roca.RMR ?? 60)
+    A
   );
 
   // Secuencia
@@ -356,16 +367,17 @@ export function evaluarRiesgos(datos) {
   const tiros = analizarTirosQuedados(
     barrenos.map(b => ({
       id: b.id,
-      burden: b.burden ?? diseno.burden ?? 1.0,
-      diametroEquivalente: b.diametroEquivalente ?? alivio.diametroEquivalente ?? 0.144,
+      burden: b.burden ?? diseno.burden,
+      diametroEquivalente: b.diametroEquivalente ?? alivio.diametroEquivalente,
       masaExplosivo: b.masaExplosivo,
-      tonelaje: b.tonelaje ?? 20
+      tonelaje: b.tonelaje
     })),
     parametros
   );
 
   // Arranque: avance vs. alivio
-  const avanceRatio = (alivio.longitud ?? 4.0) / (alivio.profundidadEfectiva ?? 2.4);
+  const avanceRatio = (alivio.longitud > 0 && alivio.profundidadEfectiva > 0)
+    ? alivio.longitud / alivio.profundidadEfectiva : null;
 
   return {
     vibracion: ppv,
@@ -373,7 +385,7 @@ export function evaluarRiesgos(datos) {
     fragmentacion: frag,
     secuencia,
     tiros,
-    arranque: {
+    arranque: avanceRatio == null ? null : {
       ratio: avanceRatio,
       estado: avanceRatio <= 1.7 ? 'ok' : avanceRatio <= 2.1 ? 'advertencia' : 'critico'
     },

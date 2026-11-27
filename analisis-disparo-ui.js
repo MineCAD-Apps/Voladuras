@@ -45,20 +45,51 @@ function filaTabla(nombre, valor, estado = 'ok') {
   </tr>`;
 }
 
-export function renderDashboard(contenedor, resultado) {
+export function renderDashboard(contenedor, resultado, omitidos = [], avisos = []) {
   const { vibracion, dano, fragmentacion, secuencia, tiros, arranque } = resultado;
+
+  const barras = [
+    barraRiesgo('Vibración a 30 m (PPV)', vibracion.a30m, vibracion.limite, 'mm/s'),
+    arranque ? barraRiesgo('Arranque — avance/alivio', arranque.ratio, 1.7, '', true) : '',
+    tiros.aplicaCongelados ? barraRiesgo('Barrenos sin cara libre', tiros.totalCongelados, 1, '') : '',
+    dano ? barraRiesgo('Sobreexcavación media', dano.sobreMedia, 0.02, 'm') : '',
+    barraRiesgo('Secuencia fuera de orden', secuencia.fueraSecuenciaPct, 5, '%'),
+    fragmentacion ? barraRiesgo('Bolones (>0.5 m)', fragmentacion.bolonesPct, 5, '%') : ''
+  ].join('');
+
+  const tarjetaDano = !dano ? '' : `
+      <section class="card">
+        <h4>💥 Daño y sobreexcavación</h4>
+        <table class="tabla-riesgo">
+          ${filaTabla('PPV medio perímetro', dano.media.toFixed(0) + ' mm/s')}
+          ${filaTabla('PPV máximo perímetro', dano.maxima.toFixed(0) + ' mm/s')}
+          ${filaTabla('Sobreexcavación media', dano.sobreMedia.toFixed(3) + ' m')}
+          ${filaTabla('Sobreexcavación máxima', dano.sobreMax.toFixed(3) + ' m')}
+        </table>
+      </section>`;
+
+  const tarjetaFrag = !fragmentacion ? '' : `
+      <section class="card">
+        <h4>🪨 Fragmentación (Kuz-Ram)</h4>
+        <table class="tabla-riesgo">
+          ${filaTabla('X50 (tamaño medio)', fragmentacion.X50.toFixed(1) + ' cm')}
+          ${filaTabla('P80', fragmentacion.P80.toFixed(1) + ' cm')}
+          ${filaTabla('Uniformidad n', fragmentacion.n.toFixed(2))}
+          ${filaTabla('Bolones (>0.5 m)', fragmentacion.bolonesPct.toFixed(1) + ' %')}
+        </table>
+        <canvas id="grafico-fragmentacion" width="360" height="180"></canvas>
+      </section>`;
+
+  const filaCongelados = !tiros.aplicaCongelados ? '' :
+    filaTabla('Barrenos congelados', tiros.totalCongelados, tiros.totalCongelados > 0 ? 'advertencia' : 'ok');
+  const num = (v, d, u) => Number.isFinite(v) ? v.toFixed(d) + ' ' + u : '—';
 
   const html = `
     <div class="analisis-grid">
 
       <section class="card">
         <h4>🚨 Mapa de riesgos</h4>
-        ${barraRiesgo('Vibración a 30 m (PPV)', vibracion.a30m, vibracion.limite, 'mm/s')}
-        ${barraRiesgo('Arranque — avance/alivio', arranque.ratio, 1.7, '', true)}
-        ${barraRiesgo('Barrenos sin cara libre', tiros.totalCongelados, 1, '')}
-        ${barraRiesgo('Sobreexcavación media', dano?.sobreMedia ?? 0, 0.02, 'm')}
-        ${barraRiesgo('Secuencia fuera de orden', secuencia.fueraSecuenciaPct, 5, '%')}
-        ${barraRiesgo('Bolones (>0.5 m)', fragmentacion.bolonesPct, 5, '%')}
+        ${barras}
       </section>
 
       <section class="card">
@@ -70,26 +101,8 @@ export function renderDashboard(contenedor, resultado) {
         </p>
       </section>
 
-      <section class="card">
-        <h4>💥 Daño y sobreexcavación</h4>
-        <table class="tabla-riesgo">
-          ${filaTabla('PPV medio perímetro', dano ? dano.media.toFixed(0) + ' mm/s' : '—')}
-          ${filaTabla('PPV máximo perímetro', dano ? dano.maxima.toFixed(0) + ' mm/s' : '—')}
-          ${filaTabla('Sobreexcavación media', dano ? dano.sobreMedia.toFixed(3) + ' m' : '—')}
-          ${filaTabla('Sobreexcavación máxima', dano ? dano.sobreMax.toFixed(3) + ' m' : '—')}
-        </table>
-      </section>
-
-      <section class="card">
-        <h4>🪨 Fragmentación (Kuz-Ram)</h4>
-        <table class="tabla-riesgo">
-          ${filaTabla('X50 (tamaño medio)', fragmentacion.X50.toFixed(1) + ' cm')}
-          ${filaTabla('P80', (fragmentacion.P80).toFixed(1) + ' cm')}
-          ${filaTabla('Uniformidad n', fragmentacion.n.toFixed(2))}
-          ${filaTabla('Bolones (>0.5 m)', fragmentacion.bolonesPct.toFixed(1) + ' %')}
-        </table>
-        <canvas id="grafico-fragmentacion" width="360" height="180"></canvas>
-      </section>
+      ${tarjetaDano}
+      ${tarjetaFrag}
 
       <section class="card">
         <h4>⏱️ Confiabilidad de secuencia</h4>
@@ -105,22 +118,23 @@ export function renderDashboard(contenedor, resultado) {
       <section class="card">
         <h4>🧨 Tiros quedados</h4>
         <table class="tabla-riesgo">
-          ${filaTabla('Barrenos congelados', tiros.totalCongelados,
-                      tiros.totalCongelados > 0 ? 'advertencia' : 'ok')}
+          ${filaCongelados}
           ${filaTabla('Peor caso — barreno', tiros.peorCaso.id)}
-          ${filaTabla('Explosivo sin detonar', tiros.peorCaso.explosivoSinDetonar.toFixed(1) + ' kg')}
-          ${filaTabla('Roca sin romper', tiros.peorCaso.rocaSinRomper.toFixed(1) + ' t')}
+          ${filaTabla('Explosivo sin detonar', num(tiros.peorCaso.explosivoSinDetonar, 1, 'kg'))}
+          ${filaTabla('Roca sin romper', num(tiros.peorCaso.rocaSinRomper, 1, 't'))}
         </table>
       </section>
 
     </div>
+    ${avisos.length ? `<p class="nota-pie">${avisos.join(' · ')}</p>` : ''}
+    ${omitidos.length ? `<p class="nota-pie">No evaluado: ${omitidos.map(o => `${o.analisis} (${o.motivo})`).join(' · ')}.</p>` : ''}
     <p class="nota-pie">
       ⚠️ Estimaciones de referencia sin calibrar. Confirmar con sismógrafo y granulometría de campo.
     </p>`;
 
   contenedor.innerHTML = html;
   dibujarCurvaPPV(contenedor.querySelector('#grafico-ppv'), vibracion);
-  dibujarCurvaFragmentacion(contenedor.querySelector('#grafico-fragmentacion'), fragmentacion);
+  if (fragmentacion) dibujarCurvaFragmentacion(contenedor.querySelector('#grafico-fragmentacion'), fragmentacion);
 }
 
 function dibujarCurvaPPV(canvas, vibracion) {
@@ -173,7 +187,7 @@ function dibujarCurvaPPV(canvas, vibracion) {
   }
 
   // Etiquetas
-  ctx.fillStyle = '#475569';
+  ctx.fillStyle = '#a6bfd0';
   ctx.font = '11px system-ui';
   ctx.fillText('PPV (mm/s)', 4, pad.t + 10);
   ctx.fillText('Distancia (m)', W - 70, H - 8);
@@ -214,7 +228,7 @@ function dibujarCurvaFragmentacion(canvas, frag) {
   });
   ctx.stroke();
 
-  ctx.fillStyle = '#475569';
+  ctx.fillStyle = '#a6bfd0';
   ctx.font = '11px system-ui';
   ctx.fillText('Pasa (%)', 2, pad.t + 10);
   ctx.fillText('Tamaño (cm)', W - 70, H - 8);
@@ -222,16 +236,142 @@ function dibujarCurvaFragmentacion(canvas, frag) {
 }
 
 /**
- * Punto de entrada: lee datos de tu diseño y actualiza el panel.
- * Llama a esta función desde un botón o al cambiar inputs.
+ * Convierte lo capturado en la app (MineCADLayerData.disparo()) al formato de evaluarRiesgos().
+ * Solo usa datos capturados; lo que falta se reporta en `omitidos`, no se rellena.
+ * Supuestos: masa por barreno = π/4·Ø²·densidad·(acoplamiento)²·(largo − taco); si el taco no está
+ * capturado se carga todo el largo (sobreestima);
+ * tonelaje por barreno = bordo·espaciamiento·largo·densidad del mineral; cada barreno depende
+ * del mismo número de barreno del anillo anterior (su cara libre).
  */
-export function actualizarAnalisis(contenedorId, datosDisparo) {
+export function datosDesdeDiseno(snap) {
+  if (!snap || snap.ok === false) return { error: snap?.motivo || 'No hay diseño disponible.' };
+  const { barrenos, perforacion: p, carga: c, tiempos: t, roca: r } = snap;
+  const falta = [];
+  if (!(p.diameterMm > 0)) falta.push('diámetro de barreno');
+  if (!(p.burdenM > 0)) falta.push('bordo entre anillos');
+  if (!(p.spacingM > 0)) falta.push('espaciamiento');
+  if (!(c.density > 0)) falta.push('densidad del explosivo');
+  if (t.ringMs === null) falta.push('retardo entre anillos');
+  if (falta.length) return { error: 'Falta capturar: ' + falta.join(', ') + '.' };
+  if (!barrenos.length) return { error: 'El diseño no genera barrenos.' };
+
+  const d = p.diameterMm / 1000;
+  const acopl = c.coupling == null ? 1 : Math.pow(c.coupling / 100, 2);
+  const rho = r?.oreDensity > 0 ? r.oreDensity : null;
+  const ringMs = t.ringMs, holeMs = t.holeMs ?? 0;
+  const primero = snap.anillos[0]?.index ?? 0;
+
+  const lista = barrenos.map(b => {
+    const [, , m] = /^R(\d+)-(\d+)$/.exec(b.id) || [];
+    const anillo = Number(/^R(\d+)-/.exec(b.id)?.[1]) - 1;
+    const largo = Math.hypot(b.toe[0] - b.collar[0], b.toe[2] - b.collar[2]);
+    const num = Number(m);
+    const largoCarga = Math.max(0, largo - (c.stemmingM ?? 0));
+    return {
+      id: b.id, anillo, num, largo, largoCarga,
+      retardo: (anillo - primero) * ringMs + (num - 1) * holeMs,
+      dependeDe: anillo > primero ? `R${anillo}-${num}` : null,
+      masaExplosivo: Math.PI / 4 * d * d * c.density * 1000 * acopl * largoCarga,
+      tonelaje: rho ? p.burdenM * p.spacingM * largo * rho : undefined
+    };
+  });
+  const ids = new Set(lista.map(b => b.id));
+  for (const b of lista) if (b.dependeDe && !ids.has(b.dependeDe)) b.dependeDe = null;
+
+  const prom = k => lista.reduce((s, b) => s + b[k], 0) / lista.length;
+  const largoMed = prom('largo'), cargaMed = prom('largoCarga'), masaMed = prom('masaExplosivo');
+
+  const omitidos = [
+    { analisis: 'Daño y sobreexcavación', motivo: 'requiere sección de túnel; no aplica a anillos' },
+    { analisis: 'Arranque avance/alivio', motivo: 'no hay barrenos de alivio capturados' },
+    { analisis: 'Barrenos congelados', motivo: 'requiere Ø equivalente de alivio' }
+  ];
+  if (!rho) omitidos.push({ analisis: 'Roca sin romper', motivo: 'falta densidad del mineral' });
+  if (!(r?.rmr >= 0)) omitidos.push({ analisis: 'Fragmentación', motivo: 'falta RMR' });
+
+  const avisos = c.stemmingM == null
+    ? ['Taco no capturado: se asume carga en todo el largo del barreno (masa sobreestimada). Captúralo en «Explosivo y carga».']
+    : [];
+  return {
+    omitidos, avisos,
+    datos: {
+      barrenos: lista,
+      roca: { RMR: r?.rmr ?? undefined },
+      diseno: {
+        burden: p.burdenM, espaciamiento: p.spacingM, diametro: p.diameterMm,
+        alturaBanco: largoMed, longitudCarga: cargaMed,
+        volumenPorBarreno: rho ? p.burdenM * p.spacingM * largoMed : undefined,
+        masaExplosivoPorBarreno: masaMed
+      },
+      parametros: { distRef: 30 }
+    }
+  };
+}
+
+/**
+ * Punto de entrada: evalúa y pinta el panel. Acepta datos ya normalizados.
+ */
+export function actualizarAnalisis(contenedorId, datosDisparo, omitidos = [], avisos = []) {
   const contenedor = document.getElementById(contenedorId);
   if (!contenedor) {
     console.warn(`[analisis-disparo] No existe #${contenedorId}`);
     return null;
   }
   const resultado = evaluarRiesgos(datosDisparo);
-  renderDashboard(contenedor, resultado);
+  renderDashboard(contenedor, resultado, omitidos, avisos);
   return resultado;
 }
+
+// ─────────────────────────────────────────────────────────────
+// Conexión del botón «Analizar disparo» con el diseño de la app
+// ─────────────────────────────────────────────────────────────
+
+function analizarDiseno() {
+  const cont = document.getElementById('dashboard-riesgos');
+  if (!cont) return;
+  const mensaje = txt => { cont.innerHTML = `<p class="analisis-disparo-vacio" role="status">${txt}</p>`; };
+  try {
+    const api = window.MineCADLayerData;
+    if (!api?.disparo) return mensaje('La app aún no expone los datos del disparo.');
+    const r = datosDesdeDiseno(api.disparo());
+    if (r.error) return mensaje(r.error);
+    actualizarAnalisis('dashboard-riesgos', r.datos, r.omitidos, r.avisos);
+  } catch (e) {
+    console.error('[analisis-disparo]', e);
+    mensaje('No se pudo analizar el disparo: ' + e.message);
+  }
+}
+
+function conectarPanel() {
+  const btn = document.getElementById('btn-analizar-disparo');
+  const panel = document.getElementById('analisis-disparo');
+  if (!btn || !panel || btn.dataset.analisisConectado) return;
+  btn.dataset.analisisConectado = '1';
+
+  // Si otro script ya abre/cierra el panel, no se duplica: solo se completa lo que falte.
+  let estabaOculto = true;
+  btn.addEventListener('click', () => { estabaOculto = panel.hidden; }, true);
+  btn.addEventListener('click', () => setTimeout(() => {
+    if (panel.hidden === estabaOculto) {            // nadie alternó el panel
+      panel.hidden = !estabaOculto;
+      btn.setAttribute('aria-expanded', String(!panel.hidden));
+    }
+    if (!panel.hidden) analizarDiseno();
+  }, 0));
+
+  const cerrar = document.getElementById('cerrar-analisis-disparo');
+  cerrar?.addEventListener('click', () => setTimeout(() => {
+    if (!panel.hidden) { panel.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+  }, 0));
+
+  // Mientras está abierto, se refresca al cambiar el diseño (con espera por el Monte Carlo).
+  let tmr = null;
+  document.addEventListener('minecad:datos', () => {
+    if (panel.hidden) return;
+    clearTimeout(tmr);
+    tmr = setTimeout(analizarDiseno, 400);
+  });
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', conectarPanel);
+else conectarPanel();
