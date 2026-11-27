@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "source": "main c51967a; captura de abundamiento y diámetro de contrapozo/ranura",
+  "source": "main c4c153f; aparición visual de fragmentos de abajo hacia arriba",
   "files": [
     {
       "path": ".nojekyll",
@@ -9,8 +9,8 @@
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 42862,
-      "sha256": "0282e21bd29859f05207f26717d0662a158fe36e2af4a232e762edb8c8f4b78c"
+      "bytes": 43769,
+      "sha256": "185ea5bd8f5472bc336dff99fbe0c828f915576270fb317a003fd741bff225c9"
     },
     {
       "path": "ANIMACION.md",
