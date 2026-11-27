@@ -175,7 +175,7 @@
            (sin los huecos de las obras) × espesor de su losa (espaciamiento entre líneas). La densidad es
            ilustrativa; si el diseño pide más de MAX_PIECES se reduce igual para todas las líneas. */
         const MAX_PIECES = 4000, DENSITY = 12, FILL = .55, MIN_PIECES = 4, rocks = [];
-        let pile = null, settledRate = null, slabs = [], stats = null;
+        let pile = null, settledRate = null, slabs = [], stats = null, lastArgs = null, lastKR = '';
         function resizePieces(count) {
             while (rocks.length > count) group.remove(rocks.pop().mesh);
             while (rocks.length < count) {
@@ -269,13 +269,14 @@
                 grid.has(key) || grid.set(key, []); grid.get(key).push(rock.rest);
             }
         }
-        return {
+        const api = {
             // Posiciones finales calculadas y cantidades por línea (solo lectura, para comprobaciones).
             restPositions: () => rocks.map(r => r.rest),
             stats: () => stats,
             rockInfo: () => rocks.map(r => ({ ring: r.ring, run: r.run, rest: r.rest, hole: r.hole })),
             enclosure: () => pile && { floor: pile.floor, crown: pile.crown, left: pile.left, right: pile.right, length: pile.length },
             setGeometry(samples, lower, length, ringZ, holes, extra) {
+                lastArgs = [samples, lower, length, ringZ, holes, extra];
                 ready = Array.isArray(samples) && samples.length > 1;
                 if (!ready) return;
                 extra = extra && typeof extra === 'object' ? extra : {};
@@ -338,6 +339,7 @@
                    proporcional; sin datos suficientes se conserva el aspecto ilustrativo anterior. */
                 const kr = typeof window.MineCADFragmentacion === 'function' ? window.MineCADFragmentacion() : null;
                 const krOK = !!kr && kr.X50 > 0 && kr.n > .3 && kr.n < 6;
+                lastKR = krOK ? kr.X50 + '|' + kr.n : '';
                 let Xc = 0, meanVol = 1;
                 if (krOK) {
                     Xc = kr.X50 / Math.pow(Math.LN2, 1 / kr.n) / 100; // m (tamaño característico Rosin-Rammler)
@@ -418,8 +420,18 @@
                     material.emissiveIntensity = !tl && p < .2 ? Math.sin(p / .2 * Math.PI) * .7 : 0;
                 }
             },
-            dispose() { viewer.scene.remove(group); geometry.dispose(); materials.forEach(m => m.dispose()); group.clear(); }
+            dispose() { document.removeEventListener('minecad:datos', onDatos); viewer.scene.remove(group); geometry.dispose(); materials.forEach(m => m.dispose()); group.clear(); }
         };
+        /* Los datos de explosivo y carga no pasan por la geometría del visor: si cambia el resultado de
+           Kuz-Ram se recalculan los fragmentos con la última geometría recibida. */
+        const onDatos = () => {
+            if (!lastArgs) return;
+            const kr = typeof window.MineCADFragmentacion === 'function' ? window.MineCADFragmentacion() : null;
+            const key = kr && kr.X50 > 0 && kr.n > .3 && kr.n < 6 ? kr.X50 + '|' + kr.n : '';
+            if (key !== lastKR) api.setGeometry(...lastArgs);
+        };
+        document.addEventListener('minecad:datos', onDatos);
+        return api;
     }
     window.MineCADAnimation = Object.freeze({
         setProgress(value) { progress = Math.max(0, Math.min(100, Number(value) || 0)); render2D(); },
