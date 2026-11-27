@@ -328,6 +328,26 @@ window.MineCADFragmentacion = () => {
 };
 
 /**
+ * Datos de material tronado para el visor 3D (animacion-visual.js). Solo lee lo capturado:
+ *  - roca.swell: factor de abundamiento (volumen suelto / volumen en banco), válido de 1.0 a 2.0 (p. ej. 1.4).
+ *    Un valor fuera de rango (p. ej. 40 como %, o 0.8) se informa en swellRaw y NO se usa.
+ *  - perforacion.slotDiameterM: diámetro (m) del contrapozo/ranura ya ejecutado (cara libre previa a la primera línea).
+ *    Para una ranura rectangular a×b use el diámetro equivalente √(4·a·b/π).
+ */
+window.MineCADMuck = () => {
+  try {
+    const s = window.MineCADLayerData?.disparo?.();
+    if (!s || s.ok === false) return null;
+    const raw = s.roca?.swell ?? null, sw = Number(raw), d = Number(s.perforacion?.slotDiameterM);
+    return {
+      swell: raw !== null && sw >= 1 && sw <= 2 ? sw : null,
+      swellRaw: raw,
+      slotDiameterM: d > 0 ? d : 0
+    };
+  } catch { return null; }
+};
+
+/**
  * Punto de entrada: evalúa y pinta el panel. Acepta datos ya normalizados.
  */
 export function actualizarAnalisis(contenedorId, datosDisparo, omitidos = [], avisos = []) {

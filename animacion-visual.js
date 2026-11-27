@@ -174,7 +174,41 @@
         /* Cantidad de fragmentos proporcional al volumen de cada línea: ancho × alto de la sección con roca
            (sin los huecos de las obras) × espesor de su losa (espaciamiento entre líneas). La densidad es
            ilustrativa; si el diseño pide más de MAX_PIECES se reduce igual para todas las líneas. */
-        const MAX_PIECES = 15000, DENSITY = 12, FILL = .55, MIN_PIECES = 4, rocks = [];
+        const MAX_PIECES = 15000, DENSITY = 12, FILL_ILUSTRATIVO = .55, MIN_PIECES = 4, rocks = [];
+        /* Modelo de volumen del montón (ver «Abundamiento y contrapozo» en setGeometry).
+           Las piezas se acomodan como esferas de radio sphereK·x (x = lado del bloque cúbico). Con SPHERE_K0 la esfera tiene el
+           mismo volumen que el bloque; sphereK se calcula en cada geometría para que el montón ocupe S·V al acomodarse.
+           PACK: fracción sólida que logra el acomodo de esferas de settle(); se calibra con la lectura «montón dibujado» de la
+           etiqueta (PACK_nuevo = PACK · objetivo / dibujado). SPHERE_KMAX limita lo grandes que pueden verse las esferas.
+           X_CORTES: lados (m) candidatos bajo los cuales el material se trata como finos que rellenan huecos y no se dibuja;
+           se elige el menor con que quepa todo en MAX_PIECES. */
+        const SPHERE_K0 = Math.cbrt(3 / (4 * Math.PI)), SPHERE_KMAX = .92, PACK = .385;
+        const X_CORTES = [.03, .04, .05, .06, .08, .10, .125, .15, .20];
+        let sphereK = SPHERE_K0, slotT = 0, labelBase = '', heapDirty = false;
+        /* Tabla de tamaños por NÚMERO de piezas a partir de la curva de MASA pasante Rosin-Rammler (X50 en cm).
+           Rosin-Rammler describe masa, no conteo: la densidad en número es ∝ (dP/dx)/x³, truncada en xMin.
+           sizeAt(q): lado (m) del bloque en el cuantil q (0..1) de esa distribución en número.
+           meanVol: E[x³] (m³) de las piezas dibujadas. massFines: fracción de masa bajo xMin (no dibujada). */
+        function rrTable(X50cm, n, xMin) {
+            const Xc = X50cm / Math.pow(Math.LN2, 1 / n) / 100;                       // m
+            const P = x => 1 - Math.exp(-Math.pow(x / Xc, n));
+            const xMax = Math.max(xMin * 2, Xc * Math.pow(-Math.log(1e-4), 1 / n));    // P = .9999
+            const K = 600, lo = Math.log(xMin), step = (Math.log(xMax) - lo) / K;
+            const edge = i => Math.exp(lo + step * i), cdf = [0];
+            let count = 0, mass = 0;
+            for (let i = 0; i < K; i++) {
+                const xm = edge(i + .5), dm = P(edge(i + 1)) - P(edge(i));
+                count += dm / (xm * xm * xm); mass += dm; cdf.push(count);
+            }
+            const sizeAt = q => {
+                const target = Math.max(0, Math.min(1, q)) * count;
+                let a = 0, b = K;
+                while (b - a > 1) { const m = (a + b) >> 1; if (cdf[m] <= target) a = m; else b = m; }
+                const f = cdf[b] > cdf[a] ? (target - cdf[a]) / (cdf[b] - cdf[a]) : 0;
+                return Math.exp(lo + step * (a + f));
+            };
+            return { sizeAt, meanVol: mass / count, massFines: P(xMin), xMin };
+        }
         let pile = null, settledRate = null, slabs = [], stats = null, lastArgs = null, lastKR = '';
         function resizePieces(count) {
             while (rocks.length > count) group.remove(rocks.pop().mesh);
@@ -182,12 +216,13 @@
                 const i = rocks.length;
                 const mesh = new Jt(geometry, materials[i % materials.length]);
                 mesh.visible = false; group.add(mesh);
-                rocks.push({ mesh, x: 0, y: 0, z: 0, radius: .1, rest: null, run: null, ring: 0, phase: seed(i + 700) });
+                rocks.push({ mesh, x: 0, y: 0, z: 0, radius: .1, size: .1, rest: null, run: null, ring: 0, phase: seed(i + 700) });
             }
         }
         let ready = false;
+        const krKey = (kr, muck) => (kr && kr.X50 > 0 && kr.n > .3 && kr.n < 6 ? kr.X50 + '|' + kr.n : '') + '#' + (muck ? muck.swellRaw + '|' + muck.slotDiameterM : '');
         const info = document.createElement('div');
-        info.style.cssText = 'position:absolute;left:10px;bottom:8px;z-index:4;pointer-events:none;padding:3px 8px;border:1px solid #a88840;border-radius:12px;background:#102234e8;color:#ffe2a0;font:11px Segoe UI,sans-serif';
+        info.style.cssText = 'position:absolute;left:10px;bottom:8px;z-index:4;pointer-events:none;max-width:calc(100% - 20px);line-height:1.35;padding:3px 8px;border:1px solid #a88840;border-radius:12px;background:#102234e8;color:#ffe2a0;font:11px Segoe UI,sans-serif';
         info.hidden = true; viewer.el.appendChild(info);
         function veinAt(y) {
             const s = pile.samples, t = clamp((y - s[0].z) / (s[s.length - 1].z - s[0].z || 1)) * (s.length - 1);
@@ -204,7 +239,7 @@
             settledRate = tl ? tl.rate : 0;
             const REPOSE = .75; // tangente del ángulo (unos 37°)
             const maxDrop = Math.max(1, pile.top - pile.floor);
-            const sizes = rocks.map(r => r.radius * .85), cell = Math.max(.1, 2 * sizes.reduce((a, b) => Math.max(a, b), 0));
+            const sizes = rocks.map(r => r.size * sphereK), cell = Math.max(.1, 2 * sizes.reduce((a, b) => Math.max(a, b), 0));
             const grid = new Map(), keyOf = (i, k) => i * 100003 + k;
             const begin = rock => {
                 const time = tl && rock.hole ? tl.seq.times.get(rock.hole)?.[0] : undefined;
@@ -223,6 +258,8 @@
             const openRun = (k, T) => {
                 let lo = slabs[k].lo, hi = slabs[k].hi;
                 for (let m = k - 1; m >= 0 && touching(m, m + 1) && lineStart[m] <= T + 1e-9; m--) lo = slabs[m].lo;
+                // Contrapozo/ranura ya ejecutado: hueco previo (espesor equivalente) pegado a la primera línea, abierto desde el inicio.
+                if (slotT > 0 && lo <= slabs[0].lo + 1e-9) lo = slabs[0].lo - slotT;
                 for (let m = k + 1; m < slabs.length && touching(m - 1, m) && lineStart[m] <= T + 1e-9; m++) hi = slabs[m].hi;
                 return { lo, hi };
             };
@@ -236,7 +273,7 @@
                     const lo = (inDrift ? Math.min(pile.left, vein.left) : vein.left) + r, hi = (inDrift ? Math.max(pile.right, vein.right) : vein.right) - r;
                     const nx = lo > hi ? (lo + hi) / 2 : Math.max(lo, Math.min(hi, x));
                     const open = pile.hollow && inDrift && nx >= pile.left && nx <= pile.right;
-                    const zlo = open ? r : run.lo + r, zhi = open ? pile.length - r : run.hi - r;
+                    const zlo = open ? r - slotT : run.lo + r, zhi = open ? pile.length - r : run.hi - r;
                     const nz = zlo > zhi ? (zlo + zhi) / 2 : Math.max(zlo, Math.min(zhi, z));
                     if (pass && Math.abs(nx - x) < 1e-4 && Math.abs(nz - z) < 1e-4) break;
                     x = nx; z = nz; y = pile.floor + r;
@@ -271,11 +308,30 @@
                 const key = keyOf(Math.floor(best.x / cell), Math.floor(best.z / cell));
                 grid.has(key) || grid.set(key, []); grid.get(key).push(rock.rest);
             }
+            heapDirty = true;
+        }
+        /* Volumen aparente del montón (m³): envolvente superior por celdas de c m sobre el piso. Solo para calibrar PACK. */
+        function heapEnvelope(c = .25) {
+            const top = new Map(), floor = pile ? pile.floor : 0;
+            for (const r of rocks) {
+                const s = r.rest; if (!s) continue;
+                const key = Math.floor(s.x / c) + ',' + Math.floor(s.z / c), h = s.y + s.r - floor;
+                if (h > (top.get(key) ?? 0)) top.set(key, h);
+            }
+            let v = 0; for (const h of top.values()) v += h * c * c;
+            return v;
+        }
+        function refreshLabel() {
+            let text = labelBase;
+            if (stats && stats.heapM3 != null && stats.heapObjetivoM3 != null)
+                text += ' · montón dibujado ≈ ' + stats.heapM3.toFixed(1) + ' m³ (objetivo ' + stats.heapObjetivoM3.toFixed(1) + ')';
+            info.textContent = text;
         }
         const api = {
             // Posiciones finales calculadas y cantidades por línea (solo lectura, para comprobaciones).
             restPositions: () => rocks.map(r => r.rest),
             stats: () => stats,
+            heapEnvelope,
             rockInfo: () => rocks.map(r => ({ ring: r.ring, run: r.run, rest: r.rest, hole: r.hole })),
             enclosure: () => pile && { floor: pile.floor, crown: pile.crown, left: pile.left, right: pile.right, length: pile.length },
             setGeometry(samples, lower, length, ringZ, holes, extra) {
@@ -346,16 +402,33 @@
                    (≈ FILL·volumen / volumen medio) supera con mucho MAX_PIECES, así que se dibuja una muestra
                    proporcional; sin datos suficientes se conserva el aspecto ilustrativo anterior. */
                 const kr = typeof window.MineCADFragmentacion === 'function' ? window.MineCADFragmentacion() : null;
-                const krOK = !!kr && kr.X50 > 0 && kr.n > .3 && kr.n < 6;
-                lastKR = krOK ? kr.X50 + '|' + kr.n : '';
-                let Xc = 0, meanVol = 1;
+                const muck = typeof window.MineCADMuck === 'function' ? window.MineCADMuck() : null;
+                /* Abundamiento y contrapozo (datos capturados por el usuario; si faltan no se rellenan).
+                   S = volumen suelto / volumen en banco (≥ 1, p. ej. 1.4). Contrapozo/ranura ya ejecutado: cara libre previa a la primera
+                   línea, de Ø D y alto igual al de la sección; su volumen es hueco disponible desde el inicio. */
+                const S = muck && Number.isFinite(muck.swell) ? muck.swell : null;
+                const slotD = muck && muck.slotDiameterM > 0 ? muck.slotDiameterM : 0;
+                const slotVolume = Math.PI / 4 * slotD * slotD * height;
+                slotT = area > 0 ? slotVolume / area : 0;           // espesor equivalente del hueco previo
+                const krValido = !!kr && kr.X50 > 0 && kr.n > .3 && kr.n < 6;
+                const krOK = krValido && S != null;
+                lastKR = krKey(kr, muck);
+                let tab = null, coarse = 1;
+                sphereK = SPHERE_K0;
                 if (krOK) {
-                    Xc = kr.X50 / Math.pow(Math.LN2, 1 / kr.n) / 100; // m (tamaño característico Rosin-Rammler)
-                    let acc = 0; const Q = 200;
-                    for (let q = 0; q < Q; q++) acc += Math.pow(-Math.log(1 - (q + .5) / Q), 3 / kr.n);
-                    meanVol = Math.max(1e-9, Xc ** 3 * acc / Q);
+                    /* Se elige el corte de finos más bajo con que (a) las esferas necesarias para que el montón ocupe S·V no pasen de
+                       SPHERE_KMAX y (b) todas las piezas quepan en MAX_PIECES; si ninguno cumple (b) se usa el último que cumple (a). */
+                    const k3max = (SPHERE_KMAX / SPHERE_K0) ** 3;
+                    for (const xc of X_CORTES) {
+                        const cand = rrTable(kr.X50, kr.n, xc);
+                        if (tab && S * PACK / (1 - cand.massFines) > k3max) break;
+                        tab = cand;
+                        if ((1 - cand.massFines) * totalVolume / cand.meanVol <= MAX_PIECES) break;
+                    }
+                    coarse = 1 - tab.massFines;                              // fracción de masa dibujada (≥ xMin)
+                    sphereK = SPHERE_K0 * Math.cbrt(Math.min(k3max, S * PACK / coarse));
                 }
-                const naturalOf = s => krOK ? FILL * s.volume / meanVol : DENSITY * s.volume;
+                const naturalOf = s => krOK ? coarse * s.volume / tab.meanVol : DENSITY * s.volume;
                 const scale = Math.min(1, MAX_PIECES / Math.max(1, slabs.reduce((a, s) => a + naturalOf(s), 0)));
                 for (const s of slabs) s.pieces = Math.max(MIN_PIECES, Math.round(naturalOf(s) * scale));
                 resizePieces(slabs.reduce((a, s) => a + s.pieces, 0));
@@ -366,7 +439,7 @@
                 let i = 0;
                 slabs.forEach((slab, k) => {
                     const own = holesByRing.get(slab.z) ?? [], sd = n => seed(n + k * 7919);
-                    const base = Math.cbrt(3 * FILL * slab.volume / Math.max(1, slab.pieces) / (4 * Math.PI));
+                    const base = Math.cbrt(3 * FILL_ILUSTRATIVO * slab.volume / Math.max(1, slab.pieces) / (4 * Math.PI));
                     // Rango aleatorio (sin repetir) de cada pieza: la mediana de la muestra coincide con X50.
                     const perm = krOK ? [...Array(slab.pieces).keys()].sort((a, b) => sd(a + 90) - sd(b + 90)) : null;
                     for (let j = 0; j < slab.pieces; j++, i++) {
@@ -374,7 +447,7 @@
                         const ky = .8 + seed(j + 450) * .35; // alargamiento vertical del prisma
                         // Volumen del prisma base = 0.8·r³·ky; se iguala al de un bloque de lado x.
                         const radius = krOK
-                            ? Math.max(.01, Math.min(widest * .45, Xc * Math.pow(-Math.log(1 - (perm[j] + .5) / slab.pieces), 1 / kr.n) / Math.cbrt(.8 * ky)))
+                            ? Math.max(.01, Math.min(widest * .45, tab.sizeAt((perm[j] + .5) / slab.pieces) / Math.cbrt(.8 * ky)))
                             : Math.max(.03, Math.min(widest * .45, base * (.75 + sd(j + 90) * .5)));
                         // Origen: junto a su barreno, dentro de la roca; nunca dentro de un hueco.
                         const hole = own.length ? own[j % own.length] : null, points = hole ? solidAlong(hole) : [];
@@ -391,14 +464,38 @@
                         rock.x = x; rock.y = y; rock.z = slab.lo + (slab.hi - slab.lo) * (.08 + .84 * sd(j + 310));
                         rock.u = clamp((x - at.left) / (at.right - at.left || 1));
                         rock.radius = radius; rock.rest = null; rock.run = null;
+                        rock.size = krOK ? radius * Math.cbrt(.8 * ky) : radius * .85 / sphereK;   // lado del bloque equivalente (m)
                         rock.mesh.scale.set(radius, radius * ky, radius);
                     }
                 });
                 const natural = slabs.reduce((a, s) => a + naturalOf(s), 0);
-                info.textContent = krOK
-                    ? 'Kuz-Ram X50 ' + kr.X50.toFixed(1) + ' cm · n ' + kr.n.toFixed(2) + ' · ' + rocks.length.toLocaleString('es-MX') + ' de ~' + Math.round(natural).toLocaleString('es-MX') + ' fragmentos (muestra ' + Math.round(scale * 100) + ' %)'
-                    : 'Fragmentos ilustrativos (faltan datos de Kuz-Ram)';
-                stats = { area, density: (krOK ? FILL / meanVol : DENSITY) * scale, kuzRam: krOK ? { X50: kr.X50, n: kr.n, muestra: rocks.length, natural, escala: scale } : null, total: rocks.length, lines: slabs.map(s => ({ z: s.z, from: s.lo, to: s.hi, thickness: s.hi - s.lo, volume: s.volume, pieces: s.pieces })) };
+                // Balance de volumen por línea (analítico: no depende de la muestra dibujada). El hueco de la obra inferior no se cuenta.
+                let acumulado = 0;
+                const lines = slabs.map(s => {
+                    acumulado += s.volume;
+                    const hueco = slotVolume + acumulado, suelto = S == null ? null : S * acumulado;
+                    return { z: s.z, from: s.lo, to: s.hi, thickness: s.hi - s.lo, volume: s.volume, pieces: s.pieces,
+                             sueltoLinea: S == null ? null : S * s.volume, huecoAcumulado: hueco, sueltoAcumulado: suelto,
+                             porExtraer: S == null ? null : Math.max(0, suelto - hueco) };
+                });
+                const f1 = v => v.toLocaleString('es-MX', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+                const parts = [];
+                if (krOK) parts.push('Kuz-Ram X50 ' + kr.X50.toFixed(1) + ' cm · n ' + kr.n.toFixed(2) + ' · ' + rocks.length.toLocaleString('es-MX') + ' de ~' + Math.round(natural).toLocaleString('es-MX') + ' fragmentos ≥ ' + (tab.xMin * 100).toFixed(0) + ' cm (muestra ' + Math.round(scale * 100) + ' %)');
+                else parts.push('Fragmentos ilustrativos (' + (krValido ? '' : 'faltan datos de Kuz-Ram') + (krValido || S != null ? '' : ' · ') + (S != null ? '' : muck && muck.swellRaw != null ? 'abundamiento «' + muck.swellRaw + '» no válido: use 1.0–2.0, p. ej. 1.4' : 'falta el factor de abundamiento (p. ej. 1.4)') + ')');
+                if (S != null && lines.length) {
+                    const last = lines[lines.length - 1], k0 = lines.findIndex(l => l.porExtraer > .05);
+                    parts.push('abundamiento ' + S.toFixed(2));
+                    if (slotVolume > 0) parts.push('contrapozo Ø' + slotD.toLocaleString('es-MX') + ' m = ' + f1(slotVolume) + ' m³');
+                    parts.push('suelto ' + f1(last.sueltoAcumulado) + ' m³ vs hueco ' + f1(last.huecoAcumulado) + ' m³');
+                    if (k0 >= 0) parts.push('⚠ no cabe desde la línea ' + (k0 + 1) + ': extraer ' + f1(last.porExtraer) + ' m³');
+                }
+                labelBase = parts.join(' · ');
+                stats = { area, density: (krOK ? coarse / tab.meanVol : DENSITY) * scale,
+                          kuzRam: krOK ? { X50: kr.X50, n: kr.n, muestra: rocks.length, natural, escala: scale, xCorte: tab.xMin, masaDibujada: coarse, esferaK: sphereK } : null,
+                          abundamiento: S, contrapozo: { diametro: slotD, volumen: slotVolume, espesorEquivalente: slotT },
+                          total: rocks.length, lines,
+                          heapM3: null, heapObjetivoM3: krOK ? scale * totalVolume * coarse * (sphereK / SPHERE_K0) ** 3 / PACK : null };
+                refreshLabel();
             },
             render() {
                 const p = progress / 100; group.visible = ready && p > 0 && !layerActive();
@@ -406,6 +503,7 @@
                 if (!group.visible) return;
                 const tl = timeline();
                 if (settledRate !== (tl ? tl.rate : 0)) settle(tl);
+                if (heapDirty) { heapDirty = false; if (stats) { stats.heapM3 = heapEnvelope(); refreshLabel(); } }
                 const maxDrop = Math.max(1, pile.top - pile.floor);
                 for (let i = 0; i < rocks.length; i++) {
                     const rock = rocks[i], rest = rock.rest, time = tl && rock.hole ? tl.seq.times.get(rock.hole)?.[0] : undefined;
@@ -440,8 +538,8 @@
         const onDatos = () => {
             if (!lastArgs) return;
             const kr = typeof window.MineCADFragmentacion === 'function' ? window.MineCADFragmentacion() : null;
-            const key = kr && kr.X50 > 0 && kr.n > .3 && kr.n < 6 ? kr.X50 + '|' + kr.n : '';
-            if (key !== lastKR) api.setGeometry(...lastArgs);
+            const muck = typeof window.MineCADMuck === 'function' ? window.MineCADMuck() : null;
+            if (krKey(kr, muck) !== lastKR) api.setGeometry(...lastArgs);
         };
         document.addEventListener('minecad:datos', onDatos);
         return api;
