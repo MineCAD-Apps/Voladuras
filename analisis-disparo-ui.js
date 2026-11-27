@@ -289,9 +289,10 @@ export function datosDesdeDiseno(snap) {
   if (!rho) omitidos.push({ analisis: 'Roca sin romper', motivo: 'falta densidad del mineral' });
   if (!(r?.rmr >= 0)) omitidos.push({ analisis: 'Fragmentación', motivo: 'falta RMR' });
 
-  const avisos = c.stemmingM == null
-    ? ['Taco no capturado: se asume carga en todo el largo del barreno (masa sobreestimada). Captúralo en «Explosivo y carga».']
-    : [];
+  const avisos = [];
+  if (c.stemmingM == null) avisos.push('Taco no capturado: se asume carga en todo el largo del barreno (masa sobreestimada).');
+  if (c.relPower == null) avisos.push('Potencia relativa no capturada: se usa 100 (ANFO).');
+  if (c.deviationM == null) avisos.push('Desviación de perforación no capturada: se usa 0.05 m.');
   return {
     omitidos, avisos,
     datos: {
@@ -301,8 +302,10 @@ export function datosDesdeDiseno(snap) {
         burden: p.burdenM, espaciamiento: p.spacingM, diametro: p.diameterMm,
         alturaBanco: largoMed, longitudCarga: cargaMed,
         volumenPorBarreno: rho ? p.burdenM * p.spacingM * largoMed : undefined,
-        masaExplosivoPorBarreno: masaMed
+        masaExplosivoPorBarreno: masaMed,
+        desviacionPerforacion: c.deviationM ?? 0.05
       },
+      explosivo: { potenciaRelativa: c.relPower ?? 100 },
       parametros: { distRef: 30 }
     }
   };
@@ -315,9 +318,9 @@ export function datosDesdeDiseno(snap) {
 export function fragmentacionDiseno(snap) {
   const r = datosDesdeDiseno(snap);
   if (r.error) return null;
-  const { diseno: d, roca } = r.datos;
+  const { diseno: d, roca, explosivo } = r.datos;
   if (!Number.isFinite(roca.RMR) || !Number.isFinite(d.volumenPorBarreno)) return null;
-  return estimarFragmentacionKuzRam({ ...d, desviacionPerforacion: 0.05 }, factorRocaDesdeRMR(roca.RMR));
+  return estimarFragmentacionKuzRam({ ...d, potenciaRelativa: explosivo.potenciaRelativa }, factorRocaDesdeRMR(roca.RMR));
 }
 window.MineCADFragmentacion = () => {
   try { return fragmentacionDiseno(window.MineCADLayerData?.disparo?.()); }

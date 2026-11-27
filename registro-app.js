@@ -307,12 +307,14 @@ try {
         {
             /* ===== Módulos Explosivo y carga · Tiempos y secuencia (captura documental) ===== */
             const CAT = [['sin_capturar', 'Pendiente de captura'], ['anfo', 'ANFO'], ['emulsion_granel', 'Emulsión a granel'], ['emulsion_cartucho', 'Emulsión encartuchada'], ['hidrogel', 'Hidrogel / slurry'], ['mezcla', 'Mezcla emulsión / ANFO'], ['otro', 'Otro (catálogo propio)']], TOE = [CAT[0], ['ninguno', 'Sin carga de fondo'], ...CAT.slice(1)], SYS = [['sin_capturar', 'Pendiente de captura'], ['electronico', 'Electrónico'], ['no_electrico', 'No eléctrico (tubo de choque)'], ['electrico', 'Eléctrico'], ['cordon', 'Cordón detonante']], lab = (o, v) => (o.find(x => x[0] === v) || [0, '—'])[1];
-            const mkC = () => ({ column: 'sin_capturar', density: null, coupling: null, toe: 'sin_capturar', wedgeShare: !0, wedge: 'sin_capturar', wedgeLoads: null, influenceM: null, stemmingM: null }), mkT = () => ({ system: 'sin_capturar', ringMs: null, holeMs: null });
+            const mkC = () => ({ column: 'sin_capturar', density: null, coupling: null, toe: 'sin_capturar', wedgeShare: !0, wedge: 'sin_capturar', wedgeLoads: null, influenceM: null, stemmingM: null, relPower: null, deviationM: null }), mkT = () => ({ system: 'sin_capturar', ringMs: null, holeMs: null });
             function ens(p) { if (p && typeof p === 'object') {
                 p.charge ??= mkC();
                 p.timing ??= mkT();
                 if (p.charge.influenceM === undefined) p.charge.influenceM = null;
                 if (p.charge.stemmingM === undefined) p.charge.stemmingM = null;
+                if (p.charge.relPower === undefined) p.charge.relPower = null;
+                if (p.charge.deviationM === undefined) p.charge.deviationM = null;
             } return p; }
             function vmods(p) {
                 const c = p.charge, t = p.timing;
@@ -323,6 +325,8 @@ try {
                 He(c.coupling === null || yt(c.coupling, 0, 100), 'Acoplamiento fuera de rango (0–100 %).');
                 He(c.wedgeLoads === null || (Number.isInteger(c.wedgeLoads) && yt(c.wedgeLoads, 1, 20)), 'Cargas por barreno de la cuña: entero de 1 a 20.');
                 He(typeof c.wedgeShare === 'boolean', 'Marca de cuña inválida.');
+                He(c.relPower === null || yt(c.relPower, 30, 250), 'Potencia relativa fuera de rango (30–250, ANFO = 100).');
+                He(c.deviationM === null || yt(c.deviationM, 0, 2), 'Desviación de perforación fuera de rango (0–2 m).');
                 He(c.stemmingM === null || yt(c.stemmingM, 0, 30), 'Taco fuera de rango (0–30 m).');
                 He(c.influenceM === null || yt(c.influenceM, .05, 30), 'Radio de influencia fuera de rango (0.05–30 m).');
                 He(typeof t.system === 'string' && t.system.length < 60, 'Sistema de iniciación inválido.');
@@ -349,13 +353,15 @@ try {
             H('mncar', 'Cargas por barreno de la cuña', 'Número de cargas registradas por barreno de la cuña.');
             H('mrad', 'Radio de influencia', 'Radio, en metros, de la zona cilíndrica roja que se dibuja alrededor de cada barreno en la vista Daño. Lo define el usuario.');
             H('mtac', 'Taco (sin carga)', 'Longitud del barreno sin explosivo, en m, medida desde el collar. Solo el panel «Analizar disparo» la usa para estimar la masa por barreno.');
+            H('mpot', 'Potencia relativa en peso (ANFO = 100)', 'Potencia del explosivo respecto al ANFO, dato del fabricante. Solo el panel «Analizar disparo» la usa (Kuz-Ram). Vacío = se asume 100.');
+            H('mdes', 'Desviación de perforación', 'Desviación típica del barreno respecto a su trayectoria de diseño, en m. Solo el panel «Analizar disparo» la usa (uniformidad de Kuz-Ram). Vacío = se asume 0.05 m.');
             H('msis', 'Sistema de iniciación', 'Sistema registrado para el diseño. Solo documental.');
             H('mret', 'Retardo entre anillos', 'Tiempo nominal capturado entre anillos consecutivos, en ms.');
             H('mtal', 'Retardo entre taladros', 'Tiempo nominal capturado entre taladros de un mismo anillo, en ms.');
             const sl = (l, p, mn, mx, st, u, h) => `<div class="slider-field"><label for="n-${p}">${Nu(l, h)} <small>${u}</small></label><input id="n-${p}" type="number" data-path="${p}" value="${ti(p) ?? ''}" min="${mn}" max="${mx}" step="any" aria-label="${l}"><input type="range" data-path="${p}" value="${ti(p) ?? mn}" min="${mn}" max="${mx}" step="${st}" aria-label="Ajustar ${l}"></div>`, se = (l, p, o, h, d) => `<label class="field"><span>${Nu(l, h)}</span><select data-path="${p}" aria-label="${l}"${d ? ' disabled' : ''}>${o.map(([v, t]) => `<option value="${v}"${ti(p) === v ? ' selected' : ''}>${t}</option>`).join('')}</select></label>`, hint = t => `<p class="hint">${t}</p>`;
             function modsHtml() {
                 const c = ae.charge;
-                return Ft('Explosivo y carga', se('Agente de columna', 'charge.column', CAT, 'mcol') + sl('Densidad', 'charge.density', .3, 2.5, .01, 'g/cc', 'mden') + sl('Acoplamiento', 'charge.coupling', 0, 100, 1, '%', 'macop') + se('Carga en el toe', 'charge.toe', TOE, 'mtoe') + `<label class="field mod-chk"><input type="checkbox" data-path="charge.wedgeShare"${c.wedgeShare ? ' checked' : ''}><span>Cuña con el mismo explosivo de los anillos</span></label>` + se('Explosivo de la cuña', 'charge.wedge', CAT, 'mcun', c.wedgeShare) + sl('Cargas por barreno de la cuña', 'charge.wedgeLoads', 1, 20, 1, '', 'mncar') + sl('Radio de influencia', 'charge.influenceM', .05, 30, .05, 'm', 'mrad') + sl('Taco (sin carga)', 'charge.stemmingM', 0, 30, .05, 'm', 'mtac') + hint('Datos de captura del diseño. No se calcula carga, energía ni fragmentación. El radio de influencia solo define el dibujo de la vista Daño.'))
+                return Ft('Explosivo y carga', se('Agente de columna', 'charge.column', CAT, 'mcol') + sl('Densidad', 'charge.density', .3, 2.5, .01, 'g/cc', 'mden') + sl('Acoplamiento', 'charge.coupling', 0, 100, 1, '%', 'macop') + se('Carga en el toe', 'charge.toe', TOE, 'mtoe') + `<label class="field mod-chk"><input type="checkbox" data-path="charge.wedgeShare"${c.wedgeShare ? ' checked' : ''}><span>Cuña con el mismo explosivo de los anillos</span></label>` + se('Explosivo de la cuña', 'charge.wedge', CAT, 'mcun', c.wedgeShare) + sl('Cargas por barreno de la cuña', 'charge.wedgeLoads', 1, 20, 1, '', 'mncar') + sl('Radio de influencia', 'charge.influenceM', .05, 30, .05, 'm', 'mrad') + sl('Taco (sin carga)', 'charge.stemmingM', 0, 30, .05, 'm', 'mtac') + sl('Potencia relativa (ANFO = 100)', 'charge.relPower', 30, 250, 1, '', 'mpot') + sl('Desviación de perforación', 'charge.deviationM', 0, 2, .01, 'm', 'mdes') + hint('Datos de captura del diseño. No se calcula carga, energía ni fragmentación. El radio de influencia solo define el dibujo de la vista Daño.'))
                     + Ft('Tiempos y secuencia', se('Sistema de iniciación', 'timing.system', SYS, 'msis') + sl('Retardo entre anillos', 'timing.ringMs', 0, 5e3, 1, 'ms', 'mret') + sl('Retardo entre taladros', 'timing.holeMs', 0, 1e3, 1, 'ms', 'mtal') + hint('Tiempos nominales capturados; no validan una secuencia de iniciación.') + '<div id="mod-seq"></div>');
             }
             function mountMods() {
