@@ -1,18 +1,8 @@
-RECORTE VISUAL DE PRISMAS — OBRA INFERIOR
-Base: main 1b814c3 de MineCAD-Apps/Voladuras, 26/11/2026.
-
-Copiar el contenido sobre la raíz de la aplicación conservando docs/.
-Sustituir registro-app.js, registro-3d.js, registro-aspecto.js y docs/MANIFIESTO.json.
-No reemplazar animacion-visual.js ni los módulos de captura, cálculo o teoría.
-
-La vista de fragmentación descuenta el perfil de la obra inferior:
-- 2D: máscara del hueco, manteniendo el contorno de la veta.
-- 3D: las columnas de prismas comienzan por encima del techo del perfil. Las piezas que quedan enteramente dentro del hueco no se dibujan.
-- Si la obra inferior no existe, no se aplica esta sustracción.
-El recorte 3D por prismas rectangulares puede dejar un margen visual pequeño junto a la bóveda; no representa un descuento o balance de volumen.
-
-Solo se cambió la representación de la cuadrícula. No se modifican movimiento de fragmentos, acumulación, límites móviles, cantidades, tiempos o cálculos.
-Se conservan byte por byte los archivos actuales de animación, controles, cálculo y teoría; no se utilizaron los archivos completos del ZIP v3 anterior.
-
-Verificado: sintaxis, metadatos, pruebas geométricas estáticas del hueco y del nivel inexistente; máscara 2D y dibujo 3D en Chrome con datos geométricos aislados, sin reproducir la simulación. Sin errores JavaScript.
-Cambios locales: no publicados desde esta sesión.
+Base: main c51967a. Sustituir registro-app.js en la raíz y docs/MANIFIESTO.json dentro de docs.
+La interfaz HTML se genera en registro-app.js; no se requiere cambiar index.html.
+Capturas añadidas:
+- Veta y Macizo Rocoso > Macizo rocoso > Factor de abundamiento: rock.swell, 1.0 a 2.0. Inicial 1.0 para conservar el comportamiento de diseños antiguos.
+- Perforación > registro de anillos > Diámetro del contrapozo/ranura (m): drilling.slotDiameterM, opcional; vacío = null. Captura positiva desde 0.001 m.
+disparo() ya clona los objetos completos y entrega los valores como roca.swell y perforacion.slotDiameterM, sin conversiones ni cálculos añadidos.
+Los campos usan el enlace existente data-path, validación, persistencia local, exportación/importación JSON y refresco Pi -> refreshMods -> evento minecad:datos.
+No se modificaron los archivos de cálculo o animación. No se publicó el cambio automáticamente.
