@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "source": "Base main 1b814c3; recorte exclusivamente visual de los prismas en la obra inferior",
+  "source": "main c3d0558; copia íntegra de archivos aportados y referencias de carga",
   "files": [
     {
       "path": ".nojekyll",
@@ -39,8 +39,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 925,
-      "sha256": "16fe4b833c25e14f0b9ae77085b2dfa0b369d8e97f0c41b930767335e1b59354"
+      "bytes": 1162,
+      "sha256": "60b630c2c369878ead49c0ca8618b86e73d57dab03108d13111cad247aa60cca"
     },
     {
       "path": "integraciones/minecad-tema.user.js",
@@ -74,8 +74,8 @@
     },
     {
       "path": "registro-app.js",
-      "bytes": 81422,
-      "sha256": "2573abd4910fea8fd167cda5b9ae101b20601fc786fb1d6b1c804e52f585072e"
+      "bytes": 82066,
+      "sha256": "cb7adec94d228f0999294a856e998c171f546bc6f2ba67faf407954f972d40d1"
     },
     {
       "path": "registro-aspecto.js",
@@ -126,6 +126,26 @@
       "path": "vendor/three-vendor.js",
       "bytes": 556164,
       "sha256": "774e666ddf7c55ff01613e381b7133fe875042cf957e8b1cfe2ef10f6d4e9367"
+    },
+    {
+      "path": "analisis-disparo.css",
+      "bytes": 1694,
+      "sha256": "8de484e0abe94bc56e9f0808c8672c977d5d3b516e8130e153d09712431a4b98"
+    },
+    {
+      "path": "analisis-disparo.js",
+      "bytes": 14872,
+      "sha256": "27f39816db77536e7f1d1d9808acd73f8984e5344954e73050217fd1bb425954"
+    },
+    {
+      "path": "analisis-disparo-ui.js",
+      "bytes": 8204,
+      "sha256": "27f921dc922af83592046788fcfb375343712ea98b20c820e59fa615a4a2df80"
+    },
+    {
+      "path": "analisis-disparo-panel.css",
+      "bytes": 828,
+      "sha256": "4dbe360c4690e63a06ff0102430b4d5d454eb3f1147dddb7943825b5a559d082"
     }
   ]
 }
