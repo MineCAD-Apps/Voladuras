@@ -1,6 +1,6 @@
-Base main 5e57137. Sustituir animacion-visual.js y docs/MANIFIESTO.json.
-Aleatoriedad gráfica estable: ocasionalmente combina entre 2 y 4 bloques ya mayores que P80 del mismo origen. Conserva su volumen combinado y el porcentaje volumétrico de la muestra por encima de P80; X50 y la pieza de referencia P80 no se agrupan. Si no hay dos piezas elegibles del mismo origen, no se inventan bloques extra.
-Es una sustitución de apariencia; se conserva el acomodo interno y la información del diseño. No se recalculan fórmulas, cargas, tiempos o la distribución de fragmentación real.
-2D: las piezas nacen fuera de los túneles, pero al moverse dejan de recortarse contra la veta y las obras. La máscara solo limita el destello. Se aumenta contraste y borde sin ampliar el tamaño geométrico. Se usa data-visual-vein en vez de depender de un color exacto.
-Se evita reconstruir toda la muestra en cada frame cuando la secuencia devuelve objetos nuevos equivalentes. Las partículas siguen ocultas al 0% y se revelan al avanzar.
+Base main 01f7a68. Sustituir registro.css y docs/MANIFIESTO.json.
+La misma ventana 2D se divide en dos columnas iguales: transversal a la izquierda y planta a la derecha, ambas con todo el alto disponible.
+La planta existente se reubica; no se duplica. Se eliminan las reglas antiguas que limitaban su alto a 44/52 px o a una franja inferior.
+El aviso de animación 2D queda dentro de la mitad izquierda, sin tapar el panel de planta. La distribución izquierda/derecha también se conserva en pantallas pequeñas.
+No cambian HTML, coordenadas, escala geométrica, orientación de planta, barrenos ni animaciones. Solo cambia la disposición CSS.
 No publicado automáticamente.
