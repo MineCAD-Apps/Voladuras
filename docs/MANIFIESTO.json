@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-26",
-  "source": "main 5287269; representación visual de P80 y cola de tamaños",
+  "date": "2026-11-27",
+  "source": "main 2a9dde8; alineación visual y escala común X50/P80 en 2D/3D",
   "files": [
     {
       "path": ".nojekyll",
@@ -9,8 +9,8 @@
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 48043,
-      "sha256": "536b713453c64013fd6761a8e96522c12dd21ccd6c5bd57809603411971ad241"
+      "bytes": 50072,
+      "sha256": "d5d16baeb90eaf13643fb9abc6fa8c65c6e62fcb74b3be28fb5c2bafdccc7ca2"
     },
     {
       "path": "ANIMACION.md",
