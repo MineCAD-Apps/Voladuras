@@ -66,6 +66,24 @@
         if (!assign(fineIds, fine, 0, fineCap, x50) || !assign(midIds, middle, midMin, midCap, p80) || !assign(coarseIds, coarse, coarseMin, Infinity, null)) return null;
         return { sizes: output, x50, p80, coarsePieces: countCoarse, coarseVolume: coarse, totalVolume: total };
     }
+
+    // Agrupación gráfica estable: solo piezas > P80 del mismo origen. El volumen se conserva.
+    function mergeVisualCoarse(sizes, p80, keys, random) {
+        const output = sizes.slice(), groups = new Map(); let hiddenCount = 0, mergedGroups = 0;
+        sizes.forEach((size, i) => { if (size > p80) { const key = keys[i]; if (!groups.has(key)) groups.set(key, []); groups.get(key).push(i); } });
+        for (const ids of groups.values()) {
+            ids.sort((a, b) => random(a + 2053) - random(b + 2053) || a - b);
+            for (let i = 0; i < ids.length;) {
+                const id = ids[i], remaining = ids.length - i;
+                if (remaining < 2 || random(id + 4201) >= .6) { i++; continue; }
+                const count = Math.min(remaining, 2 + Math.floor(random(id + 5801) * 3));
+                let volume = 0;
+                for (let j = 0; j < count; j++) { volume += sizes[ids[i+j]] ** 3; if (j) { output[ids[i+j]] = 0; hiddenCount++; } }
+                output[id] = Math.cbrt(volume); mergedGroups++; i += count;
+            }
+        }
+        return { sizes: output, hiddenCount, mergedGroups };
+    }
     function fragmentPath(x, y, size, ky = 1) {
         const radius = size / Math.cbrt(.8 * ky), h = radius * ky;
         // Proyección X/Z de los vértices del tetraedro empleado por el visor 3D; SVG invierte Z.
@@ -128,18 +146,18 @@
             else { const t = timeline(); caption.hidden = progress <= 0; caption.textContent = 'Animación ilustrativa · ' + (t ? Math.round(t.ms) + ' / ' + Math.round(t.seq.totalMs) + ' ms' : Math.floor(progress) + ' %'); }
         }
         const svg = document.querySelector('#section');
-        const vein = svg?.querySelector('polygon[fill="#e5b66b65"]');
+        const vein = svg?.querySelector('polygon[data-visual-vein]') ?? svg?.querySelector('polygon[fill="#e5b66b65"]');
         if (!svg || !vein) { overlay?.remove(); source = null; return; }
         const tl = timeline(), seq = tl?.seq ?? null;
-        if (section !== svg || source !== vein || built !== seq || !overlay?.isConnected) {
+        const sequenceKey = seq ? JSON.stringify([...seq.times.entries()]) : 'sin-secuencia';
+        if (section !== svg || source !== vein || built !== sequenceKey || !overlay?.isConnected) {
             overlay?.remove(); source = null; cells = [];
             const box = vein.getBBox();
             if (!box.width || !box.height) return; // sección oculta: se construye al mostrarla
-            section = svg; source = vein; built = seq;
+            section = svg; source = vein; built = sequenceKey;
             overlay = node('g', { 'data-visual-animation': '', 'pointer-events': 'none', 'aria-hidden': 'true' });
             const points = vein.getAttribute('points');
-            const defs = node('defs', {}), clip = node('clipPath', { id: 'minecad-illustration-clip' });
-            clip.append(node('polygon', { points })); defs.append(clip); overlay.append(defs);
+            const defs = node('defs', {}); overlay.append(defs);
             // Las obras inferior y superior son huecos: la ilustración no los cubre.
             const veinPts = parsePoints(points), driftNodes = [...svg.querySelectorAll('polygon[data-drift]')];
             const drifts = driftNodes.map(d => parsePoints(d.getAttribute('points')));
@@ -153,10 +171,10 @@
             for (let a = 0; a < GRID; a++) for (let b = 0; b < GRID; b++) if (solid(box.x + box.width * (a + .5) / GRID, box.y + box.height * (b + .5) / GRID)) area += box.width * box.height / (GRID * GRID);
             const volume = area * (window.MineCADLayerData?.burden?.() ?? 1) * (seq?.rings?.length ?? 1);
             const total = Math.max(12, Math.min(700, Math.round(DENSITY_2D * volume)));
-            const texture = node('g', { 'clip-path': 'url(#minecad-illustration-clip)' });
+            const texture = node('g', { 'data-fragment-particles': '' });
             const addRock = (i, x, y, time, offset = riseFraction(-y, -box.y - box.height, -box.y), axis = null) => {
                 const r = Math.max(box.height * .008, Math.min(box.width * .14, box.height * .022)) * (.65 + seed(i + 300));
-                const rock = node('path', { d: `M${x-r},${y} l${r*.5},${-r} ${r*1.4},${r*.25} ${r*.4},${r} ${-r*.8},${r*.8} Z`, fill: ['#92704b','#b59261','#d2b077'][i % 3], stroke: '#5a4935', 'stroke-width': box.height * .0009 });
+                const rock = node('path', { d: `M${x-r},${y} l${r*.5},${-r} ${r*1.4},${r*.25} ${r*.4},${r} ${-r*.8},${r*.8} Z`, fill: ['#bc915c','#dfb979','#efd29b'][i % 3], stroke: '#493522', 'stroke-width': .7, 'vector-effect': 'non-scaling-stroke' });
                 texture.append(rock); cells.push({ node: rock, x, y, axis, time, offset, travel: box.height * (.035 + seed(i + 900) * .055) });
             };
             // Con secuencia, cada fragmento nace sobre la proyección de su barreno de origen.
@@ -184,7 +202,7 @@
                 for (let i = 0; i < count; i++, n++) {
                     const [x, y] = inside[Math.floor(seed(n + 1) * inside.length)];
                     const time = list[list.length > count ? Math.floor(i * list.length / count) : i % list.length];
-                    addRock(n, x, y, time, riseFraction(-y, bottom, top), { dx: x2 - x1, dy: y2 - y1 });
+                    addRock(n, x, y, time, riseFraction(-y, bottom, top), { dx: x2 - x1, dy: y2 - y1, key: [x1,y1,x2,y2].join(',') });
                 }
             }
             if (!cells.length) for (let i = 0; i < total; i++) {
@@ -196,7 +214,11 @@
             const visualKR = window.MineCADFragmentacion?.();
             const visual2D = visualKR?.X50 > 0 && visualKR?.P80 > visualKR.X50
                 ? visualP80Sizes(cells.map(() => visualKR.X50 / 100), visualKR.P80 / 100, seed, visualKR.X50 / 100) : null;
+            const clustered2D = visual2D ? mergeVisualCoarse(visual2D.sizes, visualKR.P80 / 100, cells.map(c => String(c.time) + '|' + (c.axis?.key ?? 'sin-origen')), seed) : null;
+            if (clustered2D) visual2D.sizes = clustered2D.sizes;
             if (visual2D) cells.forEach((cell, i) => {
+                cell.visualHidden = visual2D.sizes[i] === 0;
+                cell.node.style.display = cell.visualHidden ? 'none' : '';
                 cell.visualSize = visual2D.sizes[i];
                 cell.node.setAttribute('d', fragmentPath(cell.x, cell.y, cell.visualSize, .8 + seed(i + 450) * .35));
                 cell.node.setAttribute('data-size-m', String(cell.visualSize));
@@ -210,7 +232,9 @@
                 ? 'X50 ' + visualKR.X50.toFixed(1) + ' cm · P80 ' + visualKR.P80.toFixed(1) + ' cm · 20% del volumen visual > P80'
                 : visualKR?.X50 > 0 ? 'Referencia X50; muestra insuficiente para representar los dos percentiles' : 'Tamaños ilustrativos: faltan datos de fragmentación');
             const flash = node('polygon', { points, fill: '#ffe4a0', 'data-animation-flash': '' });
-            const body = node('g', { mask: 'url(#minecad-illustration-mask)' }); body.append(texture, flash); overlay.append(body);
+            // La máscara de obras solo limita el destello. Las piezas nacen en roca (solid), pero pueden entrar al hueco.
+            const flashBody = node('g', { mask: 'url(#minecad-illustration-mask)' }); flashBody.append(flash);
+            overlay.append(flashBody, texture);
             // Detrás de los barrenos, para que su color siga visible.
             const anchor = svg.querySelector('[data-visual-hole]');
             if (anchor) svg.insertBefore(overlay, anchor); else svg.append(overlay);
@@ -220,12 +244,13 @@
         const p = progress / 100, flash = overlay.querySelector('[data-animation-flash]');
         flash.setAttribute('opacity', String(!tl && p < .2 ? Math.sin(p / .2 * Math.PI) * .5 : 0));
         for (const cell of cells) {
+            if (cell.visualHidden) continue;
             let phase, opacity;
             if (tl && cell.time !== null) {
                 const age = tl.age(cell.time) - cell.offset * JITTER;
-                phase = clamp(age / FALL); opacity = age < 0 ? 0 : Math.min(.82, .35 + age * 3);
+                phase = clamp(age / FALL); opacity = age < 0 ? 0 : Math.min(.95, .65 + age * 3);
             }
-            else { phase = clamp((p - .12 - cell.offset * .14) / .62); opacity = phase * .82; }
+            else { phase = clamp((p - .12 - cell.offset * .14) / .62); opacity = Math.min(.95, phase * 3); }
             cell.node.setAttribute('opacity', String(opacity));
             const drop = phase * phase * cell.travel;
             const shiftX = cell.axis && Math.abs(cell.axis.dy) > 1e-9 ? drop * cell.axis.dx / cell.axis.dy : 0;
@@ -552,7 +577,10 @@
                 // Solo la escala de dibujo cambia; rock.size y rock.radius conservan el modelo existente.
                 const visualTail = krOK && Number.isFinite(kr.P80) && kr.P80 > kr.X50
                     ? visualP80Sizes(rocks.map(r => r.size), kr.P80 / 100, seed, kr.X50 / 100) : null;
+                const clustered3D = visualTail ? mergeVisualCoarse(visualTail.sizes, kr.P80 / 100, rocks.map(r => String(r.ring) + '|' + (r.hole ?? 'sin-origen')), seed) : null;
+                if (clustered3D) { visualTail.sizes = clustered3D.sizes; visualTail.coarsePieces = clustered3D.sizes.filter(x => x > kr.P80 / 100).length; }
                 rocks.forEach((rock, j) => {
+                    rock.visualHidden = !!visualTail && visualTail.sizes[j] === 0;
                     rock.visualSize = visualTail ? visualTail.sizes[j] : rock.size;
                     if (visualTail) rock.mesh.scale.multiplyScalar(rock.visualSize / rock.size);
                 });
@@ -599,7 +627,7 @@
                     const rock = rocks[i], rest = rock.rest, time = tl && rock.hole ? tl.seq.times.get(rock.hole)?.[0] : undefined;
                     // Aparición ascendente dentro de cada barreno; se conserva el inicio y la duración existentes.
                     const age = time === undefined ? (p - .12 - rock.phase * .18) / .7 * FALL : tl.age(time) - rock.phase * JITTER;
-                    rock.mesh.visible = time === undefined ? age > 0 : age >= 0;
+                    rock.mesh.visible = !rock.visualHidden && (time === undefined ? age > 0 : age >= 0);
                     if (!rock.mesh.visible) continue;
                     // Misma aceleración para todos: lo que está más abajo llega primero.
                     const start = Math.max(rock.y, rest.y), y = Math.max(rest.y, start - maxDrop * (age / FALL) ** 2);

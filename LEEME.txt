@@ -1,7 +1,6 @@
-Base main f10fbb9. Sustituir registro-3d.js, animacion-visual.js y docs/MANIFIESTO.json.
-El visor aplica una transformación de presentación exclusivamente al eje longitudinal Z: (x, altura, distancia) -> (x, altura, -distancia). La primera línea queda al frente en la vista inicial, manteniendo X y la altura.
-El modelo, los fragmentos y todas las capas gráficas comparten la transformación. Se ajustan etiquetas, caja de encuadre y cuadrícula a ese mismo espacio.
-La cámara conserva su orientación inicial; no se gira 180 grados. El echado no se cambia de signo.
-No se invierten IDs, selección, datos de barrenos, tiempos, fórmulas ni orden de animación. Las primeras cinco líneas siguen siendo las mismas, ahora situadas hacia el frente del visor.
-Usar Ajustar vista si la cámara estaba girada manualmente.
+Base main 5e57137. Sustituir animacion-visual.js y docs/MANIFIESTO.json.
+Aleatoriedad gráfica estable: ocasionalmente combina entre 2 y 4 bloques ya mayores que P80 del mismo origen. Conserva su volumen combinado y el porcentaje volumétrico de la muestra por encima de P80; X50 y la pieza de referencia P80 no se agrupan. Si no hay dos piezas elegibles del mismo origen, no se inventan bloques extra.
+Es una sustitución de apariencia; se conserva el acomodo interno y la información del diseño. No se recalculan fórmulas, cargas, tiempos o la distribución de fragmentación real.
+2D: las piezas nacen fuera de los túneles, pero al moverse dejan de recortarse contra la veta y las obras. La máscara solo limita el destello. Se aumenta contraste y borde sin ampliar el tamaño geométrico. Se usa data-visual-vein en vez de depender de un color exacto.
+Se evita reconstruir toda la muestra en cada frame cuando la secuencia devuelve objetos nuevos equivalentes. Las partículas siguen ocultas al 0% y se revelan al avanzar.
 No publicado automáticamente.
