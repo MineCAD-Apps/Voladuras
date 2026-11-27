@@ -8,6 +8,9 @@
     // Capa de datos suministrados (Carga/Tiempo capturados por el usuario). Cuando está activa se oculta el efecto decorativo.
     const layerActive = () => !!layer && layer.state === 'disponible' && (!!layer.all || !!layer.byRing);
     const clamp = x => Math.max(0, Math.min(1, x));
+    // Orden visual por altura: 0 abajo, 1 arriba, independiente del extremo de origen.
+    // Es una fracción de la transición gráfica existente, no un retardo del diseño.
+    const riseFraction = (height, bottom, top) => top - bottom > 1e-9 ? clamp((height - bottom) / (top - bottom)) : 0;
     /* Reloj común de la animación. Los tiempos en ms vienen de la secuencia capturada;
        las constantes siguientes son segundos de pantalla y solo afectan el aspecto. */
     const DENSITY_2D = 1.5; // fragmentos por m³ en la sección (ilustrativo)
@@ -108,10 +111,10 @@
             const volume = area * (window.MineCADLayerData?.burden?.() ?? 1) * (seq?.rings?.length ?? 1);
             const total = Math.max(12, Math.min(700, Math.round(DENSITY_2D * volume)));
             const texture = node('g', { 'clip-path': 'url(#minecad-illustration-clip)' });
-            const addRock = (i, x, y, time) => {
+            const addRock = (i, x, y, time, offset = riseFraction(-y, -box.y - box.height, -box.y)) => {
                 const r = Math.max(box.height * .008, Math.min(box.width * .14, box.height * .022)) * (.65 + seed(i + 300));
                 const rock = node('path', { d: `M${x-r},${y} l${r*.5},${-r} ${r*1.4},${r*.25} ${r*.4},${r} ${-r*.8},${r*.8} Z`, fill: ['#92704b','#b59261','#d2b077'][i % 3], stroke: '#5a4935', 'stroke-width': box.height * .0009 });
-                texture.append(rock); cells.push({ node: rock, time, offset: seed(i + 601), travel: box.height * (.035 + seed(i + 900) * .055) });
+                texture.append(rock); cells.push({ node: rock, time, offset, travel: box.height * (.035 + seed(i + 900) * .055) });
             };
             // Con secuencia, cada fragmento nace sobre la proyección de su barreno de origen.
             const groups = new Map();
@@ -131,11 +134,14 @@
                     if (vein.isPointInFill(probe) && solid(probe.x, probe.y)) inside.push([probe.x, probe.y]);
                 }
                 if (!inside.length) continue;
+                // SVG crece hacia abajo: invertir Y para ordenar desde el punto físicamente inferior.
+                const bottom = -Math.max(inside[0][1], inside[inside.length - 1][1]);
+                const top = -Math.min(inside[0][1], inside[inside.length - 1][1]);
                 const count = Math.max(1, Math.round(total * list.length / lengths));
                 for (let i = 0; i < count; i++, n++) {
                     const [x, y] = inside[Math.floor(seed(n + 1) * inside.length)];
                     const time = list[list.length > count ? Math.floor(i * list.length / count) : i % list.length];
-                    addRock(n, x + (seed(n + 191) - .5) * box.width * .12, y + (seed(n + 77) - .5) * box.height * .025, time);
+                    addRock(n, x + (seed(n + 191) - .5) * box.width * .12, y + (seed(n + 77) - .5) * box.height * .025, time, riseFraction(-y, bottom, top));
                 }
             }
             if (!cells.length) for (let i = 0; i < total; i++) {
@@ -461,6 +467,9 @@
                         else ({ x, y } = randomSolid(i));
                         const at = veinAtSample(samples, y);
                         rock.hole = hole ? hole.id : null; rock.ring = k;
+                        rock.phase = points.length
+                            ? riseFraction(y, Math.min(points[0].y, points[points.length - 1].y), Math.max(points[0].y, points[points.length - 1].y))
+                            : riseFraction(y, zMin, zMax);
                         rock.x = x; rock.y = y; rock.z = slab.lo + (slab.hi - slab.lo) * (.08 + .84 * sd(j + 310));
                         rock.u = clamp((x - at.left) / (at.right - at.left || 1));
                         rock.radius = radius; rock.rest = null; rock.run = null;
@@ -507,7 +516,7 @@
                 const maxDrop = Math.max(1, pile.top - pile.floor);
                 for (let i = 0; i < rocks.length; i++) {
                     const rock = rocks[i], rest = rock.rest, time = tl && rock.hole ? tl.seq.times.get(rock.hole)?.[0] : undefined;
-                    // Con secuencia: aparece al iniciar su barreno y empieza a caer. Sin ella, avance global.
+                    // Aparición ascendente dentro de cada barreno; se conserva el inicio y la duración existentes.
                     const age = time === undefined ? (p - .12 - rock.phase * .18) / .7 * FALL : tl.age(time) - rock.phase * JITTER;
                     rock.mesh.visible = time === undefined ? age > 0 : age >= 0;
                     if (!rock.mesh.visible) continue;

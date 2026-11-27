@@ -1,8 +1,5 @@
-Base: main c51967a. Sustituir registro-app.js en la raíz y docs/MANIFIESTO.json dentro de docs.
-La interfaz HTML se genera en registro-app.js; no se requiere cambiar index.html.
-Capturas añadidas:
-- Veta y Macizo Rocoso > Macizo rocoso > Factor de abundamiento: rock.swell, 1.0 a 2.0. Inicial 1.0 para conservar el comportamiento de diseños antiguos.
-- Perforación > registro de anillos > Diámetro del contrapozo/ranura (m): drilling.slotDiameterM, opcional; vacío = null. Captura positiva desde 0.001 m.
-disparo() ya clona los objetos completos y entrega los valores como roca.swell y perforacion.slotDiameterM, sin conversiones ni cálculos añadidos.
-Los campos usan el enlace existente data-path, validación, persistencia local, exportación/importación JSON y refresco Pi -> refreshMods -> evento minecad:datos.
-No se modificaron los archivos de cálculo o animación. No se publicó el cambio automáticamente.
+Base: main c4c153f. Sustituye animacion-visual.js en la raíz y docs/MANIFIESTO.json dentro de docs.
+Cambio exclusivamente gráfico: la variación aleatoria de aparición se sustituye por el orden de altura, de abajo hacia arriba, en cada barreno (2D y 3D).
+Se conserva la ventana gráfica de aparición existente. No cambian las entradas del diseño, la secuencia capturada, el número o tamaño de fragmentos ni las fórmulas de fragmentación.
+Con barrenos horizontales, los fragmentos de igual altura aparecen juntos. Sin barreno de origen se usa la altura del bloque como referencia visual.
+No publicado automáticamente.
