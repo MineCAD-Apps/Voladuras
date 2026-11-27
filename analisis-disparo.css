@@ -1,0 +1,10 @@
+/* Presentación del panel; utiliza la paleta de MineCAD. */
+#btn-analizar-disparo { margin-left: auto; }
+#btn-analizar-disparo[aria-expanded="true"] { background: #2a668a; border-color: var(--accent, #60bdf2); }
+#analisis-disparo[hidden] { display: none !important; }
+#analisis-disparo { flex: 0 1 auto; min-height: 0; max-height: 35vh; overflow: auto; padding: 10px 12px; background: #132437; border-top: 1px solid var(--line, #263d52); }
+.analisis-disparo-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.analisis-disparo-cabecera h3 { margin: 0; font-size: 1rem; }
+.analisis-disparo-vacio { margin: 8px 0 0; color: var(--muted, #93acc0); line-height: 1.5; }
+.view-tabs { flex-wrap: wrap; }
+@media (max-height: 550px) { #analisis-disparo { max-height: 28vh; padding: 7px 10px; } }

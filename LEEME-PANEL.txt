@@ -1,0 +1,4 @@
+Base: main 1cfd202. Sustituye estos archivos en la raíz del repositorio y conserva docs/MANIFIESTO.json dentro de docs.
+Cambio exclusivamente visual: estilos, botón y panel plegable. No contiene resultados de evaluación.
+registro-app.js conserva su carga clásica. El nuevo controlador visual se carga mediante type="module" y addEventListener. No se añadió el import ni construirDatosDisparo.
+No se ha publicado automáticamente.

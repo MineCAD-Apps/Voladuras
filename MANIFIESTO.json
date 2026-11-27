@@ -1,36 +1,26 @@
 {
-  "date": "2026-11-25",
-  "source": "Aplicación web directa; textos normalizados a finales de línea LF para Git",
+  "date": "2026-11-26",
+  "source": "main 1cfd202; incorporación exclusivamente visual del panel de análisis",
   "files": [
     {
-      "path": ".gitattributes",
-      "bytes": 55,
-      "sha256": "600623829b1f0b5d35d14e0ceae0ef91b9c003894b2d19e98eb53043068b7fe5"
-    },
-    {
-      "path": ".gitignore",
-      "bytes": 103,
-      "sha256": "d037f3440c29476daf9b021881d34354f194cc79863a1fb6bb3aad2c8a7e6598"
-    },
-    {
       "path": ".nojekyll",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 6737,
-      "sha256": "a842f7f712e75322827f95c5e1b78837ba92276dc6b35b5f5ac555fcdab9c53d"
+      "bytes": 30655,
+      "sha256": "3fe05ca347e9617bde3a8955f53b090cae8f50152291ab7fb2942a88f35ef449"
     },
     {
       "path": "ANIMACION.md",
-      "bytes": 947,
-      "sha256": "1a0512c9b8f0c54299191104255167aa92d5df6cfaf5bc3a9c3c5417d8b932a8"
+      "bytes": 8176,
+      "sha256": "0152067f8140959f590e27349a30b1fe7447bc0d09c05656fa6fdfc9dc25cdd9"
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 1027,
-      "sha256": "42ce60508c71ced7f1f6b02187254593fdc7ae80225bc9c62d8deeff2f666e8a"
+      "bytes": 2974,
+      "sha256": "e7ec0686358465021e421f2f3d9059924864be12f7e9a163aae6af5367e9d42b"
     },
     {
       "path": "docs/ARCHIVOS.md",
@@ -38,44 +28,9 @@
       "sha256": "82fcedf3bda1b1bf7d08807adfe4ee0520750045298033c89c9a86da74043eda"
     },
     {
-      "path": "docs/capturas/cabecera-tema.jpg",
-      "bytes": 17442,
-      "sha256": "511172229d0dcb99601d312d030882ee3b3a63dc9d745ebf58e16b7990b14ef2"
-    },
-    {
-      "path": "docs/capturas/vista-3d.jpg",
-      "bytes": 77741,
-      "sha256": "5da6430b049b44c850b4593dc5c61a4564ec675a1caa89b83d94dabfe75a5c87"
-    },
-    {
-      "path": "docs/capturas/vista-web.jpg",
-      "bytes": 73348,
-      "sha256": "3270747f11130f08ed22403277f5a60c8caabfbb5fbcd40e989e0a8aef1edade"
-    },
-    {
-      "path": "docs/capturas/vista.jpg",
-      "bytes": 75180,
-      "sha256": "ac33718e6bb327884ec036b216517bf93f696b7224a6126a1b5a042fead52a8d"
-    },
-    {
       "path": "docs/DEPENDENCIAS.md",
       "bytes": 865,
       "sha256": "b63839347af5431f33781a0719580e2f53b7eed9dc48bea5062a2125115644c4"
-    },
-    {
-      "path": "docs/referencia/Inventario-funcional.html",
-      "bytes": 13388,
-      "sha256": "f6c69771048cfeee77ef001a29f6c3a76560c774635807919ae259e92b647d94"
-    },
-    {
-      "path": "docs/referencia/Inventario-funcional.txt",
-      "bytes": 11563,
-      "sha256": "a97246f16ce8cb8090a4a92cf8b3ef58251bc292c07f263d40a0366d60b50761"
-    },
-    {
-      "path": "docs/referencia/REPORTE-PARA-OTRA-IA.txt",
-      "bytes": 19543,
-      "sha256": "fd57a8985d5f40c22f014c9cc095569ef9ca7c2582bb31b247548404a2f3ecff"
     },
     {
       "path": "docs/WEB.md",
@@ -84,8 +39,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 647,
-      "sha256": "27ecd517aca195d723641d62806efe61077881a4bf98532e063446d00aa4db7c"
+      "bytes": 1041,
+      "sha256": "e4a039631fc15978a58386c4e6beedbbb0adf33cdaa74def83b79211e06a0a5e"
     },
     {
       "path": "integraciones/minecad-tema.user.js",
@@ -109,28 +64,28 @@
     },
     {
       "path": "registro-3d.js",
-      "bytes": 10267,
-      "sha256": "667fc104b8d4cb9eb4c591085a79dd84ebbfa8fa26825922752863c4fd907674"
+      "bytes": 13303,
+      "sha256": "79f53ff8682f986eabf0d49d545149f580ea09442aa13c3e0a4ebbcc6c37b60e"
     },
     {
       "path": "registro-app.js",
-      "bytes": 73059,
-      "sha256": "0ee64ea598903f3a7e18a58c415c05c0c72b499154e1e6fb16327e697d303bbc"
+      "bytes": 82066,
+      "sha256": "cb7adec94d228f0999294a856e998c171f546bc6f2ba67faf407954f972d40d1"
     },
     {
       "path": "registro-controles.js",
-      "bytes": 5259,
-      "sha256": "1d4b1753aa8e8d81b14264e2b37b27b15c225f28274c0d6b76d00babe0f4fa12"
+      "bytes": 21120,
+      "sha256": "274b320848f64b129827e955437a48634a54ced12c3fcd773f3101fdf28d1176"
     },
     {
       "path": "registro.css",
-      "bytes": 11514,
-      "sha256": "d619fa14212c0a73a3b540d488ecc53d9af440b359613db9e23cbdb19bb09055"
+      "bytes": 11281,
+      "sha256": "4bb70bb375c23a8dd75becf6d8977e8346da7a1ee39e7177e94f57d1fa46db48"
     },
     {
       "path": "tools/verify.mjs",
-      "bytes": 1505,
-      "sha256": "ef5703f2c5fdcc239f74afa475686667590610b29701d9961340ce7ce881f257"
+      "bytes": 1603,
+      "sha256": "4cfb535cdc25624793f47f2db56cf838c0059512110ae5a2424667db5a5d8eb5"
     },
     {
       "path": "vendor/THREE-LICENSE.txt",
@@ -141,6 +96,16 @@
       "path": "vendor/three-vendor.js",
       "bytes": 556164,
       "sha256": "774e666ddf7c55ff01613e381b7133fe875042cf957e8b1cfe2ef10f6d4e9367"
+    },
+    {
+      "path": "analisis-disparo.css",
+      "bytes": 828,
+      "sha256": "4dbe360c4690e63a06ff0102430b4d5d454eb3f1147dddb7943825b5a559d082"
+    },
+    {
+      "path": "analisis-disparo-panel.js",
+      "bytes": 731,
+      "sha256": "e05525ee4ad675173b4427e2a440afd3e7fa6f7d825442f53dd2aa48a6c8e2f9"
     }
   ]
 }
