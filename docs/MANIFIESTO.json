@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "source": "main 2a9dde8; alineación visual y escala común X50/P80 en 2D/3D",
+  "source": "main 7fba1e9; acomodo geométrico dentro del perfil inclinado existente",
   "files": [
     {
       "path": ".nojekyll",
@@ -9,8 +9,8 @@
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 50072,
-      "sha256": "d5d16baeb90eaf13643fb9abc6fa8c65c6e62fcb74b3be28fb5c2bafdccc7ca2"
+      "bytes": 51012,
+      "sha256": "9340926e57f67bf1db4b7d3e28caa701a89bac9516fa98b4c4fbd92ce339ccc3"
     },
     {
       "path": "ANIMACION.md",
