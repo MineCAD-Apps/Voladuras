@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "source": "main c3d0558; copia íntegra de archivos aportados y referencias de carga",
+  "source": "main c51967a; captura de abundamiento y diámetro de contrapozo/ranura",
   "files": [
     {
       "path": ".nojekyll",
@@ -9,8 +9,8 @@
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 30655,
-      "sha256": "3fe05ca347e9617bde3a8955f53b090cae8f50152291ab7fb2942a88f35ef449"
+      "bytes": 42862,
+      "sha256": "0282e21bd29859f05207f26717d0662a158fe36e2af4a232e762edb8c8f4b78c"
     },
     {
       "path": "ANIMACION.md",
@@ -74,8 +74,8 @@
     },
     {
       "path": "registro-app.js",
-      "bytes": 82066,
-      "sha256": "cb7adec94d228f0999294a856e998c171f546bc6f2ba67faf407954f972d40d1"
+      "bytes": 85283,
+      "sha256": "67e0962ce4173a324b0e39d7eb6c39f5a97e9363db95fd6b6c2b4c12b0caedf5"
     },
     {
       "path": "registro-aspecto.js",
@@ -134,13 +134,13 @@
     },
     {
       "path": "analisis-disparo.js",
-      "bytes": 14872,
-      "sha256": "27f39816db77536e7f1d1d9808acd73f8984e5344954e73050217fd1bb425954"
+      "bytes": 15851,
+      "sha256": "75e6d30d6b37360ebcbc47d3c03fa4ca4b0edd8b9bc0784673db68bfba443aa2"
     },
     {
       "path": "analisis-disparo-ui.js",
-      "bytes": 8204,
-      "sha256": "27f921dc922af83592046788fcfb375343712ea98b20c820e59fa615a4a2df80"
+      "bytes": 16719,
+      "sha256": "c07fcd1a385ff5a703df7f8d106d157f51aa949c3c99c22980cb8fdbe73fe437"
     },
     {
       "path": "analisis-disparo-panel.css",
