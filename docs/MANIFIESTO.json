@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "source": "main 7fba1e9; acomodo geométrico dentro del perfil inclinado existente",
+  "source": "main f10fbb9; eje longitudinal de presentación con la primera línea al frente",
   "files": [
     {
       "path": ".nojekyll",
@@ -9,8 +9,8 @@
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 51012,
-      "sha256": "9340926e57f67bf1db4b7d3e28caa701a89bac9516fa98b4c4fbd92ce339ccc3"
+      "bytes": 51075,
+      "sha256": "466ec65a5c996a74b8cd9bb4e4bc9a6bed075d74232bb77b1aa221940018960a"
     },
     {
       "path": "ANIMACION.md",
@@ -69,8 +69,8 @@
     },
     {
       "path": "registro-3d.js",
-      "bytes": 13303,
-      "sha256": "79f53ff8682f986eabf0d49d545149f580ea09442aa13c3e0a4ebbcc6c37b60e"
+      "bytes": 13662,
+      "sha256": "208b03ea90fa86f07bda1eb72b962b0299caaaa4fe2a7a82a816b52c19e63206"
     },
     {
       "path": "registro-app.js",
