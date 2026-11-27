@@ -53,6 +53,11 @@
       "sha256": "f692190a7ab2379ff281bdf1cc3c45ab605704f9bbf2991cf3b898cac3263c72"
     },
     {
+      "path": "LEEME-PRIMERO.txt",
+      "bytes": 2273,
+      "sha256": "98f18d669b18457fa8785d40332e08d44da3daf605821eb9c0b9f3d271036711"
+    },
+    {
       "path": "logo-minecad.png",
       "bytes": 62651,
       "sha256": "77849b8f864259b099151f570483741e4f00173f69cd1e9763531f39865c1e47"
@@ -71,6 +76,31 @@
       "path": "registro-app.js",
       "bytes": 82066,
       "sha256": "cb7adec94d228f0999294a856e998c171f546bc6f2ba67faf407954f972d40d1"
+    },
+    {
+      "path": "registro-aspecto.js",
+      "bytes": 17469,
+      "sha256": "c8cfb94f5ab47d733121506b8c67155503292aad61c08b403afbb7048bfe79de"
+    },
+    {
+      "path": "registro-calculo-formato.css",
+      "bytes": 785,
+      "sha256": "4ff3f5c11c91baaa0be419bf9a44752e5632de2cd3aa87d010239ecb85046dbf"
+    },
+    {
+      "path": "registro-calculo-formato.js",
+      "bytes": 28279,
+      "sha256": "206597f38c70d01311745637f47b36110ccb93f713ee9af92873e75581919d49"
+    },
+    {
+      "path": "registro-calculo-teoria.css",
+      "bytes": 3985,
+      "sha256": "b539c15d163751d6305010325a1287bd55ba4383cceeb2e1fb3d8adeb10828f4"
+    },
+    {
+      "path": "registro-calculo-teoria.js",
+      "bytes": 15426,
+      "sha256": "01496fd4fd4617cdcfa0be72a0c45543b530536fb78487af158f0423da466761"
     },
     {
       "path": "registro-controles.js",
