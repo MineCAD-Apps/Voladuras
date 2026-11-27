@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "source": "main f10fbb9; eje longitudinal de presentación con la primera línea al frente",
+  "source": "main 5e57137; agrupación gráfica de bloques grandes y visibilidad 2D",
   "files": [
     {
       "path": ".nojekyll",
@@ -9,8 +9,8 @@
     },
     {
       "path": "animacion-visual.js",
-      "bytes": 51075,
-      "sha256": "466ec65a5c996a74b8cd9bb4e4bc9a6bed075d74232bb77b1aa221940018960a"
+      "bytes": 53307,
+      "sha256": "b9154dd92cebe22db06a436a4cc1ce1ed8b10a00fcde9df1cf7c3f09e42d0a86"
     },
     {
       "path": "ANIMACION.md",
