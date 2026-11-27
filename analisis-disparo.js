@@ -158,8 +158,10 @@ export function estimarFragmentacionKuzRam(diseno, A = 7) {
     (longitudCarga / alturaBanco);
 
   // Rosin-Rammler (x en cm)
-  const P = (x) => 1 - Math.exp(-Math.pow(x / X50, n));
-  const P80 = X50 * Math.pow(Math.log(5), 1 / n);           // cm
+  // X50 es la mediana (pasa 50 %): el tamaño característico es Xc = X50 / ln(2)^(1/n).
+  const Xc = X50 / Math.pow(Math.LN2, 1 / n);
+  const P = (x) => 1 - Math.exp(-Math.pow(x / Xc, n));
+  const P80 = Xc * Math.pow(Math.log(5), 1 / n);            // cm
   const bolonesPct = (1 - P(50)) * 100;                     // >50 cm = 0.5 m
 
   const curva = [];

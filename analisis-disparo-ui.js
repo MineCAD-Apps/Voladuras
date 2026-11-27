@@ -4,7 +4,7 @@
  * Depende de analisis-disparo.js
  */
 
-import { evaluarRiesgos } from './analisis-disparo.js';
+import { evaluarRiesgos, estimarFragmentacionKuzRam, factorRocaDesdeRMR } from './analisis-disparo.js';
 
 const COLOR = {
   ok: '#22c55e',
@@ -307,6 +307,22 @@ export function datosDesdeDiseno(snap) {
     }
   };
 }
+
+/**
+ * Kuz-Ram del diseño actual (mismos datos y supuestos que el panel). null si faltan datos.
+ * Lo consume la vista de fragmentación 3D (animacion-visual.js) para dimensionar los prismas.
+ */
+export function fragmentacionDiseno(snap) {
+  const r = datosDesdeDiseno(snap);
+  if (r.error) return null;
+  const { diseno: d, roca } = r.datos;
+  if (!Number.isFinite(roca.RMR) || !Number.isFinite(d.volumenPorBarreno)) return null;
+  return estimarFragmentacionKuzRam({ ...d, desviacionPerforacion: 0.05 }, factorRocaDesdeRMR(roca.RMR));
+}
+window.MineCADFragmentacion = () => {
+  try { return fragmentacionDiseno(window.MineCADLayerData?.disparo?.()); }
+  catch { return null; }
+};
 
 /**
  * Punto de entrada: evalúa y pinta el panel. Acepta datos ya normalizados.

@@ -332,8 +332,22 @@
                 else slabs.push({ z: length * .46, lo: length * .35, hi: length * .57, holes: [] });
                 for (const s of slabs) s.volume = area * Math.max(0, s.hi - s.lo);
                 const totalVolume = slabs.reduce((a, s) => a + s.volume, 0);
-                const scale = Math.min(1, MAX_PIECES / Math.max(1, DENSITY * totalVolume));
-                for (const s of slabs) s.pieces = Math.max(MIN_PIECES, Math.round(DENSITY * scale * s.volume));
+                /* Tamaño de los prismas según Kuz-Ram (panel «Analizar disparo»): cada prisma tiene el volumen de un bloque
+                   cúbico del tamaño muestreado de la curva Rosin-Rammler (mediana = X50). La cantidad real de bloques
+                   (≈ FILL·volumen / volumen medio) supera con mucho MAX_PIECES, así que se dibuja una muestra
+                   proporcional; sin datos suficientes se conserva el aspecto ilustrativo anterior. */
+                const kr = typeof window.MineCADFragmentacion === 'function' ? window.MineCADFragmentacion() : null;
+                const krOK = !!kr && kr.X50 > 0 && kr.n > .3 && kr.n < 6;
+                let Xc = 0, meanVol = 1;
+                if (krOK) {
+                    Xc = kr.X50 / Math.pow(Math.LN2, 1 / kr.n) / 100; // m (tamaño característico Rosin-Rammler)
+                    let acc = 0; const Q = 200;
+                    for (let q = 0; q < Q; q++) acc += Math.pow(-Math.log(1 - (q + .5) / Q), 3 / kr.n);
+                    meanVol = Math.max(1e-9, Xc ** 3 * acc / Q);
+                }
+                const naturalOf = s => krOK ? FILL * s.volume / meanVol : DENSITY * s.volume;
+                const scale = Math.min(1, MAX_PIECES / Math.max(1, slabs.reduce((a, s) => a + naturalOf(s), 0)));
+                for (const s of slabs) s.pieces = Math.max(MIN_PIECES, Math.round(naturalOf(s) * scale));
                 resizePieces(slabs.reduce((a, s) => a + s.pieces, 0));
                 // Recinto donde se acumula el material: la obra inferior (hueca) y, por encima, la veta.
                 const px = lower.points.map(q => q[0]), py = lower.points.map(q => q[1]);
@@ -343,9 +357,15 @@
                 slabs.forEach((slab, k) => {
                     const own = holesByRing.get(slab.z) ?? [], sd = n => seed(n + k * 7919);
                     const base = Math.cbrt(3 * FILL * slab.volume / Math.max(1, slab.pieces) / (4 * Math.PI));
+                    // Rango aleatorio (sin repetir) de cada pieza: la mediana de la muestra coincide con X50.
+                    const perm = krOK ? [...Array(slab.pieces).keys()].sort((a, b) => sd(a + 90) - sd(b + 90)) : null;
                     for (let j = 0; j < slab.pieces; j++, i++) {
                         const rock = rocks[i];
-                        const radius = Math.max(.03, Math.min(widest * .45, base * (.75 + sd(j + 90) * .5)));
+                        const ky = .8 + seed(j + 450) * .35; // alargamiento vertical del prisma
+                        // Volumen del prisma base = 0.8·r³·ky; se iguala al de un bloque de lado x.
+                        const radius = krOK
+                            ? Math.max(.01, Math.min(widest * .45, Xc * Math.pow(-Math.log(1 - (perm[j] + .5) / slab.pieces), 1 / kr.n) / Math.cbrt(.8 * ky)))
+                            : Math.max(.03, Math.min(widest * .45, base * (.75 + sd(j + 90) * .5)));
                         // Origen: junto a su barreno, dentro de la roca; nunca dentro de un hueco.
                         const hole = own.length ? own[j % own.length] : null, points = hole ? solidAlong(hole) : [];
                         let x, y;
@@ -361,10 +381,10 @@
                         rock.x = x; rock.y = y; rock.z = slab.lo + (slab.hi - slab.lo) * (.08 + .84 * sd(j + 310));
                         rock.u = clamp((x - at.left) / (at.right - at.left || 1));
                         rock.radius = radius; rock.rest = null; rock.run = null;
-                        rock.mesh.scale.set(radius, radius * (.8 + seed(j + 450) * .35), radius);
+                        rock.mesh.scale.set(radius, radius * ky, radius);
                     }
                 });
-                stats = { area, density: DENSITY * scale, total: rocks.length, lines: slabs.map(s => ({ z: s.z, from: s.lo, to: s.hi, thickness: s.hi - s.lo, volume: s.volume, pieces: s.pieces })) };
+                stats = { area, density: (krOK ? FILL / meanVol : DENSITY) * scale, kuzRam: krOK ? { X50: kr.X50, n: kr.n, muestra: rocks.length, escala: scale } : null, total: rocks.length, lines: slabs.map(s => ({ z: s.z, from: s.lo, to: s.hi, thickness: s.hi - s.lo, volume: s.volume, pieces: s.pieces })) };
             },
             render() {
                 const p = progress / 100; group.visible = ready && p > 0 && !layerActive();
@@ -415,4 +435,4 @@
     // Redibujar la capa si la aplicación reemplaza la sección al editar o cambiar de vista.
     document.addEventListener('input', () => queueMicrotask(render2D));
     document.addEventListener('click', () => requestAnimationFrame(render2D));
-})();
+})();
