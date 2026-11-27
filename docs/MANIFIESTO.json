@@ -1,6 +1,6 @@
 {
   "date": "2026-11-27",
-  "source": "main 5e57137; agrupación gráfica de bloques grandes y visibilidad 2D",
+  "source": "main 01f7a68; distribución lateral transversal/planta en visor 2D",
   "files": [
     {
       "path": ".nojekyll",
@@ -109,8 +109,8 @@
     },
     {
       "path": "registro.css",
-      "bytes": 11281,
-      "sha256": "4bb70bb375c23a8dd75becf6d8977e8346da7a1ee39e7177e94f57d1fa46db48"
+      "bytes": 11458,
+      "sha256": "e65c4d626a25a6e9bd60ce7e0def424f886fc20d7b5092790ad8b35a78e7259e"
     },
     {
       "path": "tools/verify.mjs",
