@@ -174,7 +174,7 @@
         /* Cantidad de fragmentos proporcional al volumen de cada línea: ancho × alto de la sección con roca
            (sin los huecos de las obras) × espesor de su losa (espaciamiento entre líneas). La densidad es
            ilustrativa; si el diseño pide más de MAX_PIECES se reduce igual para todas las líneas. */
-        const MAX_PIECES = 4000, DENSITY = 12, FILL = .55, MIN_PIECES = 4, rocks = [];
+        const MAX_PIECES = 15000, DENSITY = 12, FILL = .55, MIN_PIECES = 4, rocks = [];
         let pile = null, settledRate = null, slabs = [], stats = null, lastArgs = null, lastKR = '';
         function resizePieces(count) {
             while (rocks.length > count) group.remove(rocks.pop().mesh);
@@ -186,6 +186,9 @@
             }
         }
         let ready = false;
+        const info = document.createElement('div');
+        info.style.cssText = 'position:absolute;left:10px;bottom:8px;z-index:4;pointer-events:none;padding:3px 8px;border:1px solid #a88840;border-radius:12px;background:#102234e8;color:#ffe2a0;font:11px Segoe UI,sans-serif';
+        info.hidden = true; viewer.el.appendChild(info);
         function veinAt(y) {
             const s = pile.samples, t = clamp((y - s[0].z) / (s[s.length - 1].z - s[0].z || 1)) * (s.length - 1);
             const i = Math.min(s.length - 2, Math.floor(t)), f = t - i, a = s[i], b = s[i + 1];
@@ -279,6 +282,11 @@
                 lastArgs = [samples, lower, length, ringZ, holes, extra];
                 ready = Array.isArray(samples) && samples.length > 1;
                 if (!ready) return;
+                /* Volumen de la línea = alto del bloque × (ancho de veta + ELOS alto y bajo) × bordo entre anillos.
+                   Se usa el ancho con ELOS en toda la geometría (área, origen de los fragmentos y acomodo);
+                   las obras inferior y superior siguen restándose por ser huecos. */
+                samples = samples.map(r => Number.isFinite(r.elosLeft) && Number.isFinite(r.elosRight) && r.elosRight > r.elosLeft
+                    ? { ...r, left: r.elosLeft, right: r.elosRight } : r);
                 extra = extra && typeof extra === 'object' ? extra : {};
                 const zMin = samples[0].z, zMax = samples[samples.length - 1].z, height = zMax - zMin;
                 const rings = Array.isArray(ringZ) ? ringZ.filter(Number.isFinite) : [];
@@ -386,10 +394,15 @@
                         rock.mesh.scale.set(radius, radius * ky, radius);
                     }
                 });
-                stats = { area, density: (krOK ? FILL / meanVol : DENSITY) * scale, kuzRam: krOK ? { X50: kr.X50, n: kr.n, muestra: rocks.length, escala: scale } : null, total: rocks.length, lines: slabs.map(s => ({ z: s.z, from: s.lo, to: s.hi, thickness: s.hi - s.lo, volume: s.volume, pieces: s.pieces })) };
+                const natural = slabs.reduce((a, s) => a + naturalOf(s), 0);
+                info.textContent = krOK
+                    ? 'Kuz-Ram X50 ' + kr.X50.toFixed(1) + ' cm · n ' + kr.n.toFixed(2) + ' · ' + rocks.length.toLocaleString('es-MX') + ' de ~' + Math.round(natural).toLocaleString('es-MX') + ' fragmentos (muestra ' + Math.round(scale * 100) + ' %)'
+                    : 'Fragmentos ilustrativos (faltan datos de Kuz-Ram)';
+                stats = { area, density: (krOK ? FILL / meanVol : DENSITY) * scale, kuzRam: krOK ? { X50: kr.X50, n: kr.n, muestra: rocks.length, natural, escala: scale } : null, total: rocks.length, lines: slabs.map(s => ({ z: s.z, from: s.lo, to: s.hi, thickness: s.hi - s.lo, volume: s.volume, pieces: s.pieces })) };
             },
             render() {
                 const p = progress / 100; group.visible = ready && p > 0 && !layerActive();
+                info.hidden = !group.visible;
                 if (!group.visible) return;
                 const tl = timeline();
                 if (settledRate !== (tl ? tl.rate : 0)) settle(tl);
