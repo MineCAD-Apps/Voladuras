@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "source": "main 1cfd202; incorporación exclusivamente visual del panel de análisis",
+  "source": "main c3d0558; copia íntegra de archivos aportados y referencias de carga",
   "files": [
     {
       "path": ".nojekyll",
@@ -39,8 +39,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 1041,
-      "sha256": "e4a039631fc15978a58386c4e6beedbbb0adf33cdaa74def83b79211e06a0a5e"
+      "bytes": 1162,
+      "sha256": "60b630c2c369878ead49c0ca8618b86e73d57dab03108d13111cad247aa60cca"
     },
     {
       "path": "integraciones/minecad-tema.user.js",
@@ -129,13 +129,28 @@
     },
     {
       "path": "analisis-disparo.css",
-      "bytes": 828,
-      "sha256": "4dbe360c4690e63a06ff0102430b4d5d454eb3f1147dddb7943825b5a559d082"
+      "bytes": 1694,
+      "sha256": "8de484e0abe94bc56e9f0808c8672c977d5d3b516e8130e153d09712431a4b98"
     },
     {
       "path": "analisis-disparo-panel.js",
       "bytes": 731,
       "sha256": "e05525ee4ad675173b4427e2a440afd3e7fa6f7d825442f53dd2aa48a6c8e2f9"
+    },
+    {
+      "path": "analisis-disparo.js",
+      "bytes": 14872,
+      "sha256": "27f39816db77536e7f1d1d9808acd73f8984e5344954e73050217fd1bb425954"
+    },
+    {
+      "path": "analisis-disparo-ui.js",
+      "bytes": 8204,
+      "sha256": "27f921dc922af83592046788fcfb375343712ea98b20c820e59fa615a4a2df80"
+    },
+    {
+      "path": "analisis-disparo-panel.css",
+      "bytes": 828,
+      "sha256": "4dbe360c4690e63a06ff0102430b4d5d454eb3f1147dddb7943825b5a559d082"
     }
   ]
 }

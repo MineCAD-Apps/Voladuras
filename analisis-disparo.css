@@ -1,10 +1,101 @@
-/* Presentación del panel; utiliza la paleta de MineCAD. */
-#btn-analizar-disparo { margin-left: auto; }
-#btn-analizar-disparo[aria-expanded="true"] { background: #2a668a; border-color: var(--accent, #60bdf2); }
-#analisis-disparo[hidden] { display: none !important; }
-#analisis-disparo { flex: 0 1 auto; min-height: 0; max-height: 35vh; overflow: auto; padding: 10px 12px; background: #132437; border-top: 1px solid var(--line, #263d52); }
-.analisis-disparo-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.analisis-disparo-cabecera h3 { margin: 0; font-size: 1rem; }
-.analisis-disparo-vacio { margin: 8px 0 0; color: var(--muted, #93acc0); line-height: 1.5; }
-.view-tabs { flex-wrap: wrap; }
-@media (max-height: 550px) { #analisis-disparo { max-height: 28vh; padding: 7px 10px; } }
+/* analisis-disparo.css */
+#analisis-disparo {
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 1.5rem 0;
+  color: #1e293b;
+}
+
+#analisis-disparo h3 {
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+.analisis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.card h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.riesgo-item {
+  margin-bottom: 0.9rem;
+}
+
+.riesgo-cabecera {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  margin-bottom: 0.25rem;
+}
+
+.riesgo-nombre { color: #475569; }
+.riesgo-valor  { font-weight: 600; }
+
+.riesgo-barra {
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.riesgo-barra-fill {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.riesgo-limite {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  display: block;
+  margin-top: 0.15rem;
+}
+
+.tabla-riesgo {
+  width: 100%;
+  font-size: 0.82rem;
+  border-collapse: collapse;
+}
+
+.tabla-riesgo td {
+  padding: 0.35rem 0.2rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.tabla-riesgo td:first-child { color: #475569; }
+.tabla-riesgo td:last-child  { text-align: right; }
+
+.card canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.nota, .nota-pie {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
+
+.nota-pie {
+  margin-top: 1rem;
+  padding: 0.5rem 0.75rem;
+  background: #fef3c7;
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+}

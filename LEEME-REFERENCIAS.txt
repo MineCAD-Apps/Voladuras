@@ -1,0 +1,5 @@
+Subir el contenido a la raíz, conservando docs/MANIFIESTO.json dentro de docs. Base: main c3d0558.
+Los tres archivos aportados se copiaron sin alterar sus bytes. index.html carga analisis-disparo-ui.js como módulo; este ya importa analisis-disparo.js.
+Los estilos anteriores del panel se conservan en analisis-disparo-panel.css. registro-app.js no se modificó ni se convirtió a módulo.
+Alcance: referencias y carga. No se añadió el adaptador de datos ni se conectó actualizarAnalisis al botón; el panel sigue sin resultados conectados. No se ejecutó ni validó la lógica de evaluación.
+Cambios locales, sin publicación automática.
